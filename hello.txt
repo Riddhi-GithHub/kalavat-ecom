@@ -1,0 +1,1 @@
+1 - composer create-project --prefer-dist laravel/laravel kalavat "5.8.*"

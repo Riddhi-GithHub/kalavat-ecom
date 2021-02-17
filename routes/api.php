@@ -1,0 +1,54 @@
+<?php
+
+use Illuminate\Http\Request;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+// success run
+// Route::post('login','ApiController@app_login');
+// Route::post('register','ApiController@app_register');
+
+Route::post('resend','ApiController@resend_mobile_otp');
+Route::post('register', 'API\UsersController@register');
+Route::post('login', 'API\UsersController@login');
+Route::post('verification_otp', 'API\UsersController@verification_otp');
+
+Route::post('edit_account', 'API\UsersController@edit_account');
+Route::post('add_contact', 'API\UsersController@add_contact');
+
+// address
+Route::post('address_list', 'API\AddressController@address_list');
+Route::post('add_address', 'API\AddressController@add_address');
+Route::post('edit_address', 'API\AddressController@edit_address');
+Route::post('delete_address', 'API\AddressController@delete_address');
+
+// category
+Route::post('category_list', 'API\CategoriesController@category_list');
+
+// product
+Route::post('product_list', 'API\ProductsController@product_list');
+// retrive product by category
+Route::post('product_details', 'API\ProductsController@product_details');
+// search product by category and product
+Route::post('product_search', 'API\ProductsController@product_search');
+
+// add to favourite product
+Route::post('add_favourite', 'API\FavouritesController@add_favourite');
+Route::post('favourite_list', 'API\FavouritesController@favourite_list');
+
+
+
+

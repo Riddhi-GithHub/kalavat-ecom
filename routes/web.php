@@ -1,0 +1,42 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('admin/login', 'AuthController@login');
+Route::post('admin/login', 'AuthController@post_login');
+Route::get('admin/logout', 'AuthController@logout');
+
+
+Route::group(['middleware' => 'superadmin'], function () {
+
+	
+
+});
+
+Route::group(['middleware' => 'admin'], function(){
+
+	Route::get('admin/dashboard', 'Backend\DashboardController@dashboard_list');
+
+	Route::get('admin/user', 'Backend\UserController@user_list');
+	Route::get('admin/user/add', 'Backend\UserController@user_add');
+	Route::post('admin/user/add', 'Backend\UserController@user_insert');
+	Route::get('admin/user/edit/{id}', 'Backend\UserController@user_edit');
+	Route::post('admin/user/edit/{id}', 'Backend\UserController@user_update');
+
+	Route::get('admin/user/view/{id}', 'Backend\UserController@user_view');
+	Route::get('admin/user/delete/{id}', 'Backend\UserController@user_delete')->name('user.delete');
+
+});
