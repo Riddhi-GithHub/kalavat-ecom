@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Category;
+use App\Models\category;
 use App\Models\product_images;
 
 class Product extends Model
@@ -21,9 +21,10 @@ class Product extends Model
    {
        return $this->hasMany('App\Models\product_images',"product_id");
    }             
-//    public function cate()
-//    {
-//        return $this->belongsTo('App\Models\Category',"id","id");
-//    } 
+
+   public function cate()
+   {
+       return $this->belongsTo('App\Models\Category',"id","id");
+   } 
    
 }

@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\address;
+use App\Models\ContactUs;
 
 class User extends Authenticatable
 {
@@ -24,6 +25,10 @@ class User extends Authenticatable
     
     public function address(){
         return $this->hasOne(address::class,'user_id');
+    }
+
+    public function contact(){
+        return $this->hasOne(ContactUs::class,'user_id');
     }
     /**
      * The attributes that should be hidden for arrays.

@@ -22,7 +22,6 @@ Route::get('admin/logout', 'AuthController@logout');
 
 Route::group(['middleware' => 'superadmin'], function () {
 
-	
 
 });
 
@@ -38,5 +37,12 @@ Route::group(['middleware' => 'admin'], function(){
 
 	Route::get('admin/user/view/{id}', 'Backend\UserController@user_view');
 	Route::get('admin/user/delete/{id}', 'Backend\UserController@user_delete')->name('user.delete');
+
+	Route::resource('admin/category','Backend\CategoryController');
+	Route::resource('product','Backend\ProductController');
+
+
+	Route::get('admin/contact_us', 'Backend\ContactUsController@contact_us_list');
+	Route::get('admin/contact_us/delete/{id}', 'Backend\ContactUsController@contact_us_delete');
 
 });

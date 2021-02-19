@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Product;
 use App\Models\category;
+use App\Models\product_images;
 use Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -40,9 +41,27 @@ class ProductsController extends BaseController
     public function product_list(Request $request)
     {
         $product = Product::with('images')->get();
-        Storage::url($i->images[0]->images);
+
+        // $images = product_images::where('product_id',$id)->get();
+        // $product = Product::get();
+        // foreach($product as $key=>$value){
+        //     $id= $value->id;
+        // }
+        // $images = product_images::with('products')->where('product_id',$id)->get();
+        // $path = $product[0]->images;
+        // dd($images);
+        // // $i = Storage::exists($path);
+        // $img = Storage::url($path);
 
         if(!empty($product)){
+            foreach($product as $key=>$value){
+                $id= $value->id;
+                $images = product_images::with('products')->where('product_id',$id)->get();
+                $path = $images[0]->images;
+                if(!empty($images)) {
+                    Storage::url($path);
+                }
+            }
             return $this->sendResponse($product,'Product retrieved successfully.');
         }else{
             return $this->sendError('Product not found.'); 
