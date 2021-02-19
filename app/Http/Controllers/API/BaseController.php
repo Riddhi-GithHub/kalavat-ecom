@@ -33,11 +33,19 @@ class BaseController extends Controller
             'message' => $error,
         ];
 
-
         if(!empty($errorMessages)){
             $response['data'] = $errorMessages;
         }
-
         return response()->json($response, $code);
+    }
+
+    // for register
+    public function sendErrors($message)
+    {
+    	$response = [
+            'success' => 0,
+            'message' => $message,
+        ];
+        return response()->json($response, 200);
     }
 }

@@ -72,8 +72,8 @@ class ApiController extends Controller
     {
         // dd($request->mobile);
 		if (!empty($request->mobile)) {
-			// $otp = rand(1111,9999);
-			$otp = 9999;
+			$otp = rand(1111,9999);
+			// $otp = 9999;
             $user = User::where('mobile', '=', trim($request->mobile))->first();
 		     if (!empty($user)) {
 				$user->otp = 9999;

@@ -20,11 +20,12 @@ use Illuminate\Http\Request;
 // success run
 // Route::post('login','ApiController@app_login');
 // Route::post('register','ApiController@app_register');
+// Route::post('resend','ApiController@resend_mobile_otp');
 
-Route::post('resend','ApiController@resend_mobile_otp');
 Route::post('register', 'API\UsersController@register');
-Route::post('login', 'API\UsersController@login');
 Route::post('verification_otp', 'API\UsersController@verification_otp');
+Route::post('resend', 'API\UsersController@resend_mobile_otp');
+Route::post('login', 'API\UsersController@login');
 
 Route::post('edit_account', 'API\UsersController@edit_account');
 Route::post('add_contact', 'API\UsersController@add_contact');
@@ -48,6 +49,7 @@ Route::post('product_search', 'API\ProductsController@product_search');
 // add to favourite product
 Route::post('add_favourite', 'API\FavouritesController@add_favourite');
 Route::post('favourite_list', 'API\FavouritesController@favourite_list');
+Route::post('delete_favourite', 'API\FavouritesController@delete_favourite');
 
 
 

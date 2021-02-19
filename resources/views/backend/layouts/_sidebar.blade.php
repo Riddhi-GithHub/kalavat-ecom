@@ -14,6 +14,19 @@
             <li class="@if ( Request::segment(2)== 'user') active @endif">
                 <a href="{{ url('admin/user') }}"><span class="fa fa-user"></span> <span class="xn-text">User List</span></a>
             </li>
+
+            <li class="@if ( Request::segment(2)== 'user') active @endif">
+                <a href="{{ url('admin/user') }}"><span class="fa fa-list"></span> <span class="xn-text">Category List</span></a>
+            </li>
+
+            <li class="@if ( Request::segment(2)== 'user') active @endif">
+                <a href="{{ url('admin/user') }}"><span class="fa fa-user"></span> <span class="xn-text">Product List</span></a>
+            </li>
+
+            <li class="@if ( Request::segment(2)== 'user') active @endif">
+                <a href="{{ url('admin/user') }}"><span class="fa fa-user"></span> <span class="xn-text">FavouriteProduct List</span></a>
+            </li>
+
             @endif
             
 

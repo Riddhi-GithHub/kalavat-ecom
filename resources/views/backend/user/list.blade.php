@@ -75,6 +75,7 @@
                                 <th>ID</th>
                                 <th>Username</th>
                                 <th>Email</th>
+                                <th>Mobile</th>
                                 <th>Created Date</th>
                                 <th>Action</th>
                             </tr>
@@ -85,6 +86,7 @@
                                 <td> {{ $value->id }}</td>
                                 <td>{{ $value->username }}</td>
                                 <td>{{ $value->email }}</td>
+                                <td>{{ $value->mobile }}</td>
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
 
                                 <td>

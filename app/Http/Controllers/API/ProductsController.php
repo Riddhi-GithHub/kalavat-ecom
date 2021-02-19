@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Product;
 use App\Models\category;
 use Validator;
+use Illuminate\Support\Facades\Storage;
 
 class ProductsController extends BaseController
 {
@@ -14,13 +15,12 @@ class ProductsController extends BaseController
     public function product_details(Request $request)
     {
         $input = $request->all();
-        $validator = Validator::make($input, [
+        $validator = Validator::make($input,[
             'cat_id' => 'required',
         ]);
-
+        
         $cat = category::find($request->input('cat_id'));
-        // $product = Product::where('cat_id',$request->input('cat_id'))->get();
-        $product = Product::where('cat_id',$input['cat_id'])->get();
+        $product = Product::where('cat_id',$request->input('cat_id'))->get();
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors()); 
@@ -39,7 +39,9 @@ class ProductsController extends BaseController
     // retrive all product
     public function product_list(Request $request)
     {
-        $product = Product::get();
+        $product = Product::with('images')->get();
+        Storage::url($i->images[0]->images);
+
         if(!empty($product)){
             return $this->sendResponse($product,'Product retrieved successfully.');
         }else{

@@ -43,7 +43,7 @@ class FavouritesController extends BaseController
         ]);
 
         $product = Product::find($request->input('product_id'));
-        $fav = Favourites::where('product_id',$request->input('product_id'))->get();
+        $fav = Favourites::with('product','product.category')->where('product_id',$request->input('product_id'))->get();
 
         if(!empty($product)){
             if($validator->fails()){
@@ -59,4 +59,35 @@ class FavouritesController extends BaseController
             return $this->sendError('Product not found.', $validator->errors()); 
         }
     }
+
+    public function delete_favourite(Request $request)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input,[
+            'fav_id' => 'required',
+            'product_id' => 'required',
+            ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());       
+        }
+        
+        $product = Product::find($request->input('product_id'));
+        $fav = Favourites::where('fav_id ',$request->fav_id )->where('product_id',$request->product_id)->get();
+          
+        if(!empty($product)){
+            if($validator->fails()){
+                return $this->sendError('Validation Error.', $validator->errors()); 
+            }elseif(!empty($fav)){
+                return $this->sendResponse($fav,'favourite product deleted successfully.');
+            }
+            else{
+                return $this->sendError('favourite item not found.'); 
+            } 
+        }
+        else{
+            return $this->sendError('product not found.'); 
+        }
+    }
+
 }

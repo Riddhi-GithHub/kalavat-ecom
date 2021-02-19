@@ -75,7 +75,7 @@ class UserController extends Controller
         $user_update->is_admin   = $request->is_admin;
         $user_update->status     = $request->status;
         $user_update->save();
-        return redirect('admin/user')->with('success', 'Record updated Successfully!');
+        return redirect('admin/user')->with('warning', 'Record updated Successfully!');
     }
 
     public function user_view($id){
@@ -86,7 +86,6 @@ class UserController extends Controller
 
     public function user_delete($id)
     {
-        // dd('he');
         $data['getuser'] = User::find($id);
         $data['meta_title'] = "Delete User";
         // dd($data['getuser']);
@@ -94,7 +93,7 @@ class UserController extends Controller
         {
             $userDelete = $data['getuser']->update(['is_delete'=>1]);
         }
-        return redirect('admin/user')->with('success', 'Record deleted Successfully!');
+        return redirect('admin/user')->with('error', 'Record deleted Successfully!');
     }
 
 }

@@ -13,20 +13,24 @@ class UsersController extends BaseController
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'mobile' => 'required|min:10|max:10',
+            'mobile' => 'required|unique:users',
         ]);
-
+        // $validator =  $request['mobile'] = $request->mobile;
+        
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return $this->sendErrors('Mobile allready taken');       
         }
+
         $input = $request->all();
         $otp = rand(1111,9999);
         $user = User::create($input);
         $user['mobile'] =  $user->mobile;
-        $user['otp'] =  $otp;
+        $user['otp'] =  9999;
+        $user['token'] =  $user->token;
+        // $user['token'] = 'wedfghjklfghjkl456f435f4ds35f4';
         $user->save();
 
-        return $this->sendResponse($user->toArray(), 'User register successfully.');
+        return $this->sendResponse($user, 'User register successfully.');
     }
 
     public function verification_otp(Request $request)
@@ -52,24 +56,49 @@ class UsersController extends BaseController
         }
     }
 
+    public function resend_mobile_otp(Request $request) 
+    {
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|min:10|max:10',
+        ]);
+
+        $user = User::where('mobile', '=', trim($request->mobile))->first();
+        $otp = rand(1111,9999);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator); 
+        }elseif(!empty($user)) {
+            $user->otp = 9999;
+            $user->update();
+            return $this->sendResponse($user->otp, 'OTP resent successfully!');
+            }
+        else {
+            return $this->sendError('Mobile number not found.');
+        }
+    }
+
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'mobile' => 'required|min:10|max:10',
-            'otp' => 'required|min:4|max:4',
         ]);
 
-        $user = User::where('mobile', '=', ($request->mobile))->where('otp', '=', ($request->otp))->first();
+        $user = User::where('mobile', '=', ($request->mobile))->first();
+        $otp = rand(1111,9999);
+
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors()); 
         }elseif (!empty($user)) {
-                if (!empty($user->otp_verify == 1)) {
-                    return $this->sendResponse($user, 'Login successfully!');
+                if (!empty($user)) {
+                    $user->otp = 9999;
+                    $user->update();
+                    // return $this->sendResponse($user, 'Login successfully!');
+                    return $this->sendResponse($user, 'OTP sent successfully!');
                 } else {
                     return $this->sendError('Otp not Verified.');  
                 }
             } else {
-                return $this->sendError('Mobile number and otp not match.'); 
+                return $this->sendError('Mobile number not match.'); 
         }
     }
 

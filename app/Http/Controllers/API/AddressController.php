@@ -64,14 +64,14 @@ class AddressController extends BaseController
                     $address->zip_code = $input['zip_code'];
                     $address->contry = $input['contry'];
                     $address->save();
-                    return $this->sendResponse($address->toArray(), 'User address updated successfully.');
+                    return $this->sendResponse($address->toArray(), 'User address add successfully.');
                 }
                 else {
-                    return $this->sendError('user not login');  
+                    return $this->sendErrors('user not login');  
                 }
             }
         else {
-            return $this->sendError('user not found');  
+            return $this->sendErrors('user not found');  
         }
     }
 
@@ -104,7 +104,7 @@ class AddressController extends BaseController
                 return $this->sendResponse($address->toArray(), 'User address updated successfully.');
             }
         else {
-            return $this->sendError('user address not found');  
+            return $this->sendErrors('user address not found');  
         }
     }
 
