@@ -31,11 +31,21 @@
                <div class="panel-body">
                  
                   <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">CategoryName <span style="color:red"> *</span></label>
+                     <label class="col-md-2 col-xs-12 control-label">CategoryName </span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
                            <input name="cat_name" value="{{ $getcategory->cat_name }}" placeholder="Category Name" type="text" required class="form-control" />
                            <span style="color:red">{{  $errors->first('cat_name') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Image </span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input type="file" class="form-control" name="image"/>(You can change image)
+                        <img alt="image name" src="{{ url('public/images/category/'.$getcategory->image) }}" style="width:70px; height:70px;" />
                         </div>
                      </div>
                   </div>

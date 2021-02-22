@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\category;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $getrecord = category::orderBy('id', 'desc');
+        $getrecord = Category::orderBy('id', 'desc');
     	// Search Box Start
     	
     	if (!empty($request->id)) {
@@ -54,11 +54,19 @@ class CategoryController extends Controller
     {
         $category = request()->validate([
             'cat_name'         => 'required',
+            'image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-
-        $category = new category;
-        $category->cat_name = strtolower($request->cat_name);
-        $category->save();
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $no = rand(1111,9999);
+                $image_name = time().$no.'.jpg';
+                $i = $image->move(public_path('images/category'), $image_name);
+                $cat = new Category([
+                            'cat_name'      =>  $request->get('cat_name'),
+                            'image'            =>  $image_name,
+                        ]);
+                        $cat->save();
+                } 
         return redirect('admin/category')->with('success', 'Category added Successfully!');
     }
 
@@ -70,7 +78,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $data['getcategory'] = category::find($id);
+        $data['getcategory'] = Category::find($id);
         $data['meta_title'] = "View category";
         return view('backend.category.view', $data);
     }
@@ -83,7 +91,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $data['getcategory'] = category::find($id);
+        $data['getcategory'] = Category::find($id);
         $data['meta_title'] = "Edit Category";
         return view('backend.category.edit', $data);
     }
@@ -97,10 +105,22 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $category_update = category::find($id);
-       
-        $category_update->cat_name   = strtolower($request->cat_name);
+        $validated = $request->validate([
+            'cat_name'         => 'required',
+        ]);
+            $category_update = Category::find($id);
+            $category_update->fill($validated);  
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $no = rand(1111,9999);
+            $image_name = time().$no.'.jpg';
+            $i = $image->move(public_path('images/category'), $image_name);
+            $category_update->image = $image_name;
+        } 
+            // dd($category_update);
         $category_update->save();
+      
         return redirect('admin/category')->with('warning', 'Record updated Successfully!');
     }
 
@@ -112,9 +132,11 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $data['getcategory'] = category::find($id);
+        dd($id);
+        $data['getcategory'] = Category::find($id);
+        $data = Category::find($id);
         $data['meta_title'] = "Delete category";
-        // dd($data['getcategory']);
+        // dd($data);
         $data['getcategory']->delete();
         
         return redirect('admin/category')->with('error', 'Record deleted Successfully!');

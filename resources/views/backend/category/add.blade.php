@@ -39,6 +39,17 @@
                         </div>
                      </div>
                   </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Select Image <span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           {{-- <input name="brand" value="{{ old('brand') }}" placeholder="Product" type="text" class="form-control" /> --}}
+                           <input type="file" class="form-control" name="image"/>(can select only one image)
+                           <span style="color:red">{{  $errors->first('image') }}</span>
+                        </div>
+                     </div>
+                  </div>
                   
                 </div>
                <div class="panel-footer">

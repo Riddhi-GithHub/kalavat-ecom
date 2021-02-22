@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\category;
+use App\Models\Category;
 use App\Models\product_images;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,6 +24,10 @@ class ProductController extends Controller
     	
     	if (!empty($request->id)) {
 			$getrecord = $getrecord->where('id', '=', $request->id);
+		}
+
+        if (!empty($request->cat_name)) {
+			$getrecord = $getrecord->where('cat_name', '=', $request->cat_name);
 		}
 
 		if (!empty($request->product_name)) {
@@ -61,17 +65,18 @@ class ProductController extends Controller
         $product_insert = request()->validate([
             'cat_id'         => 'required',
             'product_name'      => 'required',
-            'description' => 'required|string|max:2000',
-            'price' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
-            'quantity' => 'required|integer|min:1',
-            'offer' => 'required|integer|min:1',
-            'color' => 'required|max:30',
-            'size' => 'required|max:30',
-            'brand' => 'required|max:30',
+            // 'description' => 'required|string|max:2000',
+            // 'price' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
+            // 'quantity' => 'required|integer|min:1',
+            // 'offer' => 'required|integer|min:1',
+            // 'color' => 'required|max:30',
+            // 'size' => 'required|max:30',
+            // 'brand' => 'required|max:30',
             'images' => 'required|max:15000'
+              // 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         
-        $category = category::get();
+        $category = Category::get();
         $cat_id = $request->input('cat_id');
 
         $product_insert = new Product;
@@ -85,17 +90,26 @@ class ProductController extends Controller
         $product_insert->size = $request->size;
         $product_insert->brand = $request->brand;
         $product_insert->save();
-
-        if($request->has('images')) {
-            foreach ($request->images as $image) {
-                product_images::create([
-                    'product_id'        => $product_insert->id,
-                    'images'             =>  $image->store('images/product'),
-                    ]);
+      
+        if($request->hasfile('images')) {
+            foreach($request->file('images') as $file){
+                    // $image_name = time().'-'.$file->getClientOriginalName();
+                    $no = rand(1111,9999);
+                    $image_name = time().$no.'.jpg';
+                    $file->move(public_path('images/product'), $image_name);
+                    // $input['images']=json_encode($data);
+                    $data[] = $image_name;
+                    $image =  product_images::create([
+                        'product_id'        => $product_insert->id,
+                        'images'             => $image_name,
+                        ]);
+                    }
                 }
-            }
-
-        return redirect('product')->with('success', 'Record created Successfully!'); 
+            // store single image
+            $product = Product::find($product_insert->id);
+            $product->img = $data[0];
+            $product->save();
+        return redirect('admin/product')->with('success', 'Record created Successfully!'); 
     }
 
     /**
@@ -106,7 +120,9 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        dd('show');
+        $data['getproduct'] = Product::with('images')->find($id);
+        $data['meta_title'] = "View product";
+        return view('backend.product.view', $data);
     }
 
     /**
@@ -119,7 +135,7 @@ class ProductController extends Controller
     {
         $data['getcategory'] = Category::get();
         $data['getproduct'] = Product::with('category')->find($id);
-        $data['getimages'] = Product_images::find($id);
+        $data['getimages'] = Product_images::where('product_id',$id)->get();
         $data['meta_title'] = "Edit Product";
         return view('backend.product.edit', $data);
 
@@ -149,12 +165,34 @@ class ProductController extends Controller
             'brand' => 'required|max:30',
             // 'images' => 'required|max:15000'
         ]);
-        // $product = Product::find($id);
-        $category = category::get();
+        $category = Category::get();
         $product = Product::with('category')->find($id);
+            
+            if($request->hasfile('images')) {
+                $images_update = Product_images::where('product_id',$id)->delete();
+                // dd($images_update);
+                foreach($request->file('images') as $file){
+                    // $image_name = time().'-'.$file->getClientOriginalName();
+                    $no = rand(1111,9999);
+                    $image_name = time().$no.'.jpg';
+                    $file->move(public_path('images/product'), $image_name);
+                    // $input['images']=json_encode($data);
+                    $data[] = $image_name;
+                        $images_new =  product_images::create([
+                            'product_id'        => $id,
+                            'images'             => $image_name,
+                            ]);
+                    }
+                    $images_new->save();
+                    // store single image
+                    $product = Product::find($id);
+                    $product->img = $data[0];
+                    $product->save();
+                }
+        
         $product->fill($validated);        
         $product->save();
-        return redirect('product')->with('warning', 'Record updated Successfully!');
+        return redirect('admin/product')->with('warning', 'Record updated Successfully!');
     }
 
     /**
@@ -165,6 +203,11 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        dd('delete');
+        // $data['getcategory'] = Category::find($id);
+        $data['getproduct'] = Product::with('images')->find($id);
+        $data['meta_title'] = "Delete category";
+        dd($data['getproduct']);
+        // $data['getcategory']->delete();
+        return redirect('admin/product')->with('error', 'Record deleted Successfully!');
     }
 }

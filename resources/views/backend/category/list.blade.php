@@ -30,10 +30,7 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">Users Search</h3>
                 </div>
-
-
                 <div class="panel-body" style="overflow: auto;">
-
                     <form action="" method="get">
                         <div class="col-md-3">
                             <label>ID</label>
@@ -61,14 +58,13 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">Category List</h3>
                 </div>
-
-
                 <div class="panel-body" style="overflow: auto;">
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>CategoryName</th>
+                                <th>Image</th>
                                 <th>Created Date</th>
                                 <th>Action</th>
                             </tr>
@@ -78,26 +74,25 @@
                             <tr>
                                 <td> {{ $value->id }}</td>
                                 <td>{{ $value->cat_name }}</td>
+                                <td><img alt="image name" src="{{ url('public/images/category/'.$value->image) }}" style="width:70px; height:70px;" /></td>
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
-
                                 <td>
                                     <form method="post" action="{{ route('category.destroy', $value->id) }}">
                                         @csrf 
                                         @method('delete')
                                     {{-- <button class="btn btn-primary btn-rounded btn-sm"
                                         onClick="delete_row('trow_3');"><span class="fa fa-eye"></span></button> --}}
-                                    <a href="{{ route('category.show',$value->id) }}"
-                                        class="btn btn-primary btn-rounded btn-sm"><span class="fa fa-eye"></span></a>
-                                    <a href="{{ route('category.edit',$value->id) }}"
-                                        class="btn btn-success btn-rounded btn-sm"><span
-                                            class="fa fa-pencil"></span></a>
-                                    {{-- <button class="btn btn-danger btn-rounded btn-sm"><span
-                                            class="fa fa-trash-o"></span></button> --}}
-                                    <a href="#" class="btn btn-danger btn-rounded btn-sm mb-control"
-                                        data-box="#mb-delete"><span class="fa fa-trash-o"></span></a>
+                                        <a href="{{ route('category.show',$value->id) }}"
+                                            class="btn btn-primary btn-rounded btn-sm"><span class="fa fa-eye"></span></a>
+                                        <a href="{{ route('category.edit',$value->id) }}"
+                                            class="btn btn-success btn-rounded btn-sm"><span
+                                                class="fa fa-pencil"></span></a>
+                                        {{-- <button class="btn btn-danger btn-rounded btn-sm"><span
+                                                class="fa fa-trash-o"></span></button> --}}
+                                        <a href="#" class="btn btn-danger btn-rounded btn-sm mb-control"
+                                            data-box="#mb-delete"><span class="fa fa-trash-o"></span></a>
 
                                     {{-- Delete Button Start--}}
-                                   
                                     <div class="message-box animated fadeIn" id="mb-delete">
                                         <div class="mb-container">
                                             <div class="mb-middle">
@@ -116,13 +111,12 @@
                                                             <button
                                                             class="btn btn-default btn-lg mb-control-close">No</button>
                                                     </div>
-                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                </form>
                                     {{-- Delete Button End --}}
-
                                 </td>
                             </tr>
                             @empty

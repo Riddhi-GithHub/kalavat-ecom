@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Models\Favourites;
 use Hash;
 use Validator;
 use Auth;
@@ -174,6 +175,48 @@ class ApiController extends Controller
         // }
       
     }
+
+
+
+    public function getFavouriteList(Request $request)
+	{
+	    $result  = array();
+		// $getresult  = Favourites::with('user','product')->where('user_id', '=' ,$request->user_id)->where('product_id', '=' ,$request->product_id)->get();
+		$getresult  = Favourites::with('product')->where('user_id', '=' ,$request->user_id)->get();
+		// $getresult  = Favourites::get();
+		$data = $getresult;
+		$result[] = $data;
+
+		// foreach ($getresult as $value) {
+		// 	$data['fav_id'] 			   = $value->fav_id ;
+			
+		// 	$data['user_id']           = !empty($value->user_id) ? $value->user_id : '';
+		// 	$data['username']           = !empty($value->user->username) ? $value->user->username : '';
+		// 	$data['email']           = !empty($value->user->email) ? $value->user->email : '';
+		// 	$data['mobile']           = !empty($value->user->mobile) ? $value->user->mobile : '';
+
+		// 	$data['product_id']           = !empty($value->product_id ) ? $value->product_id  : '';
+		// 	$data['product_name']           = !empty($value->product->product_name) ? $value->product->product_name : '';
+		// 	$data['img']           = !empty($value->product->img) ? $value->product->img : '';
+		// 	$data['description']           = !empty($value->product->description) ? $value->product->description : '';
+		// 	$data['price']           = !empty($value->product->price) ? $value->product->price : '';
+		// 	$data['quantity']           = !empty($value->product->quantity) ? $value->product->quantity : '';
+		// 	$data['offer']           = !empty($value->product->offer) ? $value->product->offer : '';
+		// 	$data['color']           = !empty($value->product->color) ? $value->product->color : '';
+		// 	$data['size']           = !empty($value->product->size) ? $value->product->size : '';
+		// 	$data['brand']           = !empty($value->product->brand) ? $value->product->brand : '';
+				
+		// 	$result[] = $data;
+		// }
+
+		$json['status'] = 1;
+		$json['message'] = 'Favourite list loaded successfully.';
+		$json['favourite_list'] = $result;
+
+ 	    echo json_encode($json);
+
+	}
+
 
     
    

@@ -46,8 +46,18 @@
                      </div>
                      </div>
 
+                     <div class="form-group">
+                      <label class="col-md-3 control-label">
+                      Category Name :
+                      </label>
+                      <div class="col-sm-5" style="margin-top: 8px;">
+                      <img alt="image name" src="{{ url('public/images/category/'.$getcategory->image) }}" style="width:70px; height:70px;" />
+                       {{-- {{ $getcategory->cat_name }} --}}
+                      </div>
+                      </div>
+
                      <div class="panel-footer">
-                     <a class="btn btn-primary pull-right" href="{{ url('category') }}">Back</a>
+                     <a class="btn btn-primary pull-right" href="{{ url('admin/category') }}">Back</a>
                      </div>
                      </div>
                      </form>

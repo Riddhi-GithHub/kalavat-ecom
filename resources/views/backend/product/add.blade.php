@@ -131,7 +131,7 @@
                         <div class="">
                            {{-- <input name="brand" value="{{ old('brand') }}" placeholder="Product" type="text" class="form-control" /> --}}
                            <input type="file" class="form-control" name="images[]" multiple />(can select more than one)
-                           <span style="color:red">{{  $errors->first('brand') }}</span>
+                           <span style="color:red">{{  $errors->first('images') }}</span>
                         </div>
                      </div>
                   </div>

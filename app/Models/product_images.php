@@ -21,4 +21,16 @@ class product_images extends Model
     {
         return $this->belongsTo('App\Models\Product',"id","id");
     }
+
+    // public function getimageAttribute($value)
+    // {
+    //     $document=array();
+    //     if(!is_null($value)){
+    //         // foreach (json_decode($value) as  $name) {
+    //         foreach ($value as  $name) {
+    //             array_push($document, asset('images/product/'.$name));
+    //         }
+    //     }
+    //     return $document;
+    // }
 }

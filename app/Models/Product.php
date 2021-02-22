@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\category;
+use App\Models\Category;
 use App\Models\product_images;
 
 class Product extends Model
 {
     protected $table = 'products';
     protected $fillable = [
-       'cat_id','product_name','description','images','price','quantity','offer','color','size','brand'
+       'cat_id','product_name','description','img','price','quantity','offer','color','size','brand'
    ];
 
    public function category(){

@@ -126,6 +126,20 @@
                      </div>
                   </div>
 
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Images </span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input type="file" class="form-control" name="images[]" multiple />(You can change image)
+                           @foreach ($getimages as $item)
+                           <img alt="image name" src="{{ url('public/images/product/'.$item->images) }}"
+                           style="width:70px; height:70px;" />
+                         @endforeach
+                        {{-- <img alt="image name" src="{{ url('public/images/product/'.$getproduct->img) }}" style="width:70px; height:70px;" /> --}}
+                        </div>
+                     </div>
+                  </div>
+
                </div>
                <div class="panel-footer">
                   <button class="btn btn-primary pull-right">Update</button>

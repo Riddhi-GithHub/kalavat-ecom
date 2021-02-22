@@ -36,23 +36,21 @@
                             <input type="text" value="{{ Request()->id }}" class="form-control" placeholder="ID"
                                 name="id">
                         </div>
-                        <div class="col-md-3">
+                        {{-- <div class="col-md-3">
                             <label>CategoryName</label>
                             <input type="text" class="form-control" value="{{ Request()->cat_name }}" placeholder="category name"
                                 name="cat_name">
-                        </div>
+                        </div> --}}
                         <div class="col-md-3">
                             <label>ProductName</label>
                             <input type="text" class="form-control" value="{{ Request()->product_name }}" placeholder="product name"
                                 name="product_name">
                         </div>
-
-
                         <div style="clear: both;"></div>
                         <br>
                         <div class="col-md-12">
                             <input type="submit" class="btn btn-primary" value="Search">
-                            <a href="{{ url('product') }}" class="btn btn-success">Reset</a>
+                            <a href="{{ url('admin/product') }}" class="btn btn-success">Reset</a>
                         </div>
                     </form>
                 </div>
@@ -64,6 +62,13 @@
                     <h3 class="panel-title">Product List</h3>
                 </div>
 
+                {{-- @if(!empty(json_decode($manage_project->image)))
+                @foreach(json_decode($manage_project->image) as $image)
+                <div>
+                    <img src="{{asset('/files/profile/'.$image)}}" class="slider-img" />
+                </div>
+                @endforeach
+                @endif --}}
 
                 <div class="panel-body" style="overflow: auto;">
                     <table class="table table-striped table-bordered table-hover">
@@ -74,7 +79,7 @@
                                 <th>ProductName</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
-                                {{-- <th>Image</th> --}}
+                                <th>Image</th>
                                 <th>Created Date</th>
                                 <th>Action</th>
                             </tr>
@@ -87,9 +92,7 @@
                                 <td>{{ $value->product_name }}</td>
                                 <td>{{ $value->price }}</td>
                                 <td>{{ $value->quantity }}</td>
-                                {{-- {{ dd($value->images[0]->images) }} --}}
-                                {{-- <td>{{ Storage::url($value->images[0]->images) }}</td> --}}
-                                {{-- Storage::url($i->images[0]->images) --}}
+                                <td><img alt="image name" src="{{ url('public/images/product/'.$value->img) }}" style="width:70px; height:70px;" /></td>
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
 
                                 <td>

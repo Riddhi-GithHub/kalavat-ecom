@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Product;
-use App\Models\category;
+use App\Models\Category;
 use App\Models\product_images;
 use Validator;
 use Illuminate\Support\Facades\Storage;
@@ -41,28 +41,16 @@ class ProductsController extends BaseController
     public function product_list(Request $request)
     {
         $product = Product::with('images')->get();
-
-        // $images = product_images::where('product_id',$id)->get();
         // $product = Product::get();
-        // foreach($product as $key=>$value){
-        //     $id= $value->id;
-        // }
-        // $images = product_images::with('products')->where('product_id',$id)->get();
-        // $path = $product[0]->images;
-        // dd($images);
-        // // $i = Storage::exists($path);
-        // $img = Storage::url($path);
-
         if(!empty($product)){
-            foreach($product as $key=>$value){
-                $id= $value->id;
-                $images = product_images::with('products')->where('product_id',$id)->get();
-                $path = $images[0]->images;
-                if(!empty($images)) {
-                    Storage::url($path);
-                }
-            }
-            return $this->sendResponse($product,'Product retrieved successfully.');
+            // foreach($product as $key=>$value){
+                // $id= $value->id;
+                // $images = product_images::with('products')->where('product_id',$id)->get();
+                // $path = $images[0]->images;
+                // if(!empty($images)) {
+                //     Storage::url($path);
+                // }
+                return $this->sendResponse($product,'Product retrieved successfully.');
         }else{
             return $this->sendError('Product not found.'); 
         }
@@ -73,7 +61,7 @@ class ProductsController extends BaseController
         $input = $request->all();
         $data = $request->get('data');
 
-        $cat = category::with('product')
+        $cat = Category::with('product')
         // ->where('cat_name', 'like', "%{$data}%")
         ->where('cat_name',$request->input('cat_name'))
         ->get();
@@ -94,5 +82,28 @@ class ProductsController extends BaseController
         }
             return $this->sendError('search item not found.'); 
     }
+
+
+
+    //-------- other way ------------------
+
+    public function getIamgeList(Request $request)
+	{
+	    $result  = array();
+		$getresult  = product_images::where('product_id', '=' ,$request->product_id)->get();
+
+        if(!empty($getresult->count() > 0)){
+            $json['status'] = 1;
+            $json['message'] = 'Image list loaded successfully.';
+            $json['image_list'] = $getresult;
+        }
+        else{
+            $json['status'] = 0;
+            $json['message'] = 'Image list not found.';
+        }
+
+ 	    echo json_encode($json);
+	}
+
     
 }

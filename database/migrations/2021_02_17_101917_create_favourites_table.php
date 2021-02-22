@@ -16,7 +16,10 @@ class CreateFavouritesTable extends Migration
         Schema::create('favourites', function (Blueprint $table) {
             $table->bigIncrements('fav_id');
             $table->unsignedBigInteger('product_id')->nullable();
+            $table->integer('user_id')->nullable();
+
             $table->foreign('product_id')->references('id')->on('products')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

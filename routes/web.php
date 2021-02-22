@@ -39,7 +39,10 @@ Route::group(['middleware' => 'admin'], function(){
 	Route::get('admin/user/delete/{id}', 'Backend\UserController@user_delete')->name('user.delete');
 
 	Route::resource('admin/category','Backend\CategoryController');
-	Route::resource('product','Backend\ProductController');
+
+	Route::resource('admin/product','Backend\ProductController');
+
+	Route::resource('admin/favouriteitem','Backend\FavouriteController');
 
 
 	Route::get('admin/contact_us', 'Backend\ContactUsController@contact_us_list');

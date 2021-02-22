@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 // Route::post('login','ApiController@app_login');
 // Route::post('register','ApiController@app_register');
 // Route::post('resend','ApiController@resend_mobile_otp');
+// Route::post('test','ApiController@getFavouriteList');
 
 Route::post('register', 'API\UsersController@register');
 Route::post('verification_otp', 'API\UsersController@verification_otp');
@@ -46,10 +47,20 @@ Route::post('product_details', 'API\ProductsController@product_details');
 // search product by category and product
 Route::post('product_search', 'API\ProductsController@product_search');
 
+Route::post('image_list', 'API\ProductsController@getIamgeList');
+
+
+
 // add to favourite product
 Route::post('add_favourite', 'API\FavouritesController@add_favourite');
-Route::post('favourite_list', 'API\FavouritesController@favourite_list');
-Route::post('delete_favourite', 'API\FavouritesController@delete_favourite');
+// Route::post('favourite_list', 'API\FavouritesController@favourite_list');
+// Route::post('delete_favourite', 'API\FavouritesController@delete_favourite');    ---incomplete
+
+// other way
+Route::post('favourite_list', 'API\FavouritesController@getFavouriteList');
+Route::post('favourite_product_delete', 'API\FavouritesController@deleteFavouriteProdcut');
+
+
 
 
 
