@@ -24,8 +24,13 @@
             </li>
 
             <li class="@if ( Request::segment(2)== 'favouriteitem') active @endif">
-                <a href="{{ url('admin/favouriteitem') }}"><span class="fa fa-user"></span> <span class="xn-text">FavouriteProduct List</span></a>
+                <a href="{{ url('admin/favouriteitem') }}"><span class="fa fa-user"></span> <span class="xn-text">Favourite Product List</span></a>
             </li>
+
+            <li class="@if ( Request::segment(2)== 'cartitem') active @endif">
+                <a href="{{ url('admin/cartitem') }}"><span class="fa fa-user"></span> <span class="xn-text">Cart List</span></a>
+            </li>
+
             <li class="@if ( Request::segment(2)== 'contact_us') active @endif">
                 <a href="{{ url('admin/contact_us') }}"><span class="fa fa-book"></span> <span class="xn-text">Contact Us List</span></a>
             </li>

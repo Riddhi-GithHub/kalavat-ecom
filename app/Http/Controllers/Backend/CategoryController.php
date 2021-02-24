@@ -79,7 +79,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         $data['getcategory'] = Category::find($id);
-        $data['meta_title'] = "View category";
+        $data['meta_title'] = "Category List";
         return view('backend.category.view', $data);
     }
 
@@ -130,15 +130,17 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    // public function destroy($id)
+    // {
+    //     $getrecord = Category::find($id);
+    //     $getrecord->delete();
+    //     return redirect('admin/category')->with('error', 'Record successfully deleted!');
+    // }
+
+    public function category_delete($id)
     {
-        dd($id);
-        $data['getcategory'] = Category::find($id);
-        $data = Category::find($id);
-        $data['meta_title'] = "Delete category";
-        // dd($data);
-        $data['getcategory']->delete();
-        
-        return redirect('admin/category')->with('error', 'Record deleted Successfully!');
+        $getrecord = Category::find($id);
+        $getrecord->delete();
+        return redirect('admin/category')->with('error', 'Record successfully deleted!');
     }
 }

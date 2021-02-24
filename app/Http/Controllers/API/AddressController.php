@@ -10,8 +10,11 @@ use Validator;
 
 class AddressController extends BaseController
 {
+
+    // --------- using base controller ----start-------
+
    // retrive address by user id
-    public function address_list(Request $request)
+    public function address_list_old_api(Request $request)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -137,5 +140,97 @@ class AddressController extends BaseController
             return $this->sendError('user not found.'); 
         }
     }
+
+    // --------- using base controller ----finish-------
+
+
+
+
+    public function Address_Add(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        if(!empty($user)) {
+            $address = address::create($request->all());
+            $address->save();
+            $json['status'] = 1;
+            $json['message'] = 'Address add Successfully.';
+            $json['user_address'] = $address;
+        }
+
+        else{
+            $json['status'] = 0;
+            $json['message'] = 'User not found.';
+        }
+
+ 	    echo json_encode($json);
+        //$address->amount  = trim($request->amount);
+	}
+
+    public function Address_Edit(Request $request)
+    {
+        $address_update = address::find($request->address_id);
+
+        if(!empty($address_update)) {
+            // $address_update->address_id  = trim($request->address_id);
+            $address_update->user_id  = trim($request->user_id);
+            $address_update->address  = trim($request->address);
+            $address_update->city  = trim($request->city);
+            $address_update->state  = trim($request->state);
+            $address_update->zip_code  = trim($request->zip_code);
+            $address_update->contry  = trim($request->contry);
+            $address_update->save();
+
+            $json['status'] = 1;
+            $json['message'] = 'Address update Successfully.';
+            $json['user_address'] = $address_update;
+        }
+        else{
+            $json['status'] = 0;
+            $json['message'] = 'Address not found.';
+        }
+
+ 	    echo json_encode($json);
+        //$address->amount  = trim($request->amount);
+	}
+
+    public function Address_List(Request $request)
+	{
+	    $result  = array();
+		// $getresult  = Favourites::with('user','product')->where('user_id', '=' ,$request->user_id)->where('product_id', '=' ,$request->product_id)->get();
+		$getresult  = address::where('user_id', '=' ,$request->user_id)->get();
+
+        if(!empty($getresult->count() > 0)){
+            $json['status'] = 1;
+            $json['message'] = 'Address list loaded Successfully.';
+            $json['user_address'] = $getresult;
+        }
+        else{
+            $json['status'] = 0;
+            $json['message'] = 'Address not found.';
+        }
+
+ 	    echo json_encode($json);
+	}
+
+
+    
+    // public function Address_Delete(Type $var = null)
+    // {
+    //     $result  = array();
+	// 	$getresult  = address::where('user_id', '=' ,$request->user_id)->get();
+
+    //     if(!empty($getresult->count() > 0)){
+    //         $json['status'] = 1;
+    //         $json['message'] = 'Address list loaded Successfully.';
+    //         $json['user_address'] = $getresult;
+    //     }
+    //     else{
+    //         $json['status'] = 0;
+    //         $json['message'] = 'Address not found.';
+    //     }
+
+ 	//     echo json_encode($json);
+    // }
 
 }

@@ -39,13 +39,18 @@ Route::group(['middleware' => 'admin'], function(){
 	Route::get('admin/user/delete/{id}', 'Backend\UserController@user_delete')->name('user.delete');
 
 	Route::resource('admin/category','Backend\CategoryController');
+	Route::get('admin/category/delete/{id}', 'Backend\CategoryController@category_delete')->name('category.delete');
 
 	Route::resource('admin/product','Backend\ProductController');
+	Route::get('admin/product/delete/{id}', 'Backend\ProductController@product_delete')->name('product.delete');
 
 	Route::resource('admin/favouriteitem','Backend\FavouriteController');
-
+	Route::get('admin/favouriteitem/delete/{id}', 'Backend\FavouriteController@favouriteitem_delete')->name('favouriteitem.delete');
 
 	Route::get('admin/contact_us', 'Backend\ContactUsController@contact_us_list');
-	Route::get('admin/contact_us/delete/{id}', 'Backend\ContactUsController@contact_us_delete');
+	Route::get('admin/contact_us/delete/{id}', 'Backend\ContactUsController@contact_us_delete')->name('contact.delete');
+
+	Route::resource('admin/cartitem','Backend\CartController');
+	Route::get('admin/cartitem/delete/{id}', 'Backend\CartController@cartitem_delete')->name('cart.delete');
 
 });

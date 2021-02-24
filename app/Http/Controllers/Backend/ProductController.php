@@ -16,22 +16,26 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-    	$getrecord = Product::orderBy('id', 'desc');
-        // $getrecord = category::orderBy('id', 'desc');
-        // $getrecord = Product::with('category')->latest()->get();
+    	//$getrecord = Product::orderBy('id', 'desc');
+        $getrecord = Product::orderBy('id', 'desc')->select('products.*');
+        $getrecord = $getrecord->join('categories', 'products.cat_id', '=', 'categories.id');
     	
     	if (!empty($request->id)) {
-			$getrecord = $getrecord->where('id', '=', $request->id);
+			$getrecord = $getrecord->where('products.id', '=', $request->id);
 		}
 
+		
         if (!empty($request->cat_name)) {
-			$getrecord = $getrecord->where('cat_name', '=', $request->cat_name);
+			$getrecord = $getrecord->where('cat_name', 'like', '%' . $request->cat_name . '%');
 		}
 
 		if (!empty($request->product_name)) {
 			$getrecord = $getrecord->where('product_name', 'like', '%' . $request->product_name . '%');
+		}
+        if (!empty($request->price)) {
+			$getrecord = $getrecord->where('price', '=', $request->price);
 		}
 	
     	// Search Box End
@@ -203,11 +207,19 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        // $data['getcategory'] = Category::find($id);
         $data['getproduct'] = Product::with('images')->find($id);
         $data['meta_title'] = "Delete category";
-        dd($data['getproduct']);
+        $getrecord = Product::find($id);
+        dd($getrecord);
+        $getrecord->delete();
         // $data['getcategory']->delete();
+        return redirect('admin/product')->with('error', 'Record deleted Successfully!');
+    }
+
+    public function product_delete($id)
+    {
+        $getrecord = Product::with('images')->find($id);
+        $getrecord->delete();
         return redirect('admin/product')->with('error', 'Record deleted Successfully!');
     }
 }

@@ -92,61 +92,69 @@
                                 <td>
                                     {{-- <button class="btn btn-primary btn-rounded btn-sm"
                                         onClick="delete_row('trow_3');"><span class="fa fa-eye"></span></button> --}}
-                                    <a href="{{ url('admin/user/view/'.$value->id) }}"
-                                        class="btn btn-primary btn-rounded btn-sm"><span class="fa fa-eye"></span></a>
-                                    <a href="{{ url('admin/user/edit/'.$value->id) }}"
-                                        class="btn btn-success btn-rounded btn-sm"><span
-                                            class="fa fa-pencil"></span></a>
-                                    {{-- <button class="btn btn-danger btn-rounded btn-sm"><span
-                                            class="fa fa-trash-o"></span></button> --}}
-                                    <a href="#" class="btn btn-danger btn-rounded btn-sm mb-control"
-                                        data-box="#mb-delete"><span class="fa fa-trash-o"></span></a>
-
-                                    {{-- Delete Button Start--}}
-                                    <div class="message-box animated fadeIn" id="mb-delete">
-                                        <div class="mb-container">
-                                            <div class="mb-middle">
-                                                <div class="mb-title"><span class="fa fa-trash-o"></span> Delete User?
-                                                </div>
-                                                <div class="mb-content">
-                                                    <p>Are you sure you want to delete user?</p>
-                                                    <p>Press No if youwant to continue work. Press Yes to delete user.
-                                                    </p>
-                                                </div>
-                                                <div class="mb-footer">
-                                                    <div class="pull-right">
-                                                        <a href="{{ url('admin/user/delete/'.$value->id)  }}"
-                                                            class="btn btn-success btn-lg">Yes</a>
-                                                        <button
-                                                            class="btn btn-default btn-lg mb-control-close">No</button>
+                                    <form method="get" action="{{ route('user.delete', $value->id) }}">
+                                        <a href="{{ url('admin/user/view/'.$value->id) }}"
+                                            class="btn btn-primary btn-rounded btn-sm"><span
+                                                class="fa fa-eye"></span></a>
+                                        <a href="{{ url('admin/user/edit/'.$value->id) }}"
+                                            class="btn btn-success btn-rounded btn-sm"><span
+                                                class="fa fa-pencil"></span></a>
+                                        {{-- <button class="btn btn-danger btn-rounded btn-sm"><span
+                                                class="fa fa-trash-o"></span></button> --}}
+                                        {{-- <div class="field is-grouped py-1"> --}}
+                                            <button type="submit" class="btn btn-danger btn-rounded btn-sm"
+                                                onclick="return confirm('Sure Want Delete?')"><span
+                                                    class="fa fa-trash-o"></span></button>
+                                            <div class="modal" id="mdelete" role="dialog" aria-labelledby="moddelete">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="moddelete">Confirm Delete</h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Are you sure you want to delete?</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" name="txtid" id="txtid" />
+                                                            <input type="text" name="uid" id="uid" />
+                                                            <button type="button" class="btn btn-danger "
+                                                                data-dismiss="modal">No</button>
+                                                            <span class="text-right">
+                                                                <button type="button"
+                                                                    class="btn btn-primary btndelete">Yes</button>
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    {{-- Delete Button End --}}
-
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="100%">Record not found.</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                    <div style="float: right">
-                        {{ $getrecord->appends(Illuminate\Support\Facades\Input::except('page'))->links() }}
-                    </div>
+                                    {{-- </div> --}}
+                                    </form>
+                </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="100%">Record not found.</td>
+                </tr>
+                @endforelse
+                </tbody>
+                </table>
+                <div style="float: right">
+                    {{ $getrecord->appends(Illuminate\Support\Facades\Input::except('page'))->links() }}
                 </div>
-
-
             </div>
-            <!-- END BASIC TABLE SAMPLE -->
-            {{-- End --}}
+
 
         </div>
+        <!-- END BASIC TABLE SAMPLE -->
+        {{-- End --}}
+
     </div>
+</div>
 </div>
 
 

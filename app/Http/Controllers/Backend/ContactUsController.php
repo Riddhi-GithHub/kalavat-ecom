@@ -35,7 +35,7 @@ class ContactUsController extends Controller
 
     public function contact_us_delete($id)
     {
-    	$getrecord = ContactUs::find($id);
+        $getrecord = ContactUs::find($id);
         $getrecord->delete();
         return redirect('admin/contact_us')->with('error', 'Record successfully deleted!');
     }

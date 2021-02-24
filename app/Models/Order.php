@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
 use App\User;
 
-class Cart extends Model
+class Order extends Model
 {
-    protected $table="carts";
-    protected $primaryKey="cart_id";
-    protected $fillable=['cart_id','product_id','user_id','quantity','total_price','status'];
+    protected $table="orders";
+    protected $primaryKey="order_id";
+    protected $fillable=['order_id','product_id','user_id','tracking_num','quantity','total_price','delivery_date','status'];
     /**
      * The attributes that should be hidden for arrays.
      *

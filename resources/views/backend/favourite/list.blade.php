@@ -21,37 +21,32 @@
             {{-- start --}}
             @include('message')
             {{-- Add Menu --}}
-
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Favourite  Search</h3>
                 </div>
-
-
                 <div class="panel-body" style="overflow: auto;">
-
                     <form action="" method="get">
                         <div class="col-md-3">
                             <label>ID</label>
-                            <input type="text" value="{{ Request()->id }}" class="form-control" placeholder="ID"
-                                name="id">
+                            <input type="text" value="{{ Request()->fav_id }}" class="form-control" placeholder="ID"
+                                name="fav_id">
                         </div>
                         <div class="col-md-3">
-                            <label>UserName</label>
-                            <input type="text" class="form-control" value="{{ Request()->title }}" placeholder="Title"
-                                name="title">
+                            <label>User Name</label>
+                            <input type="text" class="form-control" value="{{ Request()->username }}" placeholder="User Name"
+                                name="username">
                         </div>
                         <div class="col-md-3">
-                            <label>ProductName</label>
-                            <input type="text" class="form-control" value="{{ Request()->description }}"
-                                placeholder="Description" name="description">
+                            <label>Product Name</label>
+                            <input type="text" class="form-control" value="{{ Request()->product_name }}"
+                                placeholder="Product Name" name="product_name">
                         </div>
-
                         <div style="clear: both;"></div>
                         <br>
                         <div class="col-md-12">
                             <input type="submit" class="btn btn-primary" value="Search">
-                            <a href="{{ url('admin/Favourite_us') }}" class="btn btn-success">Reset</a>
+                            <a href="{{ url('admin/favouriteitem') }}" class="btn btn-success">Reset</a>
                         </div>
                     </form>
                 </div>
@@ -59,7 +54,7 @@
             <!-- START BASIC TABLE SAMPLE -->
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Contact Us List</h3>
+                    <h3 class="panel-title">Favourite List</h3>
                 </div>
                 <div class="panel-body" style="overflow: auto;">
                     <table class="table table-striped table-bordered table-hover">
@@ -69,7 +64,7 @@
                                 <th>UserName</th>
                                 <th>ProductName</th>
                                 <th>Created Date</th>
-                                <th>Action</th>
+                                {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -79,49 +74,51 @@
                                 <td> {{ $value->user->username }}</td>
                                 <td>{{ $value->product->product_name }}</td>
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
-                                <td>
-                                    <a href="#" class="mb-control btn btn-danger btn-rounded btn-sm"
-                                        data-box="#con_mb_delete"><span class="fa fa-trash-o"></span></a>
-
-                                    {{-- Delete Button Start--}}
-                                    <div class="message-box animated fadeIn" id="con_mb_delete">
-                                        <div class="mb-container">
-                                            <div class="mb-middle">
-                                                <div class="mb-title"><span class="fa fa-trash-o"></span> Delete ?</div>
-                                                <div class="mb-content">
-                                                    <p>Are you sure you want to delete?</p>
-                                                    <p>Press No if youwant to continue work. Press Yes to delete current
-                                                        contact.</p>
-                                                </div>
-                                                <div class="mb-footer">
-                                                    <div class="pull-right">
-                                                        <a href="{{ url('admin/contact_us/delete/'.$value->id) }}"
-                                                            class="btn btn-success btn-lg">Yes</a>
-                                                        <button
-                                                            class="btn btn-default btn-lg mb-control-close">No</button>
+                                {{-- <td>
+                                    <form method="get" action="{{ route('favouriteitem.delete', $value->fav_id) }}">
+                                        <button type="submit" class="btn btn-danger btn-rounded btn-sm"
+                                            onclick="return confirm('Sure Want Delete?')"><span
+                                                class="fa fa-trash-o"></span></button>
+                                        <div class="modal" id="mdelete" role="dialog" aria-labelledby="moddelete">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="moddelete">Confirm Delete</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to delete?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="hidden" name="txtid" id="txtid" />
+                                                        <input type="text" name="uid" id="uid" />
+                                                        <button type="button" class="btn btn-danger "
+                                                            data-dismiss="modal">No</button>
+                                                        <span class="text-right">
+                                                            <button type="button"
+                                                                class="btn btn-primary btndelete">Yes</button>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    {{-- Delete Button End --}}
-
-                                </td>
+                                    </form>
+                                </td> --}}
                             </tr>
                             @empty
                             <tr>
                                 <td colspan="100%">Record not found.</td>
-
                             </tr>
                             @endforelse
                         </tbody>
-
                     </table>
                     <div style="float: right">
                         {{ $getrecord->appends(Illuminate\Support\Facades\Input::except('page'))->links() }}
                     </div>
                 </div>
-
             </div>
             <!-- END BASIC TABLE SAMPLE -->
 

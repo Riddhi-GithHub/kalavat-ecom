@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Favourites;
+use App\User;
 use Validator;
 use Str;
 use File;
@@ -65,54 +66,51 @@ class FavouritesController extends BaseController
         }
     }
 
-    // public function delete_favourite(Request $request)
-    // {
-    //     $input = $request->all();
-    //     $validator = Validator::make($input,[
-    //         'fav_id' => 'required',
-    //         'product_id' => 'required',
-    //         ]);
-
-    //     if($validator->fails()){
-    //         return $this->sendError('Validation Error.', $validator->errors());       
-    //     }
-        
-    //     $product = Product::find($request->input('product_id'));
-    //     $fav = Favourites::where('fav_id ',$request->fav_id )->where('product_id',$request->product_id)->get();
-          
-    //     if(!empty($product)){
-    //         if($validator->fails()){
-    //             return $this->sendError('Validation Error.', $validator->errors()); 
-    //         }elseif(!empty($fav)){
-    //             return $this->sendResponse($fav,'favourite product deleted successfully.');
-    //         }
-    //         else{
-    //             return $this->sendError('favourite item not found.'); 
-    //         } 
-    //     }
-    //     else{
-    //         return $this->sendError('product not found.'); 
-    //     }
-    // }
-
     // --------- using base controller ----finish-------
 
 
 
+    public function AddFavouriteProduct(Request $request)
+	{
+        $getdata['product'] = Product::find($request->input('product_id'));
+        $getdata['user'] = User::find($request->input('user_id'));
+        // $getdata['favourite']  = Favourites::where('status',0)->where('product_id', '=' ,$request->product_id)->get();
+        
+        // $getresult  = Favourites::where('status',0)
+        // ->where('product_id', '=' ,$request->product_id)
+        // ->where('user_id', '=' ,$request->user_id)->get();
+
+        if(!empty($getdata)){
+            $getdata = Favourites::create($request->all());
+            $getdata->status = 1;
+            $getdata->save();
+            $json['status'] = 1;
+            $json['message'] = 'Favourite Product add Successfully.';
+            $json['favourite_list'] = $getdata;
+        }
+        else{
+            $json['status'] = 0;
+            $json['message'] = 'Product or User not found.';
+        }
+
+ 	    echo json_encode($json);
+	}
+
     public function getFavouriteList(Request $request)
 	{
-	    $result  = array();
+	    // $result  = array();
 		// $getresult  = Favourites::with('user','product')->where('user_id', '=' ,$request->user_id)->where('product_id', '=' ,$request->product_id)->get();
-		$getresult  = Favourites::with('product')->where('user_id', '=' ,$request->user_id)->get();
+		// $getresult  = Favourites::with('product')->where('user_id', '=' ,$request->user_id)->get();
+        $getresult  = Favourites::with('product')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
 
         if(!empty($getresult->count() > 0)){
             $json['status'] = 1;
-            $json['message'] = 'Favourite list loaded successfully.';
+            $json['message'] = 'Favourite list loaded Successfully.';
             $json['favourite_list'] = $getresult;
         }
         else{
             $json['status'] = 0;
-            $json['message'] = 'Favourite list not found.';
+            $json['message'] = 'Favourite Product not found.';
         }
 
  	    echo json_encode($json);
@@ -120,21 +118,20 @@ class FavouritesController extends BaseController
 
     public function deleteFavouriteProdcut(Request $request)
     {
-        $data = Favourites::find($request->fav_id);
-        $recode_update = Favourites::where('fav_id', '=' ,$request->fav_id)->where('product_id', '=' ,$request->product_id)->get();
+        // $data = Favourites::find($request->fav_id);
+		$data  = Favourites::where('status',1)->find($request->fav_id);
+        // $recode_update = Favourites::where('fav_id', '=' ,$request->fav_id)->where('product_id', '=' ,$request->product_id)->get();
 		// $recode_update  = Favourites::with('product')->where('product_id', '=' ,$request->product_id)->where('fav_id', '=' ,$request->fav_id)->get();
-        // dd($recode_update);
 
-        if(!empty($getresult->count() > 0)){
-            if($data->status == 0)
+            if(!empty($data))
             {
                 // $recode_update->status  = trim($request->status);
-                $recode_update->status  = '1';
-                $recode_update->save();
+                $data->status  = '0';
+                $data->save();
                 $json['status'] = 1;
-                $json['message'] = 'Favourite prodcut deleted successfully';
+                $json['message'] = 'Favourite prodcut deleted Successfully';
             }
-        }else{
+        else{
                 $json['status'] = 0;
                 $json['message'] = 'Product not found.';
             }

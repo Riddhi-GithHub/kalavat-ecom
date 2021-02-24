@@ -32,9 +32,9 @@ Route::post('edit_account', 'API\UsersController@edit_account');
 Route::post('add_contact', 'API\UsersController@add_contact');
 
 // address
-Route::post('address_list', 'API\AddressController@address_list');
-Route::post('add_address', 'API\AddressController@add_address');
-Route::post('edit_address', 'API\AddressController@edit_address');
+// Route::post('address_list', 'API\AddressController@address_list');
+// Route::post('add_address', 'API\AddressController@add_address');
+// Route::post('edit_address', 'API\AddressController@edit_address');
 Route::post('delete_address', 'API\AddressController@delete_address');
 
 // category
@@ -52,16 +52,35 @@ Route::post('image_list', 'API\ProductsController@getIamgeList');
 
 
 // add to favourite product
-Route::post('add_favourite', 'API\FavouritesController@add_favourite');
+// Route::post('add_favourite', 'API\FavouritesController@add_favourite');
 // Route::post('favourite_list', 'API\FavouritesController@favourite_list');
 // Route::post('delete_favourite', 'API\FavouritesController@delete_favourite');    ---incomplete
 
-// other way
+
+
+// ------------------  other way       ----------------
+# Favourite
+Route::post('add_favourite', 'API\FavouritesController@AddFavouriteProduct');
 Route::post('favourite_list', 'API\FavouritesController@getFavouriteList');
 Route::post('favourite_product_delete', 'API\FavouritesController@deleteFavouriteProdcut');
 
+# Address
+Route::post('add_address', 'API\AddressController@Address_Add');
+Route::post('edit_address', 'API\AddressController@Address_Edit');
+// Route::post('delete_address', 'API\AddressController@Address_Delete');
+Route::post('address_list', 'API\AddressController@Address_List');
 
 
+# Cart
+Route::post('add_to_cart', 'API\CartController@addProductToCart');
+Route::post('cart_list', 'API\CartController@getCartList');
+Route::post('delete_to_cart', 'API\CartController@deleteCartProdcut');
+
+#Order
+Route::post('add_order', 'API\OrdersController@AddOrder');
+Route::post('edit_order', 'API\OrdersController@EditOrder');
+Route::post('order_list', 'API\OrdersController@ListOrder');
+Route::post('delete_order', 'API\OrdersController@DeleteOrder');
 
 
 

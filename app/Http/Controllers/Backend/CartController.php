@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Backend;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Favourites;
+use App\Models\Cart;
 
-class FavouriteController extends Controller
+
+class CartController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,22 +16,12 @@ class FavouriteController extends Controller
      */
     public function index(Request $request)
     {
-        // $getrecord = Favourites::get();
-        // $getrecord = Favourites::orderBy('fav_id', 'desc');
-    	// $getrecord = Favourites::orderBy('fav_id', 'desc')->where('status', '=', 1);
-       
-        // $getrecord = Favourites::orderBy('fav_id', 'desc')->select('favourites.*')->where('status', '=', 1);
-        // $getrecord = $getrecord->join('products', 'favourites.product_id', '=', 'products.id');
+        $getrecord = Cart::orderBy('cart_id', 'desc')->select('carts.*')->where('status', '=', 1);
+        $getrecord = $getrecord->join('products', 'carts.product_id', '=', 'products.id');
+        // $getrecord = $getrecord->join('users', 'carts.user_id', '=', 'users.id');
 
-        $getrecord = Favourites::orderBy('fav_id', 'desc')->select('favourites.*');
-        $getrecord = $getrecord->join('users', 'favourites.user_id', '=', 'users.id');
-        $getrecord = $getrecord->join('products', 'favourites.product_id', '=', 'products.id');
-
-        // $getrecord = Product::orderBy('id', 'desc')->select('products.*');
-        // $getrecord = $getrecord->join('categories', 'products.cat_id', '=', 'categories.id');
-        
-    	if (!empty($request->fav_id)) {
-			$getrecord = $getrecord->where('fav_id', '=', $request->fav_id);
+    	if (!empty($request->cart_id)) {
+			$getrecord = $getrecord->where('cart_id', '=', $request->cart_id);
 		}
 
         if (!empty($request->username)) {
@@ -40,13 +31,13 @@ class FavouriteController extends Controller
 		if (!empty($request->product_name)) {
 			$getrecord = $getrecord->where('product_name', 'like', '%' . $request->product_name . '%');
 		}
-	
     	// Search Box End
     	$getrecord = $getrecord->paginate(40);
     	$data['getrecord'] = $getrecord;
-    	$data['meta_title'] = 'Favourite List';
-    	return view('backend.favourite.list', $data);  
+    	$data['meta_title'] = 'Cart List';
+    	return view('backend.cart.list', $data);  
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -114,17 +105,15 @@ class FavouriteController extends Controller
         //
     }
 
-
-    public function favouriteitem_delete($id)
+    public function cartitem_delete($id)
     {
-        $data['getfavouriteproduct'] = Favourites::find($id);
-        $data['meta_title'] = "Delete Favourite Product";
+        $data['getcart'] = Favourites::find($id);
+        $data['meta_title'] = "Delete Cart Product";
         // dd($data['getfavouriteproduct']);
-        if(!($data['getfavouriteproduct']->status == '0'))
+        if(!($data['getcart']->status == '0'))
         {
-            $favDelete = $data['getfavouriteproduct']->update(['status'=>0]);
+            $favDelete = $data['getcart']->update(['status'=>0]);
         }
         return redirect('admin/favouriteitem')->with('error', 'Record deleted Successfully!');
     }
 }
-

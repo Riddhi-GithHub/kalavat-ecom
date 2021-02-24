@@ -39,8 +39,8 @@
                         </div>
                         <div class="col-md-3">
                             <label>CategoryName</label>
-                            <input type="text" class="form-control" value="{{ Request()->cat_name }}" placeholder="category name"
-                                name="cat_name">
+                            <input type="text" class="form-control" value="{{ Request()->cat_name }}"
+                                placeholder="category name" name="cat_name">
                         </div>
 
                         <div style="clear: both;"></div>
@@ -74,70 +74,67 @@
                             <tr>
                                 <td> {{ $value->id }}</td>
                                 <td>{{ $value->cat_name }}</td>
-                                <td><img alt="image name" src="{{ url('public/images/category/'.$value->image) }}" style="width:70px; height:70px;" /></td>
+                                <td><img alt="image name" src="{{ url('public/images/category/'.$value->image) }}"
+                                        style="width:70px; height:70px;" /></td>
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
                                 <td>
-                                    <form method="post" action="{{ route('category.destroy', $value->id) }}">
-                                        @csrf 
-                                        @method('delete')
-                                    {{-- <button class="btn btn-primary btn-rounded btn-sm"
-                                        onClick="delete_row('trow_3');"><span class="fa fa-eye"></span></button> --}}
+                                    <form method="get" action="{{ route('category.delete', $value->id) }}">
                                         <a href="{{ route('category.show',$value->id) }}"
-                                            class="btn btn-primary btn-rounded btn-sm"><span class="fa fa-eye"></span></a>
+                                            class="btn btn-primary btn-rounded btn-sm"><span
+                                                class="fa fa-eye"></span></a>
                                         <a href="{{ route('category.edit',$value->id) }}"
                                             class="btn btn-success btn-rounded btn-sm"><span
                                                 class="fa fa-pencil"></span></a>
-                                        {{-- <button class="btn btn-danger btn-rounded btn-sm"><span
-                                                class="fa fa-trash-o"></span></button> --}}
-                                        <a href="#" class="btn btn-danger btn-rounded btn-sm mb-control"
-                                            data-box="#mb-delete"><span class="fa fa-trash-o"></span></a>
-
-                                    {{-- Delete Button Start--}}
-                                    <div class="message-box animated fadeIn" id="mb-delete">
-                                        <div class="mb-container">
-                                            <div class="mb-middle">
-                                                <div class="mb-title"><span class="fa fa-trash-o"></span> Delete Category?
-                                                </div>
-                                                <div class="mb-content">
-                                                    <p>Are you sure you want to delete category?</p>
-                                                    <p>Press No if youwant to continue work. Press Yes to delete category.
-                                                    </p>
-                                                </div>
-                                                <div class="mb-footer">
-                                                    <div class="pull-right">
-                                                        {{-- <a href="{{ route('category.destroy', $value->id) }}"
-                                                            class="btn btn-success btn-lg">Yes</a> --}}
-                                                            <button class="btn btn-success btn-lg">Yes</button>
-                                                            <button
-                                                            class="btn btn-default btn-lg mb-control-close">No</button>
+                                        <button type="submit" class="btn btn-danger btn-rounded btn-sm"
+                                            onclick="return confirm('Sure Want Delete?')"><span
+                                                class="fa fa-trash-o"></span></button>
+                                        <div class="modal" id="mdelete" role="dialog" aria-labelledby="moddelete">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="moddelete">Confirm Delete</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to delete?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="hidden" name="txtid" id="txtid" />
+                                                        <input type="text" name="uid" id="uid" />
+                                                        <button type="button" class="btn btn-danger "
+                                                            data-dismiss="modal">No</button>
+                                                        <span class="text-right">
+                                                            <button type="button"
+                                                                class="btn btn-primary btndelete">Yes</button>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                    {{-- Delete Button End --}}
+                                    </form>
                                 </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="100%">Record not found.</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                    <div style="float: right">
-                        {{ $getrecord->appends(Illuminate\Support\Facades\Input::except('page'))->links() }}
-                    </div>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="100%">Record not found.</td>
+                </tr>
+                @endforelse
+                </tbody>
+                </table>
+                <div style="float: right">
+                    {{ $getrecord->appends(Illuminate\Support\Facades\Input::except('page'))->links() }}
                 </div>
-
-
             </div>
-            <!-- END BASIC TABLE SAMPLE -->
-            {{-- End --}}
+
 
         </div>
+        <!-- END BASIC TABLE SAMPLE -->
+        {{-- End --}}
+
     </div>
+</div>
 </div>
 
 
