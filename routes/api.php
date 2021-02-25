@@ -28,6 +28,7 @@ Route::post('verification_otp', 'API\UsersController@verification_otp');
 Route::post('resend', 'API\UsersController@resend_mobile_otp');
 Route::post('login', 'API\UsersController@login');
 
+Route::post('add_account', 'API\UsersController@add_account');
 Route::post('edit_account', 'API\UsersController@edit_account');
 Route::post('add_contact', 'API\UsersController@add_contact');
 
@@ -39,6 +40,8 @@ Route::post('delete_address', 'API\AddressController@delete_address');
 
 // category
 Route::post('category_list', 'API\CategoriesController@category_list');
+// sub category
+Route::post('subcategory_list', 'API\CategoriesController@subcategory_list');
 
 // product
 Route::post('product_list', 'API\ProductsController@product_list');
@@ -81,6 +84,9 @@ Route::post('add_order', 'API\OrdersController@AddOrder');
 Route::post('edit_order', 'API\OrdersController@EditOrder');
 Route::post('order_list', 'API\OrdersController@ListOrder');
 Route::post('delete_order', 'API\OrdersController@DeleteOrder');
+
+# Order Details
+Route::post('add_cart_to_order', 'API\OrderDetailsController@Add_cart_to_Order');
 
 
 

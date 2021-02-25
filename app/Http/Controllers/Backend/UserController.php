@@ -15,6 +15,9 @@ class UserController extends Controller
     	$getrecord = User::orderBy('id', 'desc')->where('is_delete', '=', 0);
         // $getrecord = User::orderBy('id', 'desc')->whereIn('is_admin',  array('1','2'))->where('is_delete','=',0);
     	// Search Box Start
+
+        // $getrecord = Product::orderBy('id', 'desc')->select('products.*');
+        // $getrecord = $getrecord->join('categories', 'products.cat_id', '=', 'categories.id');
     	
     	if (!empty($request->id)) {
 			$getrecord = $getrecord->where('id', '=', $request->id);

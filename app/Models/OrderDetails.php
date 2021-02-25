@@ -1,16 +1,16 @@
 <?php
 
 namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
 use App\User;
 
-class Cart extends Model
+use Illuminate\Database\Eloquent\Model;
+
+class OrderDetails extends Model
 {
-    protected $table="carts";
-    protected $primaryKey="cart_id";
-    protected $fillable=['cart_id','product_id','user_id','color','size','quantity','total_price','status'];
+    protected $table="order_details";
+    protected $primaryKey="order_detail_id";
+    protected $fillable=['order_detail_id','user_id','order_product_id','quantity','total_order_price','delivery_date','order_status'];
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -21,7 +21,7 @@ class Cart extends Model
     ];
 
      public function product(){
-        return $this->belongsTo(Product::class,'product_id');
+        return $this->belongsTo(Product::class,'order_product_id');
     }
 
     public function user(){

@@ -96,12 +96,12 @@ class FavouritesController extends BaseController
                 }
             }
             else{
-            $json['status'] = 0;
+            $json['success'] = 0;
             $json['message'] = 'User Or Product Not Found!';
             }
         }
         else{
-        $json['status'] = 0;
+        $json['success'] = 0;
         $json['message'] = 'Fill user_id product_id and status';
         }
         echo json_encode($json);
@@ -112,7 +112,7 @@ class FavouritesController extends BaseController
 	    // $result  = array();
 		// $getresult  = Favourites::with('user','product')->where('user_id', '=' ,$request->user_id)->where('product_id', '=' ,$request->product_id)->get();
 		// $getresult  = Favourites::with('product')->where('user_id', '=' ,$request->user_id)->get();
-        $getresult  = Favourites::with('product')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
+        $getresult  = Favourites::with('product','product.images')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
 
         if(!empty($getresult->count() > 0)){
             $json['success'] = 1;

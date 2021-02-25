@@ -25,7 +25,7 @@ class OrdersController extends Controller
             $add_data->save();
             $json['status'] = 1;
             $json['message'] = 'Favourite Product add Successfully.';
-            $json['favourite_list'] = $add_data;
+            $json['order_list'] = $add_data;
         }
         else{
             $json['status'] = 0;
@@ -42,7 +42,7 @@ class OrdersController extends Controller
         if(!empty($getresult->count() > 0)){
             $json['status'] = 1;
             $json['message'] = 'Order list loaded Successfully.';
-            $json['favourite_list'] = $getresult;
+            $json['order_list'] = $getresult;
         }
         else{
             $json['status'] = 0;

@@ -29,8 +29,6 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">Contact Us Search</h3>
                 </div>
-
-
                 <div class="panel-body" style="overflow: auto;">
 
                     <form action="" method="get">

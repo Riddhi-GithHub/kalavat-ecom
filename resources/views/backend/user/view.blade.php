@@ -28,6 +28,31 @@
                      <h3 class="panel-title">View User</h3>
                      </div>
                      <div class="panel-body">
+
+                      {{-- <div class="form-group">
+                        <label class="col-md-3 control-label">
+                        Image :
+                        </label>
+                        <div class="col-sm-5" style="margin-top: 8px;">
+                        <img alt="image name" src="{{ url('public/images/user/'.$getuser->image) }}" style="width:70px; height:70px;" />
+                        </div>
+                        </div> --}}
+
+
+                        <div class="form-group">
+                          <label class="col-md-3 control-label">
+                          Image :
+                          </label>
+                          <div class="col-sm-5" style="margin-top: 8px;">
+                        @empty($getuser->image)
+                        {{-- <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" style="width:70px; height:70px;"> --}}
+                        <img src="{{ url('public/images/blank-profile.png') }}" alt="Admin" class="rounded-circle" style="width:70px; height:70px;">
+                        @else
+                        <img alt="image name" src="{{ url('public/images/user/'.$getuser->image) }}" class="rounded-circle" style="width:70px; height:70px;" />
+                        @endempty
+                      </div>
+                    </div>
+
                      <div class="form-group">
                      <label class="col-md-3 control-label">
                      User ID :
@@ -54,6 +79,58 @@
                        {{ $getuser->email }}
                       </div>
                       </div>
+
+                      <div class="form-group">
+                        <label class="col-md-3 control-label">
+                        Mobile :
+                        </label>
+                        <div class="col-sm-5" style="margin-top: 8px;">
+                         {{ $getuser->mobile }}
+                        </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-md-3 control-label">
+                          DOB :
+                          </label>
+                          <div class="col-sm-5" style="margin-top: 8px;">
+                           {{ $getuser->dob }}
+                          </div>
+                          </div>
+
+                        <div class="form-group">
+                          <label class="col-md-3 control-label">
+                          Gender :
+                          </label>
+                          <div class="col-sm-5" style="margin-top: 8px;">
+                            {{ $getuser->gender }}
+                          </div>
+                          </div>
+
+                        <div class="form-group">
+                          <label class="col-md-3 control-label">
+                          Address :
+                          </label>
+                          <div class="col-sm-5" style="margin-top: 8px;">
+                            {{ $getuser->address->address }} , {{ $getuser->address->city }},
+                            {{ $getuser->address->state }},  {{ $getuser->address->contry }}, 
+                            {{ $getuser->address->zip_code }}.
+                          </div>
+                          </div>
+
+                          {{-- <div class="form-group">
+                            <label class="col-md-3 control-label">
+                            Address :
+                            </label>
+                            <div class="col-sm-5" style="margin-top: 8px;">
+                              @foreach ($getuser->address as $item)
+                              {{ dd($item->city) }}
+                              {{ $item->address }} , {{ $item->city }},
+                              {{ $item->contry }}, {{ $item->state }},
+                              {{ $item->zip_code }}.
+                              @endforeach
+                            </div>
+                            </div> --}}
                      
                       <div class="form-group">
                         <label class="col-md-3 control-label">
@@ -65,6 +142,7 @@
                           @endif
                         </div>
                         </div>
+
                      </div>
                      <div class="panel-footer">
                      <a class="btn btn-primary pull-right" href="{{ url('admin/user') }}">

@@ -58,29 +58,26 @@ class ProductsController extends BaseController
 
     public function product_search(Request $request)
     {
-        $input = $request->all();
-        $data = $request->get('data');
+        $data = Category::with('product')->where('cat_name', 'like', '%' . $request->cat_name . '%')->get();
 
-        $cat = Category::with('product')
-        // ->where('cat_name', 'like', "%{$data}%")
-        ->where('cat_name',$request->input('cat_name'))
-        ->get();
-
-        $product = Product::with('category')
-        // ->where('product_name', 'like', "%{$data}%")
-        ->where('product_name',$request->input('product_name'))
-        ->get();
-
-        // $cat = category::where('cat_name',$request->input('cat_name'));
-        // $product = Product::where('product_name',$input['product_name'])->get();
-        // dd($product);
-
-        if(!empty($cat->count() > 0)){
-            return $this->sendResponse_product($cat,'search category item get successfully.');
-        }elseif(!empty($product->count() > 0)){
-            return $this->sendResponse_product($product,'search product item get successfully.');
+        if (!empty($request->cat_name)) {
+            if(!empty($data->count() > 0)){
+                return $this->sendResponse_product($data,'Search Category get Successfully.');
+                }
+            else{
+                return $this->sendError('Search Category Not Found.'); 
+            }
         }
-            return $this->sendError('search item not found.'); 
+
+        if (!empty($request->product_name)) {
+            $product = Product::with('category,images')->where('product_name', 'like', '%' . $request->product_name . '%')->get();
+            if(!empty($product->count() > 0)){
+                return $this->sendResponse_product($product,'Search Category get Successfully.');
+            }
+            else{
+                return $this->sendError('Search Product Not Found.'); 
+            }
+        }
     }
 
 

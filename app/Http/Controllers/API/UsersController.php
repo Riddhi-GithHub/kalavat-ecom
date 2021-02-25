@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\User;
+use App\Models\address;
 use App\Models\ContactUs;
 use Validator;
 
@@ -153,6 +154,58 @@ class UsersController extends BaseController
         }
         else {
             return $this->sendError('user not found');  
+        }
+    }
+
+    public function add_account(Request $request)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'fullname' => 'required',
+            'email' => 'required|unique:users',
+            'mobile' => 'required',
+            'dob' => 'required|date_format:d/m/Y',
+            'gender' => 'required',
+            'image' => 'required',
+
+            'address' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zip_code' => 'required|min:6|max:6',
+            'contry' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());       
+        }
+
+        $user = User::where('mobile', '=', ($request->mobile))->first();
+        // dd($user); 
+            if (!empty($user->otp_verify == 1)) {
+                $user->fullname = $input['fullname'];
+                $user->username = $input['fullname'];
+                $user->email = $input['email'];
+                $user->gender = $input['gender'];
+                $user->mobile = $input['mobile'];
+                $user->dob = $input['dob'];
+                $user->otp_verify = 2;
+                if ($request->hasFile('image')) {
+                    $image = $request->file('image');
+                    $no = rand(1111,9999);
+                    $image_name = time().$no.'.jpg';
+                    $i = $image->move(public_path('images/user'), $image_name);
+                    $user->image = $image_name;
+                } 
+                $user->save();
+                $address = address::create($request->all());
+                $address->user_id = $user->id;
+                $address->save();
+
+                $data = User::with('address')->where('mobile', '=', ($request->mobile))->first();
+                return $this->sendResponse($data->toArray(), 'User add successfully.');
+            }
+        else {
+            return $this->sendError('user not login');  
         }
     }
     

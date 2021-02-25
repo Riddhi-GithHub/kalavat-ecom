@@ -204,16 +204,16 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        $data['getproduct'] = Product::with('images')->find($id);
-        $data['meta_title'] = "Delete category";
-        $getrecord = Product::find($id);
-        dd($getrecord);
-        $getrecord->delete();
-        // $data['getcategory']->delete();
-        return redirect('admin/product')->with('error', 'Record deleted Successfully!');
-    }
+    // public function destroy($id)
+    // {
+    //     $data['getproduct'] = Product::with('images')->find($id);
+    //     $data['meta_title'] = "Delete category";
+    //     $getrecord = Product::find($id);
+    //     dd($getrecord);
+    //     $getrecord->delete();
+    //     // $data['getcategory']->delete();
+    //     return redirect('admin/product')->with('error', 'Record deleted Successfully!');
+    // }
 
     public function product_delete($id)
     {

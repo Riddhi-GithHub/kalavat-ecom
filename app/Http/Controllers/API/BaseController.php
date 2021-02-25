@@ -32,6 +32,16 @@ class BaseController extends Controller
         return response()->json($response, 200);
     }
 
+    public function sendResponse_subcategory($result, $message)
+    {
+    	$response = [
+            'success' => 1,
+            'subcategory_list'    => $result,
+            'message' => $message,
+        ];
+        return response()->json($response, 200);
+    }
+
     public function sendResponse_product($result, $message)
     {
     	$response = [
@@ -61,7 +71,7 @@ class BaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendError($error, $errorMessages = [], $code = 404)
+    public function sendError($error, $errorMessages = [], $code = 200)
     {
     	$response = [
             'success' => 0,
