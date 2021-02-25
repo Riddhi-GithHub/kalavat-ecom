@@ -5,22 +5,17 @@
     </style>
   @endsection 
 @section('content')
-
         <ul class="breadcrumb">
             <li><a href="">Product</a></li>
             <li><a href="">Add Product</a></li>
         </ul>
-        
         <div class="page-title">                    
             <h2><span class="fa fa-arrow-circle-o-left"></span> Add Product</h2>
         </div>
-
          <div class="page-content-wrap">
             <div class="row">
                 <div class="col-md-12">
-
                   {{-- start --}}
-
          <form class="form-horizontal" method="post" action="{{ route('product.store') }}" enctype="multipart/form-data">
           {{ csrf_field() }}
             <div class="panel panel-default">
@@ -35,7 +30,7 @@
                         <div class="">
                            <select id="cat_id" name="cat_id" class="form-control">
                               {{-- <select class="custom-select form-control" id="cat_id" name="cat_id"> --}}
-                              <option selected disabled>select category</option>
+                              <option selected disabled>Select Category</option>
                               @foreach($category as $categoryData)
                               <option value="{{$categoryData->id}}">{{$categoryData->cat_name}}</option>
                               @endforeach
@@ -79,7 +74,7 @@
                      <div class="col-md-8 col-xs-12">
                         <div class="">
                            {{-- <input name="number" value="{{ old('quantity') }}" placeholder="Product" type="text" class="form-control" /> --}}
-                           <input type="number" name="quantity" class="form-control" placeholder="quantity"  min=1 oninput="validity.valid||(value='');"/>
+                           <input type="number" name="quantity" class="form-control" placeholder="Quantity"  min=1 oninput="validity.valid||(value='');"/>
                            <span style="color:red">{{  $errors->first('quantity') }}</span>
                         </div>
                      </div>
@@ -126,7 +121,7 @@
                   </div>
 
                   <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Select Image <span style="color:red"> *</span></label>
+                     <label class="col-md-2 col-xs-12 control-label">Image <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
                            {{-- <input name="brand" value="{{ old('brand') }}" placeholder="Product" type="text" class="form-control" /> --}}

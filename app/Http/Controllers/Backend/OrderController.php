@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Favourites;
+use App\Models\Order;
 
 class OrderController extends Controller
 {
@@ -13,39 +13,42 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $getrecord = TripModel::orderBy('id', 'desc')->select('trip.*');
-        $getrecord = $getrecord->join('users', 'trip.user_id', '=', 'users.id');
-        $getrecord = $getrecord->join('cab', 'trip.cab_id', '=', 'cab.id');
-        $getrecord = $getrecord->join('location', 'trip.location_id', '=', 'location.id');
-        // Search Box Start
+        $getrecord = Order::orderBy('order_id', 'desc')->select('orders.*');
+        $getrecord = $getrecord->join('products', 'orders.product_id', '=', 'products.id');
+        // $getrecord = $getrecord->join('users', 'orders.user_id', '=', 'users.id');
 
-        if (!empty($request->idsss)) {
-        $getrecord = $getrecord->where('trip.id', '=', $request->idsss);
-        }
+    	if (!empty($request->order_id)) {
+			$getrecord = $getrecord->where('order_id', '=', $request->order_id);
+		}
 
-        if (!empty($request->name)){
-        $getrecord = $getrecord->where('users.name', 'like', '%' . $request->name . '%');
-        }
+        if (!empty($request->username)) {
+			$getrecord = $getrecord->where('username', 'like', '%' . $request->username . '%');
+		}
 
-        if (!empty($request->registration_no)){
-        $getrecord = $getrecord->where('cab.registration_no', 'like', '%' . $request->registration_no . '%');
-        }
+		if (!empty($request->product_name)) {
+			$getrecord = $getrecord->where('product_name', 'like', '%' . $request->product_name . '%');
+		}
+    	// Search Box End
+    	$getrecord = $getrecord->paginate(40);
+    	$data['getrecord'] = $getrecord;
+    	$data['meta_title'] = 'Order List';
+    	return view('backend.order.list', $data);  
+    }
 
-        if(!empty($request->pick_address)){
-        $getrecord = $getrecord->where('location.pick_address', 'like', '%' . $request->pick_address . '%');
-        }
+    public function OderschangeStatus(Request $request)
+    {
+        // echo "string";
+        // die();
+        $changeStatus = Order::find($request->status_change_id);
 
-        if (!empty($request->phone)){
-        $getrecord = $getrecord->where('trip.phone', 'like', '%' . $request->phone . '%');
-        }
-
-        // Search Box End
-        $getrecord = $getrecord->paginate(40);
-        $data['getrecord'] = $getrecord;
-        $data['meta_title'] = 'Trip List';
-        return view('backend.trip.list', $data);
+        $changeStatus->status = $request->status_id;
+         //dd($changeStatus->status);
+        $changeStatus->save();
+        
+        $json['success'] = true;
+        echo json_encode($json);
     }
 
     /**

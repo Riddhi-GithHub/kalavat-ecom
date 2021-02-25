@@ -25,7 +25,6 @@ class ProductController extends Controller
     	if (!empty($request->id)) {
 			$getrecord = $getrecord->where('products.id', '=', $request->id);
 		}
-
 		
         if (!empty($request->cat_name)) {
 			$getrecord = $getrecord->where('cat_name', 'like', '%' . $request->cat_name . '%');
@@ -69,13 +68,13 @@ class ProductController extends Controller
         $product_insert = request()->validate([
             'cat_id'         => 'required',
             'product_name'      => 'required',
-            // 'description' => 'required|string|max:2000',
-            // 'price' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
-            // 'quantity' => 'required|integer|min:1',
-            // 'offer' => 'required|integer|min:1',
-            // 'color' => 'required|max:30',
-            // 'size' => 'required|max:30',
-            // 'brand' => 'required|max:30',
+            'description' => 'required|string|max:2000',
+            'price' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
+            'quantity' => 'required|integer|min:1',
+            'offer' => 'required|integer|min:1',
+            'color' => 'required|max:30',
+            'size' => 'required|max:30',
+            'brand' => 'required|max:30',
             'images' => 'required|max:15000'
               // 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);

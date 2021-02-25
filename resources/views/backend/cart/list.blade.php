@@ -61,8 +61,8 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>UserName</th>
-                                <th>ProductName</th>
+                                <th>Username</th>
+                                <th>Product Name</th>
                                 <th>Quantity</th>
                                 <th>Total Price</th>
                                 <th>Created Date</th>

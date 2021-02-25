@@ -37,12 +37,12 @@
                                 name="id">
                         </div>
                         <div class="col-md-3">
-                            <label>CategoryName</label>
+                            <label>Category Name</label>
                             <input type="text" class="form-control" value="{{ Request()->cat_name }}" placeholder="Category Name"
                                 name="cat_name">
                         </div>
                         <div class="col-md-3">
-                            <label>ProductName</label>
+                            <label>Product Name</label>
                             <input type="text" class="form-control" value="{{ Request()->product_name }}" placeholder="Product Name"
                                 name="product_name">
                         </div>
@@ -66,7 +66,6 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">Product List</h3>
                 </div>
-
                 {{-- @if(!empty(json_decode($manage_project->image)))
                 @foreach(json_decode($manage_project->image) as $image)
                 <div>
@@ -74,14 +73,13 @@
                 </div>
                 @endforeach
                 @endif --}}
-
                 <div class="panel-body" style="overflow: auto;">
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>CategoryName</th>
-                                <th>ProductName</th>
+                                <th>Category Name</th>
+                                <th>Product Name</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
                                 <th>Offer</th>

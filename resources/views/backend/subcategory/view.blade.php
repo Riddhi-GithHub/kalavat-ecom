@@ -7,68 +7,52 @@
 @section('content')
 
         <ul class="breadcrumb">
-            <li><a href="">User</a></li>
-            <li><a href="">View User</a></li>
+            <li><a href="">Sub Category</a></li>
+            <li><a href="">View Category</a></li>
         </ul>
-        
         <div class="page-title">                    
-            <h2><span class="fa fa-arrow-circle-o-left"></span> View User</h2>
+            <h2><span class="fa fa-arrow-circle-o-left"></span> View Sub Category</h2>
         </div>
-
          <div class="page-content-wrap">
             <div class="row">
                 <div class="col-md-12">
-
                   {{-- start --}}
-
                   <form class="form-horizontal" method="post" action="" enctype="multipart/form-data">
-
                      <div class="panel panel-default">
                      <div class="panel-heading">
-                     <h3 class="panel-title">View User</h3>
+                     <h3 class="panel-title">View Sub Category</h3>
                      </div>
                      <div class="panel-body">
                      <div class="form-group">
                      <label class="col-md-3 control-label">
-                     User ID :
+                      Sub Category ID :
                      </label>
                      <div class="col-sm-5" style="margin-top: 8px;">
-                      {{ $getuser->id }}
+                      {{ $getsubcategory->id }}
                      </div>
                      </div>
                      
                      <div class="form-group">
                      <label class="col-md-3 control-label">
-                     Username :
+                     Category Name :
                      </label>
                      <div class="col-sm-5" style="margin-top: 8px;">
-                      {{ $getuser->username }}
+                      {{ $getsubcategory->category->cat_name }}
                      </div>
                      </div>
 
                      <div class="form-group">
                       <label class="col-md-3 control-label">
-                      Email :
+                        Sub Category Name :
                       </label>
                       <div class="col-sm-5" style="margin-top: 8px;">
-                       {{ $getuser->email }}
+                       {{ $getsubcategory->sub_cat_name }}
                       </div>
                       </div>
-                     
-                      <div class="form-group">
-                        <label class="col-md-3 control-label">
-                        User Type :
-                        </label>
-                        <div class="col-sm-5" style="margin-top: 8px;">
-                          @if($getuser->is_admin == '1') Super Admin
-                          @elseif($getuser->is_admin == '2') Admin
-                          @endif
-                        </div>
-                        </div>
-                     </div>
+
                      <div class="panel-footer">
-                     <a class="btn btn-primary pull-right" href="{{ url('admin/user') }}">
-                     <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;<span class="bold">Back</span></a>
+                     <a class="btn btn-primary pull-right" href="{{ url('admin/subcategory') }}">
+                      <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;<span class="bold">Back</span></a>
                      </div>
                      </div>
                      </form>

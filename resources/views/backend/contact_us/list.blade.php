@@ -69,7 +69,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>UserName</th>
+                                <th>Username</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Created Date</th>

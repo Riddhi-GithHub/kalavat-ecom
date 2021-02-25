@@ -27,7 +27,7 @@ class ProductsController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors()); 
         }elseif(!empty($cat)){
             if(!empty($product->count() > 0)){
-                return $this->sendResponse($product,'Product Details retrieved successfully.');
+                return $this->sendResponse_product($product,'Product Details retrieved successfully.');
             }else{
                     return $this->sendError('Product item not found.'); 
             }   
@@ -50,7 +50,7 @@ class ProductsController extends BaseController
                 // if(!empty($images)) {
                 //     Storage::url($path);
                 // }
-                return $this->sendResponse($product,'Product retrieved successfully.');
+                return $this->sendResponse_product($product,'Product retrieved successfully.');
         }else{
             return $this->sendError('Product not found.'); 
         }
@@ -76,9 +76,9 @@ class ProductsController extends BaseController
         // dd($product);
 
         if(!empty($cat->count() > 0)){
-            return $this->sendResponse($cat,'search category item get successfully.');
+            return $this->sendResponse_product($cat,'search category item get successfully.');
         }elseif(!empty($product->count() > 0)){
-            return $this->sendResponse($product,'search product item get successfully.');
+            return $this->sendResponse_product($product,'search product item get successfully.');
         }
             return $this->sendError('search item not found.'); 
     }

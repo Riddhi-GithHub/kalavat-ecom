@@ -19,16 +19,24 @@
                 <a href="{{ url('admin/category') }}"><span class="fa fa-list"></span> <span class="xn-text">Category List</span></a>
             </li>
 
+            <li class="@if ( Request::segment(2)== 'subcategory') active @endif">
+                <a href="{{ url('admin/subcategory') }}"><span class="fa fa-bars"></span> <span class="xn-text">Sub Category List</span></a>
+            </li>
+
             <li class="@if ( Request::segment(2)== 'product') active @endif">
-                <a href="{{ url('admin/product') }}"><span class="fa fa-user"></span> <span class="xn-text">Product List</span></a>
+                <a href="{{ url('admin/product') }}"><span class="fa fa-table"></span> <span class="xn-text">Product List</span></a>
             </li>
 
             <li class="@if ( Request::segment(2)== 'favouriteitem') active @endif">
-                <a href="{{ url('admin/favouriteitem') }}"><span class="fa fa-user"></span> <span class="xn-text">Favourite Product List</span></a>
+                <a href="{{ url('admin/favouriteitem') }}"><span class="fa fa-heart"></span> <span class="xn-text">Favourite Product List</span></a>
             </li>
 
             <li class="@if ( Request::segment(2)== 'cartitem') active @endif">
-                <a href="{{ url('admin/cartitem') }}"><span class="fa fa-user"></span> <span class="xn-text">Cart List</span></a>
+                <a href="{{ url('admin/cartitem') }}"><span class="fa fa-shopping-cart"></span> <span class="xn-text">Cart List</span></a>
+            </li>
+
+            <li class="@if ( Request::segment(2)== 'order') active @endif">
+                <a href="{{ url('admin/order') }}"><span class="fa fa-tasks"></span> <span class="xn-text">Order List</span></a>
             </li>
 
             <li class="@if ( Request::segment(2)== 'contact_us') active @endif">
@@ -36,7 +44,6 @@
             </li>
 
             @endif
-            
 
         </ul>
     </div>

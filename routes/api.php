@@ -52,7 +52,7 @@ Route::post('image_list', 'API\ProductsController@getIamgeList');
 
 
 // add to favourite product
-// Route::post('add_favourite', 'API\FavouritesController@add_favourite');
+Route::post('add_fav', 'API\FavouritesController@add_favourites');
 // Route::post('favourite_list', 'API\FavouritesController@favourite_list');
 // Route::post('delete_favourite', 'API\FavouritesController@delete_favourite');    ---incomplete
 
@@ -76,7 +76,7 @@ Route::post('add_to_cart', 'API\CartController@addProductToCart');
 Route::post('cart_list', 'API\CartController@getCartList');
 Route::post('delete_to_cart', 'API\CartController@deleteCartProdcut');
 
-#Order
+# Order
 Route::post('add_order', 'API\OrdersController@AddOrder');
 Route::post('edit_order', 'API\OrdersController@EditOrder');
 Route::post('order_list', 'API\OrdersController@ListOrder');

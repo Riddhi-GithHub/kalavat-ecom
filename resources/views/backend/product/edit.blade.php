@@ -31,7 +31,7 @@
 
                <div class="panel-body">
                  <div class="form-group">
-                  <label class="col-md-2 col-xs-12 control-label">Category </span></label>
+                  <label class="col-md-2 col-xs-12 control-label">Category Name </span></label>
                   <div class="col-md-8 col-xs-12">
                      <div class="">
                         <select id="cat_id" name="cat_id" class="form-control">
@@ -45,11 +45,11 @@
                </div>
 
                   <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Productname </label>
+                     <label class="col-md-2 col-xs-12 control-label">Product Name</label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
                            <input name="product_name" value="{{ $getproduct->product_name }}"
-                              placeholder="Productname" type="text" required class="form-control" />
+                              placeholder="Product Name" type="text" required class="form-control" />
                            <span style="color:red">{{ $errors->first('username') }}</span>
                         </div>
                      </div>
@@ -80,7 +80,7 @@
                      <div class="col-md-8 col-xs-12">
                         <div class="">
                            {{-- <input name="number" value="{{ old('quantity') }}" placeholder="Product" type="text" class="form-control" /> --}}
-                           <input type="number" name="quantity" value="{{ $getproduct->quantity }}" class="form-control" placeholder="quantity"  min=1 oninput="validity.valid||(value='');"/>
+                           <input type="number" name="quantity" value="{{ $getproduct->quantity }}" class="form-control" placeholder="Quantity"  min=1 oninput="validity.valid||(value='');"/>
                            <span style="color:red">{{  $errors->first('quantity') }}</span>
                         </div>
                      </div>

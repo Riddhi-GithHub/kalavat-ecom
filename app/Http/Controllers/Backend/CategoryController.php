@@ -79,7 +79,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         $data['getcategory'] = Category::find($id);
-        $data['meta_title'] = "Category List";
+        $data['meta_title'] = "view Category";
         return view('backend.category.view', $data);
     }
 

@@ -7,12 +7,12 @@
 @section('content')
 
 <ul class="breadcrumb">
-    <li><a href="">Favourite </a></li>
-    <li><a href="">Favourite Product List</a></li>
+    <li><a href="">Order </a></li>
+    <li><a href="">Order List</a></li>
 </ul>
 
 <div class="page-title">
-    <h2><span class="fa fa-arrow-circle-o-left"></span> Favourite Product List</h2>
+    <h2><span class="fa fa-arrow-circle-o-left"></span> Order List</h2>
 </div>
 
 <div class="page-content-wrap">
@@ -23,14 +23,14 @@
             {{-- Add Menu --}}
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Favourite Product Search</h3>
+                    <h3 class="panel-title">Order  Search</h3>
                 </div>
                 <div class="panel-body" style="overflow: auto;">
                     <form action="" method="get">
                         <div class="col-md-3">
                             <label>ID</label>
-                            <input type="text" value="{{ Request()->fav_id }}" class="form-control" placeholder="ID"
-                                name="fav_id">
+                            <input type="text" value="{{ Request()->order_id }}" class="form-control" placeholder="ID"
+                                name="order_id">
                         </div>
                         {{-- <div class="col-md-3">
                             <label>User Name</label>
@@ -46,7 +46,7 @@
                         <br>
                         <div class="col-md-12">
                             <input type="submit" class="btn btn-primary" value="Search">
-                            <a href="{{ url('admin/favouriteitem') }}" class="btn btn-success">Reset</a>
+                            <a href="{{ url('admin/order') }}" class="btn btn-success">Reset</a>
                         </div>
                     </form>
                 </div>
@@ -54,15 +54,20 @@
             <!-- START BASIC TABLE SAMPLE -->
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Favourite Product List</h3>
+                    <h3 class="panel-title">Order List</h3>
                 </div>
                 <div class="panel-body" style="overflow: auto;">
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Username</th>
+                                <th>User Name</th>
                                 <th>Product Name</th>
+                                <th>Tracking Number</th>
+                                <th>Quantity</th>
+                                <th>Total Price</th>
+                                <th>Delivery Date</th>
+                                <th>Status</th>
                                 <th>Created Date</th>
                                 {{-- <th>Action</th> --}}
                             </tr>
@@ -70,43 +75,22 @@
                         <tbody>
                             @forelse($getrecord as $value)
                             <tr>
-                                <td> {{ $value->fav_id }}</td>
+                                <td> {{ $value->order_id }}</td>
                                 <td> {{ $value->user->username }}</td>
                                 <td>{{ $value->product->product_name }}</td>
+                                <td>{{ $value->tracking_num }}</td>
+                                <td>{{ $value->quantity }}</td>
+                                <td>{{ $value->total_price }}</td>
+                                <td>{{ $value->delivery_date }}</td>
+                                <td>
+                                    <select class="form-control change_Status" id="{{ $value->order_id }}">
+                                      <option {{ ($value->status == '0' ? 'selected="selected"' : '' ) }} value="0">Processing</option>
+                                      <option {{ ($value->status == '1' ? 'selected="selected"' : '' ) }} value="1">Deleiverd</option>
+                                      <option {{ ($value->status == '2' ? 'selected="selected"' : '' ) }} value="2">Cancelled</option>
+                                    </select>
+                                </td>
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
-                                {{-- <td>
-                                    <form method="get" action="{{ route('favouriteitem.delete', $value->fav_id) }}">
-                                        <button type="submit" class="btn btn-danger btn-rounded btn-sm"
-                                            onclick="return confirm('Sure Want Delete?')"><span
-                                                class="fa fa-trash-o"></span></button>
-                                        <div class="modal" id="mdelete" role="dialog" aria-labelledby="moddelete">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="moddelete">Confirm Delete</h5>
-                                                        <button type="button" class="close" data-dismiss="modal"
-                                                            aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p>Are you sure you want to delete?</p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <input type="hidden" name="txtid" id="txtid" />
-                                                        <input type="text" name="uid" id="uid" />
-                                                        <button type="button" class="btn btn-danger "
-                                                            data-dismiss="modal">No</button>
-                                                        <span class="text-right">
-                                                            <button type="button"
-                                                                class="btn btn-primary btndelete">Yes</button>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </td> --}}
+                          
                             </tr>
                             @empty
                             <tr>
@@ -121,19 +105,36 @@
                 </div>
             </div>
             <!-- END BASIC TABLE SAMPLE -->
-
-
             {{-- End --}}
-
         </div>
     </div>
 </div>
 
-
-
 @endsection
+
 @section('script')
 <script type="text/javascript">
+  $(document).ready(function() {
+    
+    $('.change_Status').change(function(){
+    var status_id = $(this).val();
+    // alert(status_id);
+    // die();
+    var status_change_id = $(this).attr('id');
+    // alert(status_change_id);
+    // die();
+     $.ajax({
+           type:"GET",
+           url: "{{ url('admin/changeStatus') }}",
+           data: {status_id: status_id,status_change_id:status_change_id},
+           dataType: 'JSON',
+           success:function(data){
+              // console.log(data.success)
+              alert('Status successfully changed.');
+           }
+    });
+ });
+});
 
 </script>
 @endsection

@@ -153,13 +153,13 @@ class AddressController extends BaseController
         if(!empty($user)) {
             $address = address::create($request->all());
             $address->save();
-            $json['status'] = 1;
+            $json['success'] = 1;
             $json['message'] = 'Address add Successfully.';
             $json['user_address'] = $address;
         }
 
         else{
-            $json['status'] = 0;
+            $json['success'] = 0;
             $json['message'] = 'User not found.';
         }
 
@@ -181,12 +181,12 @@ class AddressController extends BaseController
             $address_update->contry  = trim($request->contry);
             $address_update->save();
 
-            $json['status'] = 1;
+            $json['success'] = 1;
             $json['message'] = 'Address update Successfully.';
             $json['user_address'] = $address_update;
         }
         else{
-            $json['status'] = 0;
+            $json['success'] = 0;
             $json['message'] = 'Address not found.';
         }
 
@@ -201,12 +201,12 @@ class AddressController extends BaseController
 		$getresult  = address::where('user_id', '=' ,$request->user_id)->get();
 
         if(!empty($getresult->count() > 0)){
-            $json['status'] = 1;
+            $json['success'] = 1;
             $json['message'] = 'Address list loaded Successfully.';
             $json['user_address'] = $getresult;
         }
         else{
-            $json['status'] = 0;
+            $json['success'] = 0;
             $json['message'] = 'Address not found.';
         }
 

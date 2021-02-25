@@ -13,7 +13,7 @@ class CategoriesController extends BaseController
         $cat = category::get();
         // $cat = Category::with('product')->get();
         if(!empty($cat)){
-            return $this->sendResponse($cat,'category retrieved successfully.');
+            return $this->sendResponse_category($cat,'category retrieved successfully.');
         }else{
                 return $this->sendError('category not found.'); 
                 }

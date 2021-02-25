@@ -120,7 +120,8 @@
 
 
             <div class="panel-footer">
-              <a class="btn btn-primary pull-right" href="{{ url('admin/product') }}">Back</a>
+              <a class="btn btn-primary pull-right" href="{{ url('admin/product') }}">
+                <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;<span class="bold">Back</span></a>
             </div>
           </div>
       </form>

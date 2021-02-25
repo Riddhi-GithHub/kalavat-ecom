@@ -20,4 +20,5 @@ class Sub_Category extends Model
    {
        return $this->belongsTo('App\Models\Category',"id","id");
    } 
+   
 }

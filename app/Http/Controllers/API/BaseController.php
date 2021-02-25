@@ -12,17 +12,37 @@ class BaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function sendResponse($result, $message)
-    // {
-    // 	$response = [
-    //         'success' => 1,
-    //         'data'    => $result,
-    //         'message' => $message,
-    //     ];
-    //     return response()->json($response, 200);
-    // }
+    public function sendResponse($result, $message)
+    {
+    	$response = [
+            'success' => 1,
+            'data'    => $result,
+            'message' => $message,
+        ];
+        return response()->json($response, 200);
+    }
 
-    public function sendResponse($message ,$result = [])
+    public function sendResponse_category($result, $message)
+    {
+    	$response = [
+            'success' => 1,
+            'category_list'    => $result,
+            'message' => $message,
+        ];
+        return response()->json($response, 200);
+    }
+
+    public function sendResponse_product($result, $message)
+    {
+    	$response = [
+            'success' => 1,
+            'product_list'    => $result,
+            'message' => $message,
+        ];
+        return response()->json($response, 200);
+    }
+
+    public function sendResponse_test($message ,$result = [])
     {
     	$response = [
             'success' => 1,
@@ -30,10 +50,12 @@ class BaseController extends Controller
         ];
 
         if(!empty($result)){
-            $response['data_list'] = $result;
+            $response['data'] = $result;
         }
         return response()->json($response, 200);
     }
+
+    
     /**
      * return error response.
      *

@@ -19,24 +19,61 @@ class CartController extends Controller
 
     public function addProductToCart(Request $request)
 	{
-        $getdata['product'] = Product::find($request->input('product_id'));
-        $getdata['user'] = User::find($request->input('user_id'));
-
-        if(!empty($getdata)){
-            $getdata = Cart::create($request->all());
-            $getdata->status = 1;
-            $getdata->save();
-            $json['status'] = 1;
-            $json['message'] = 'Product add to Cart Successfully.';
-            $json['cart_list'] = $getdata;
+        if (!empty($request->product_id && $request->user_id && $request->status)) {
+            $product = Product::find($request->input('product_id'));
+            $user = User::find($request->input('user_id'));
+            // dd(!empty($product && $user));
+            if(!empty($product && $user)){
+                $data = Cart::where('product_id', '=', trim($request->product_id))
+                ->where('user_id', '=', trim($request->user_id))
+                // ->where('status', '=', trim($request->status))
+                ->first();
+                if (!empty($data)) {
+                    $data->status  = $request->status;
+                    $data->save();
+                    $json['success'] = 1;
+                    $json['message'] = 'Favourite Product status change Successfully.';
+                    $json['favourite_list'] = $data;
+                }else{
+                    $getdata = Cart::create($request->all());
+                    $getdata->save();
+                    $json['success'] = 1;
+                    $json['message'] = 'Favourite Product add Successfully.';
+                    $json['favourite_list'] = $getdata;
+                }
+            }
+            else{
+            $json['status'] = 0;
+            $json['message'] = 'User Or Product Not Found!';
+            }
         }
         else{
-            $json['status'] = 0;
-            $json['message'] = 'Product or User not found.';
+        $json['status'] = 0;
+        $json['message'] = 'Fill Required data';
         }
+        echo json_encode($json);
+    }
 
- 	    echo json_encode($json);
-	}
+    // public function addProductToCart(Request $request)
+	// {
+    //     $getdata['product'] = Product::find($request->input('product_id'));
+    //     $getdata['user'] = User::find($request->input('user_id'));
+
+    //     if(!empty($getdata)){
+    //         $getdata = Cart::create($request->all());
+    //         $getdata->status = 1;
+    //         $getdata->save();
+    //         $json['status'] = 1;
+    //         $json['message'] = 'Product add to Cart Successfully.';
+    //         $json['cart_list'] = $getdata;
+    //     }
+    //     else{
+    //         $json['status'] = 0;
+    //         $json['message'] = 'Product or User not found.';
+    //     }
+
+ 	//     echo json_encode($json);
+	// }
 
     public function getCartList(Request $request)
 	{

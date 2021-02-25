@@ -52,5 +52,13 @@ Route::group(['middleware' => 'admin'], function(){
 
 	Route::resource('admin/cartitem','Backend\CartController');
 	Route::get('admin/cartitem/delete/{id}', 'Backend\CartController@cartitem_delete')->name('cart.delete');
+	
+	Route::resource('admin/order','Backend\OrderController');
+	Route::get('admin/changeStatus', 'Backend\OrderController@OderschangeStatus');
+	Route::get('admin/order/delete/{id}', 'Backend\OrderController@order_delete')->name('order.delete');
+
+	Route::resource('admin/subcategory','Backend\SubCategoryController');
+	Route::get('admin/subcategory/delete/{id}', 'Backend\SubCategoryController@subcategory_delete')->name('subcategory.delete');
+
 
 });

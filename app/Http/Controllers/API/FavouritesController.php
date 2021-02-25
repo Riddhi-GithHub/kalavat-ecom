@@ -17,7 +17,7 @@ class FavouritesController extends BaseController
 {
 
     // --------- using base controller ----start-------
-    public function add_favourite(Request $request)
+    public function add_favourite_(Request $request)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -72,29 +72,40 @@ class FavouritesController extends BaseController
 
     public function AddFavouriteProduct(Request $request)
 	{
-        $getdata['product'] = Product::find($request->input('product_id'));
-        $getdata['user'] = User::find($request->input('user_id'));
-        // $getdata['favourite']  = Favourites::where('status',0)->where('product_id', '=' ,$request->product_id)->get();
-        
-        // $getresult  = Favourites::where('status',0)
-        // ->where('product_id', '=' ,$request->product_id)
-        // ->where('user_id', '=' ,$request->user_id)->get();
-
-        if(!empty($getdata)){
-            $getdata = Favourites::create($request->all());
-            $getdata->status = 1;
-            $getdata->save();
-            $json['status'] = 1;
-            $json['message'] = 'Favourite Product add Successfully.';
-            $json['favourite_list'] = $getdata;
+        if (!empty($request->product_id && $request->user_id && $request->status)) {
+            $product = Product::find($request->input('product_id'));
+            $user = User::find($request->input('user_id'));
+            // dd(!empty($product && $user));
+            if(!empty($product && $user)){
+                $data = Favourites::where('product_id', '=', trim($request->product_id))
+                ->where('user_id', '=', trim($request->user_id))
+                // ->where('status', '=', trim($request->status))
+                ->first();
+                if (!empty($data)) {
+                    $data->status  = $request->status;
+                    $data->save();
+                    $json['success'] = 1;
+                    $json['message'] = 'Favourite Product status change Successfully.';
+                    $json['favourite_list'] = $data;
+                }else{
+                    $getdata = Favourites::create($request->all());
+                    $getdata->save();
+                    $json['success'] = 1;
+                    $json['message'] = 'Favourite Product add Successfully.';
+                    $json['favourite_list'] = $getdata;
+                }
+            }
+            else{
+            $json['status'] = 0;
+            $json['message'] = 'User Or Product Not Found!';
+            }
         }
         else{
-            $json['status'] = 0;
-            $json['message'] = 'Product or User not found.';
+        $json['status'] = 0;
+        $json['message'] = 'Fill user_id product_id and status';
         }
-
- 	    echo json_encode($json);
-	}
+        echo json_encode($json);
+    }
 
     public function getFavouriteList(Request $request)
 	{
@@ -104,12 +115,12 @@ class FavouritesController extends BaseController
         $getresult  = Favourites::with('product')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
 
         if(!empty($getresult->count() > 0)){
-            $json['status'] = 1;
+            $json['success'] = 1;
             $json['message'] = 'Favourite list loaded Successfully.';
             $json['favourite_list'] = $getresult;
         }
         else{
-            $json['status'] = 0;
+            $json['success'] = 0;
             $json['message'] = 'Favourite Product not found.';
         }
 
@@ -128,11 +139,11 @@ class FavouritesController extends BaseController
                 // $recode_update->status  = trim($request->status);
                 $data->status  = '0';
                 $data->save();
-                $json['status'] = 1;
+                $json['success'] = 1;
                 $json['message'] = 'Favourite prodcut deleted Successfully';
             }
         else{
-                $json['status'] = 0;
+                $json['success'] = 0;
                 $json['message'] = 'Product not found.';
             }
 		echo json_encode($json);

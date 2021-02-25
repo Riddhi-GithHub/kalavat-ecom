@@ -44,7 +44,7 @@ class FavouriteController extends Controller
     	// Search Box End
     	$getrecord = $getrecord->paginate(40);
     	$data['getrecord'] = $getrecord;
-    	$data['meta_title'] = 'Favourite List';
+    	$data['meta_title'] = 'Favourite Product List';
     	return view('backend.favourite.list', $data);  
     }
 

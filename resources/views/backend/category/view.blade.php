@@ -48,7 +48,7 @@
 
                      <div class="form-group">
                       <label class="col-md-3 control-label">
-                      Category Name :
+                      Image :
                       </label>
                       <div class="col-sm-5" style="margin-top: 8px;">
                       <img alt="image name" src="{{ url('public/images/category/'.$getcategory->image) }}" style="width:70px; height:70px;" />
@@ -57,7 +57,8 @@
                       </div>
 
                      <div class="panel-footer">
-                     <a class="btn btn-primary pull-right" href="{{ url('admin/category') }}">Back</a>
+                     <a class="btn btn-primary pull-right" href="{{ url('admin/category') }}">
+                      <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;<span class="bold">Back</span></a>
                      </div>
                      </div>
                      </form>
