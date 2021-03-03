@@ -108,7 +108,7 @@ class UsersController extends BaseController
         $input = $request->all();
         $validator = Validator::make($input, [
             'id' => 'required',
-            'name' => 'required',
+            'fullname' => 'required',
             'email' => 'required',
             'mobile' => 'required',
         ]);
@@ -120,7 +120,8 @@ class UsersController extends BaseController
         $user = User::find($request->id);
         // if(!empty($user)){
             if (!empty($user->otp_verify == 1)) {
-                $user->name = $input['name'];
+                $user->fullname = $input['fullname'];
+                $user->username = $input['fullname'];
                 $user->email = $input['email'];
                 $user->mobile = $input['mobile'];
                 $user->update();
@@ -157,7 +158,7 @@ class UsersController extends BaseController
         }
     }
 
-    public function add_account(Request $request)
+    public function add_account_old(Request $request)  // store address in address table
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -209,4 +210,58 @@ class UsersController extends BaseController
         }
     }
     
+
+    // store address in users table
+    public function add_account(Request $request)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'fullname' => 'required',
+            'email' => 'required|unique:users',
+            'mobile' => 'required',
+            'dob' => 'required|date_format:d/m/Y',
+            'gender' => 'required',
+            'image' => 'required',
+            'address' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zip_code' => 'required|min:6|max:6',
+            'contry' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());       
+        }
+
+        $user = User::where('mobile', '=', ($request->mobile))->first();
+        // dd($user); 
+            if (!empty($user->otp_verify == 1)) {
+                $user->fullname = $input['fullname'];
+                $user->username = $input['fullname'];
+                $user->email = $input['email'];
+                $user->address  = $input['address'];
+                $user->city  = $input['city'];
+                $user->state  = $input['state'];
+                $user->zip_code  = $input['zip_code'];
+                $user->contry  = $input['contry'];
+                $user->gender = $input['gender'];
+                $user->mobile = $input['mobile'];
+                $user->dob = $input['dob'];
+                $user->otp_verify = 2;
+                if ($request->hasFile('image')) {
+                    $image = $request->file('image');
+                    $no = rand(1111,9999);
+                    $image_name = time().$no.'.jpg';
+                    $i = $image->move(public_path('images/user'), $image_name);
+                    $user->image = $image_name;
+                } 
+                $user->save();
+
+                // $data = User::where('mobile', '=', ($request->mobile))->first();
+                return $this->sendResponse($user,'User add Successfully.');
+            }
+        else {
+            return $this->sendError('user not login');  
+        }
+    }
 }

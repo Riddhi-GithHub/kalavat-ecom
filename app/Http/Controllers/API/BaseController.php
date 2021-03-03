@@ -16,8 +16,8 @@ class BaseController extends Controller
     {
     	$response = [
             'success' => 1,
-            'data'    => $result,
             'message' => $message,
+            'data'    => $result,
         ];
         return response()->json($response, 200);
     }
@@ -26,8 +26,8 @@ class BaseController extends Controller
     {
     	$response = [
             'success' => 1,
-            'category_list'    => $result,
             'message' => $message,
+            'category_list'    => $result,
         ];
         return response()->json($response, 200);
     }
@@ -36,8 +36,8 @@ class BaseController extends Controller
     {
     	$response = [
             'success' => 1,
-            'subcategory_list'    => $result,
             'message' => $message,
+            'subcategory_list'    => $result,
         ];
         return response()->json($response, 200);
     }
@@ -46,8 +46,8 @@ class BaseController extends Controller
     {
     	$response = [
             'success' => 1,
-            'product_list'    => $result,
             'message' => $message,
+            'product_list'    => $result,
         ];
         return response()->json($response, 200);
     }

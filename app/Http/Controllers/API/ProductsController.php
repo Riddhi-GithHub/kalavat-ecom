@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Sub_Category;
 use App\Models\product_images;
 use Validator;
 use Illuminate\Support\Facades\Storage;
@@ -80,6 +81,30 @@ class ProductsController extends BaseController
         }
     }
 
+
+    public function subcategory_product_details(Request $request)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input,[
+            'sub_cat_id' => 'required',
+        ]);
+        
+        $cat = Sub_Category::find($request->input('sub_cat_id'));
+        $product = Product::where('sub_cat_id',$request->input('sub_cat_id'))->get();
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors()); 
+        }elseif(!empty($cat)){
+            if(!empty($product->count() > 0)){
+                return $this->sendResponse_product($product,'Product Details retrieved successfully.');
+            }else{
+                    return $this->sendError('Product item not found.'); 
+            }   
+            }
+        else{
+            return $this->sendError('SubCategory not found.'); 
+        }
+    }
 
 
     //-------- other way ------------------

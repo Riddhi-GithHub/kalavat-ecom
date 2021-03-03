@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Sub_Category;
 use App\Models\product_images;
 use Illuminate\Support\Facades\Storage;
 
@@ -49,10 +50,12 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $category = Category::get();
+        $subcategory = Sub_Category::get();
         $data['category'] = $category;
+        $data['subcategory'] = $subcategory;
         $data['meta_title'] = "Add product";
     	return view('backend.product.add', $data);
     }
@@ -67,6 +70,7 @@ class ProductController extends Controller
     {
         $product_insert = request()->validate([
             'cat_id'         => 'required',
+            'sub_cat_id'         => 'required',
             'product_name'      => 'required',
             'description' => 'required|string|max:2000',
             'price' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
@@ -82,8 +86,12 @@ class ProductController extends Controller
         $category = Category::get();
         $cat_id = $request->input('cat_id');
 
+        $category = Sub_Category::get();
+        $sub_cat_id = $request->input('sub_cat_id');
+
         $product_insert = new Product;
         $product_insert->cat_id = $cat_id;
+        $product_insert->sub_cat_id = $sub_cat_id;
         $product_insert->product_name = strtolower($request->product_name);
         $product_insert->description    = $request->description;
         $product_insert->price    = $request->price;

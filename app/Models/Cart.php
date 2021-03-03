@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
+use App\Models\OrderDetails;
 use App\User;
 
 class Cart extends Model
@@ -26,5 +27,9 @@ class Cart extends Model
 
     public function user(){
         return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function orderdetail(){
+        return $this->belongsTo(OrderDetails::class,'order_cart_id');
     }
 }

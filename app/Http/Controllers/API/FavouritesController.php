@@ -149,4 +149,40 @@ class FavouritesController extends BaseController
 		echo json_encode($json);
     }
 
+    public function UpdateFavouriteProduct(Request $request)
+	{
+        if (!empty($request->product_id && $request->user_id)) {
+            $product = Product::find($request->input('product_id'));
+            $user = User::find($request->input('user_id'));
+            if(!empty($product && $user)){
+                $data = Favourites::where('product_id', '=', trim($request->product_id))
+                ->where('user_id', '=', trim($request->user_id))
+                // ->where('status', '=', trim($request->status))
+                ->first();
+                if(!empty($data))
+                {
+                    $data->status  = trim($request->status);
+                    // $data->status  = '0';
+                    $data->save();
+                    $json['success'] = 1;
+                    $json['message'] = 'Favourite prodcut status change Successfully';
+                    $json['favourite_list'] = $data;
+                }
+                else{
+                    $json['success'] = 0;
+                    $json['message'] = 'Product not found.';
+                }
+            }
+            else{
+            $json['success'] = 0;
+            $json['message'] = 'User Or Product Not Found!';
+            }
+        }
+        else{
+        $json['success'] = 0;
+        $json['message'] = 'Fill user_id product_id';
+        }
+        echo json_encode($json);
+    }
+
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Models\Favourites;
+use App\Models\Version_Setting;
 use Hash;
 use Validator;
 use Auth;
@@ -217,6 +218,39 @@ class ApiController extends Controller
 
 	}
 
+
+
+	public function app_version_setting_update(Request $request)
+	{
+		// echo "str_in_ddd__ddddg";
+		// die();
+		$record = Version_Setting::find(1);	  
+
+		if(!empty($record)){
+			$record->app_version   = trim($request->app_version);
+			$record->save();
+			$json['success'] = 1;
+			$json['message'] = 'Update App Version.';
+			$json['user_data'] = $this->getAppVersionSetting($record->id);
+		}
+	   else
+	    {
+		   	$json['success'] = 0;
+			$json['message'] = 'Record not found.';
+	    }
+	    echo json_encode($json);
+	}
+
+	public function getAppVersionSetting($id)
+	{
+		$user 				               = Version_Setting::find($id);
+		//$json['id']    		               = $user->id;
+		$json['id'] 	               = $user->id;
+		//$json['user_id']                   = !empty($user->user_id) ? $user->user_id : '';
+		$json['app_version']   = !empty($user->app_version) ? $user->app_version : '';
+	
+		return $json;	
+	}
 
     
    

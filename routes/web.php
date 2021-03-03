@@ -60,5 +60,7 @@ Route::group(['middleware' => 'admin'], function(){
 	Route::resource('admin/subcategory','Backend\SubCategoryController');
 	Route::get('admin/subcategory/delete/{id}', 'Backend\SubCategoryController@subcategory_delete')->name('subcategory.delete');
 
+	Route::get('admin/versionsetting','Backend\VersionSettingController@versionsetting');
+
 
 });

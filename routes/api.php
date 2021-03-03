@@ -43,12 +43,14 @@ Route::post('category_list', 'API\CategoriesController@category_list');
 // sub category
 Route::post('subcategory_list', 'API\CategoriesController@subcategory_list');
 
-// product
+// product list
 Route::post('product_list', 'API\ProductsController@product_list');
 // retrive product by category
 Route::post('product_details', 'API\ProductsController@product_details');
 // search product by category and product
 Route::post('product_search', 'API\ProductsController@product_search');
+// retrive product by subcategory
+Route::post('subcategory_product_details', 'API\ProductsController@subcategory_product_details');
 
 Route::post('image_list', 'API\ProductsController@getIamgeList');
 
@@ -66,6 +68,7 @@ Route::post('add_fav', 'API\FavouritesController@add_favourites');
 Route::post('add_favourite', 'API\FavouritesController@AddFavouriteProduct');
 Route::post('favourite_list', 'API\FavouritesController@getFavouriteList');
 Route::post('favourite_product_delete', 'API\FavouritesController@deleteFavouriteProdcut');
+Route::post('favourite_product_update', 'API\FavouritesController@UpdateFavouriteProduct');
 
 # Address
 Route::post('add_address', 'API\AddressController@Address_Add');
@@ -87,6 +90,9 @@ Route::post('delete_order', 'API\OrdersController@DeleteOrder');
 
 # Order Details
 Route::post('add_cart_to_order', 'API\OrderDetailsController@Add_cart_to_Order');
+
+## APP_VERSION_SETTING_UPDATE
+Route::post('app_version_setting_update', 'ApiController@app_version_setting_update');
 
 
 

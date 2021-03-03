@@ -169,11 +169,14 @@ class AddressController extends BaseController
 
     public function Address_Edit(Request $request)
     {
-        $address_update = address::find($request->address_id);
+        // $address_update = address::find($request->address_id);
+        $address_update = User::find($request->input('user_id'));
 
         if(!empty($address_update)) {
             // $address_update->address_id  = trim($request->address_id);
-            $address_update->user_id  = trim($request->user_id);
+            // $address_update->user_id  = trim($request->user_id);
+            $address_update->fullname  = trim($request->fullname);
+            $address_update->username  = trim($request->fullname);
             $address_update->address  = trim($request->address);
             $address_update->city  = trim($request->city);
             $address_update->state  = trim($request->state);
@@ -187,7 +190,7 @@ class AddressController extends BaseController
         }
         else{
             $json['success'] = 0;
-            $json['message'] = 'Address not found.';
+            $json['message'] = 'User not found.';
         }
 
  	    echo json_encode($json);

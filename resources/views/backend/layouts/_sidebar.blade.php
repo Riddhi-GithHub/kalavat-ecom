@@ -39,6 +39,10 @@
                 <a href="{{ url('admin/order') }}"><span class="fa fa-tasks"></span> <span class="xn-text">Order List</span></a>
             </li>
 
+            <li class="@if ( Request::segment(2)== 'versionsetting') active @endif">
+                <a href="{{ url('admin/versionsetting') }}"><span class="fa fa-gear"></span> <span class="xn-text">Version Setting</span></a>
+            </li>
+
             <li class="@if ( Request::segment(2)== 'contact_us') active @endif">
                 <a href="{{ url('admin/contact_us') }}"><span class="fa fa-book"></span> <span class="xn-text">Contact Us List</span></a>
             </li>

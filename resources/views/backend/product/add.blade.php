@@ -38,6 +38,21 @@
                         </div>
                      </div>
                   </div>
+                  
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Select SubCategory <span style="color:red">*</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <select id="sub_cat_id" name="sub_cat_id" class="form-control">
+                              <option selected disabled>Select SubCategory</option>
+                              @foreach($subcategory as $subcategoryData)
+                              <option value="{{$subcategoryData->id}}">{{$subcategoryData->sub_cat_name}}</option>
+                              @endforeach
+                           </select>
+                        </div>
+                     </div>
+                  </div>
+
                  
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Product Name <span style="color:red"> *</span></label>
@@ -90,7 +105,7 @@
                      </div>
                   </div>
 
-                  <div class="form-group">
+                  {{-- <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Color <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
@@ -98,9 +113,42 @@
                            <span style="color:red">{{  $errors->first('color') }}</span>
                         </div>
                      </div>
+                  </div> --}}
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Select Color <span style="color:red">*</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <select id="color" name="color" class="form-control">
+                              {{-- <select class="custom-select form-control" id="cat_id" name="cat_id"> --}}
+                              <option selected disabled>Select Color</option>
+                              <option value="red">Red</option>
+                              <option value="blue">blue</option>
+                              <option value="black">black</option>  
+                              <option value="black">gray</option>  
+                              <option value="black">pink</option>  
+                           </select>
+                        </div>
+                     </div>
                   </div>
 
                   <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Select Size <span style="color:red">*</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <select id="size" name="size" class="form-control">
+                              {{-- <select class="custom-select form-control" id="cat_id" name="cat_id"> --}}
+                              <option selected disabled>Select Size</option>
+                              <option value="s">S</option>
+                              <option value="m">M</option>
+                              <option value="l">L</option>
+                              <option value="xl">XL</option>
+                              <option value="xxl">XXL</option>
+                           </select>
+                        </div>
+                     </div>
+                  </div>
+
+                  {{-- <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Size <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
@@ -108,7 +156,7 @@
                            <span style="color:red">{{  $errors->first('size') }}</span>
                         </div>
                      </div>
-                  </div>
+                  </div> --}}
 
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Brand <span style="color:red"> *</span></label>
@@ -119,6 +167,16 @@
                         </div>
                      </div>
                   </div>
+
+                  {{-- <div class="form-check">
+                     <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">adidas
+                     <div class="col-md-8 col-xs-12">
+                        
+                     </div>   --}}
+                     {{-- <label class="form-check-label" for="defaultCheck1">
+                     </div>
+                       Default checkbox
+                     </label> --}}
 
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Image <span style="color:red"> *</span></label>

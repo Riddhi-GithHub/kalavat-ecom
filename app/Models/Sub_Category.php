@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
+use App\Models\Product;
 
 class Sub_Category extends Model
 {
@@ -15,6 +16,11 @@ class Sub_Category extends Model
    public function category(){
        return $this->belongsTo(Category::class,'cat_id');
    }
+
+   public function product(){
+    return $this->hasMany(Product::class,'sub_cat_id');
+   }
+
 
    public function cate()
    {

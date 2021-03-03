@@ -4,17 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
+use App\Models\Sub_Category;
 use App\Models\product_images;
 
 class Product extends Model
 {
     protected $table = 'products';
     protected $fillable = [
-       'cat_id','product_name','description','img','price','quantity','offer','color','size','brand'
+       'cat_id','sub_cat_id','product_name','description','img','price','quantity','offer','color','size','brand'
    ];
 
    public function category(){
        return $this->belongsTo(Category::class,'cat_id');
+   }
+
+   public function subcategory(){
+    return $this->belongsTo(Sub_Category::class,'sub_cat_id');
    }
 
    public function images()

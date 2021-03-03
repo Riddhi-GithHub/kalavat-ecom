@@ -107,7 +107,7 @@
                           </div>
                           </div>
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                           <label class="col-md-3 control-label">
                           Address :
                           </label>
@@ -116,21 +116,20 @@
                             {{ $getuser->address->state }},  {{ $getuser->address->contry }}, 
                             {{ $getuser->address->zip_code }}.
                           </div>
-                          </div>
+                          </div> --}}
 
-                          {{-- <div class="form-group">
+                          <div class="form-group">
                             <label class="col-md-3 control-label">
                             Address :
                             </label>
                             <div class="col-sm-5" style="margin-top: 8px;">
-                              @foreach ($getuser->address as $item)
-                              {{ dd($item->city) }}
-                              {{ $item->address }} , {{ $item->city }},
-                              {{ $item->contry }}, {{ $item->state }},
-                              {{ $item->zip_code }}.
-                              @endforeach
+                              {{-- @foreach ($getuser->address as $item) --}}
+                              {{ $getuser->address }} , {{ $getuser->city }},
+                              {{ $getuser->contry }}, {{ $getuser->state }},
+                              {{ $getuser->zip_code }}.
+                              {{-- @endforeach --}}
                             </div>
-                            </div> --}}
+                            </div>
                      
                       <div class="form-group">
                         <label class="col-md-3 control-label">
