@@ -11,10 +11,28 @@ class VersionSettingController extends Controller
 {
     public function versionsetting(Request $request)
     {
-        return d;
+        $getrecord = Version_Setting::orderBy('id', 'desc');
+    	
+    	// Search Box End
+    	$getrecord = $getrecord->paginate(40);
+    	$data['getrecord'] = $getrecord;
+    	$data['meta_title'] = 'App Version';
+    	return view('backend.version.list', $data);
     }
-    public function index(Request $request)
+
+    public function versionsetting_edit($id){
+        $data['getuser'] = Version_Setting::find($id);
+        $data['meta_title'] = "Edit App Version";
+        return view('backend.version.edit', $data);
+    }
+
+    public function versionsetting_update($id, Request $request)
     {
-        dd('setting');
+        $version_update = Version_Setting::find($id);
+     
+        $version_update->app_version      = $request->app_version;
+        $version_update->save();
+        return redirect('admin/versionsetting')->with('warning', 'Record updated Successfully!');
     }
+
 }

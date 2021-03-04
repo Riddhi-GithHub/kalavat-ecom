@@ -43,6 +43,10 @@
                 <a href="{{ url('admin/versionsetting') }}"><span class="fa fa-gear"></span> <span class="xn-text">Version Setting</span></a>
             </li>
 
+            <li class="@if ( Request::segment(2)== 'slider') active @endif">
+                <a href="{{ url('admin/slider') }}"><span class="fa fa-sliders"></span> <span class="xn-text">Slider List</span></a>
+            </li>
+
             <li class="@if ( Request::segment(2)== 'contact_us') active @endif">
                 <a href="{{ url('admin/contact_us') }}"><span class="fa fa-book"></span> <span class="xn-text">Contact Us List</span></a>
             </li>

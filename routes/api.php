@@ -94,5 +94,15 @@ Route::post('add_cart_to_order', 'API\OrderDetailsController@Add_cart_to_Order')
 ## APP_VERSION_SETTING_UPDATE
 Route::post('app_version_setting_update', 'ApiController@app_version_setting_update');
 
+# Slider
+Route::post('app_slider_list', 'ApiController@app_slider_list');
+
+# Rating 
+Route::post('app_product_rating_add', 'API\Ratingscontroller@app_product_rating_add');
+Route::post('app_product_rating_list', 'API\Ratingscontroller@app_product_rating_list');
+Route::post('app_product_rating_update', 'API\Ratingscontroller@app_product_rating_update');
+
+
+
 
 

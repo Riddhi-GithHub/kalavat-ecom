@@ -13,17 +13,17 @@ class CreateOrderDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_details', function (Blueprint $table) {
-            $table->bigIncrements('order_detail_id');
-            $table->integer('user_id')->nullable();
-            $table->boolean('quantity')->nullable();
-            $table->double('total_order_price')->nullable();
-            $table->string('delivery_date')->nullable();
-            $table->integer('order_status')->default('0')->comment('0:Processing,1:Deleiverd,2:Cancelled')->nullable();
+        // Schema::create('order_details', function (Blueprint $table) {
+        //     $table->bigIncrements('order_detail_id');
+            // $table->integer('user_id')->nullable();
+            // $table->boolean('quantity')->nullable();
+            // $table->double('total_order_price')->nullable();
+            // $table->string('delivery_date')->nullable();
+            // $table->integer('order_status')->default('0')->comment('0:Processing,1:Deleiverd,2:Cancelled')->nullable();
 
-            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->timestamps();
-        });
+            // $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+        //     $table->timestamps();
+        // });
     }
 
     /**

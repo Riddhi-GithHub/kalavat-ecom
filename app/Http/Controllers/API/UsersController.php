@@ -8,6 +8,7 @@ use App\User;
 use App\Models\address;
 use App\Models\ContactUs;
 use Validator;
+use Hash;
 
 class UsersController extends BaseController
 {
@@ -110,6 +111,7 @@ class UsersController extends BaseController
             'id' => 'required',
             'fullname' => 'required',
             'email' => 'required',
+            'password' => 'required|min:6',
             'mobile' => 'required',
         ]);
 
@@ -119,11 +121,13 @@ class UsersController extends BaseController
 
         $user = User::find($request->id);
         // if(!empty($user)){
-            if (!empty($user->otp_verify == 1)) {
+            if (!empty($user->otp_verify == 2)) {
                 $user->fullname = $input['fullname'];
                 $user->username = $input['fullname'];
                 $user->email = $input['email'];
                 $user->mobile = $input['mobile'];
+                $user->password = Hash::make($input['password']);
+
                 $user->update();
                 return $this->sendResponse($user->toArray(), 'User updated successfully.');
             }

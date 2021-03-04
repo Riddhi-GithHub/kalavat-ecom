@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Models\Favourites;
+use App\Models\Slider;
 use App\Models\Version_Setting;
 use Hash;
 use Validator;
@@ -219,7 +220,7 @@ class ApiController extends Controller
 	}
 
 
-
+   // version setting
 	public function app_version_setting_update(Request $request)
 	{
 		// echo "str_in_ddd__ddddg";
@@ -251,6 +252,25 @@ class ApiController extends Controller
 	
 		return $json;	
 	}
+
+
+	// slider list
+	public function app_slider_list(Request $request)
+    {
+        $slider = Slider::get();
+
+        if(!empty($slider->count() > 0)){
+            $json['success'] = 1;
+            $json['message'] = 'Slider list loaded Successfully.';
+            $json['slider_list'] = $slider;
+        }
+        else{
+            $json['success'] = 0;
+            $json['message'] = 'Slider not found.';
+        }
+
+ 	    echo json_encode($json);
+    }
 
     
    

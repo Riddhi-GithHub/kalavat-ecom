@@ -102,7 +102,7 @@ class FavouritesController extends BaseController
         }
         else{
         $json['success'] = 0;
-        $json['message'] = 'Fill user_id product_id and status';
+        $json['message'] = 'Fill user_id, product_id and status';
         }
         echo json_encode($json);
     }
@@ -180,7 +180,7 @@ class FavouritesController extends BaseController
         }
         else{
         $json['success'] = 0;
-        $json['message'] = 'Fill user_id product_id';
+        $json['message'] = 'Fill user_id and product_id';
         }
         echo json_encode($json);
     }

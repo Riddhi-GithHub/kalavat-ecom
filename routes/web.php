@@ -34,7 +34,6 @@ Route::group(['middleware' => 'admin'], function(){
 	Route::post('admin/user/add', 'Backend\UserController@user_insert');
 	Route::get('admin/user/edit/{id}', 'Backend\UserController@user_edit');
 	Route::post('admin/user/edit/{id}', 'Backend\UserController@user_update');
-
 	Route::get('admin/user/view/{id}', 'Backend\UserController@user_view');
 	Route::get('admin/user/delete/{id}', 'Backend\UserController@user_delete')->name('user.delete');
 
@@ -61,6 +60,14 @@ Route::group(['middleware' => 'admin'], function(){
 	Route::get('admin/subcategory/delete/{id}', 'Backend\SubCategoryController@subcategory_delete')->name('subcategory.delete');
 
 	Route::get('admin/versionsetting','Backend\VersionSettingController@versionsetting');
+	Route::get('admin/versionsetting/edit/{id}', 'Backend\VersionSettingController@versionsetting_edit');
+	Route::post('admin/versionsetting/edit/{id}', 'Backend\VersionSettingController@versionsetting_update');
 
+	Route::get('admin/slider', 'Backend\SliderController@slider_list');
+	Route::get('admin/slider/add', 'Backend\SliderController@slider_add');
+	Route::post('admin/slider/add', 'Backend\SliderController@slider_insert');
+	Route::get('admin/slider/edit/{id}', 'Backend\SliderController@slider_edit');
+	Route::post('admin/slider/update/{id}', 'Backend\SliderController@slider_update');
+	Route::get('admin/slider/delete/{id}', 'Backend\SliderController@slider_delete')->name('slider.delete');
 
 });
