@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Sub_Category;
 use App\Models\product_images;
 use Validator;
+use DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProductsController extends BaseController
@@ -106,6 +107,140 @@ class ProductsController extends BaseController
         }
     }
 
+    public function filter_product(Request $request)
+    {
+        $product = Product::get();
+
+          # all data 
+          $data['color'] = Product::where('color', 'like', '%' . $request->color . '%')->get();
+
+          $size = explode(",", $request->size);  
+          $data['size'] = Product::whereIn('size',$size)->get();
+
+          $price = explode(",", $request->price);
+          $min_price = implode(",", $price);
+          $max_price = array_pop($price);
+          // $pp = Product::whereBetween('price', [100,300])->get();
+          $data['price'] = Product::whereBetween('price', [$min_price,$max_price])->get();
+
+          dd($data);
+
+
+
+
+        # color
+          $color = Product::where('color', 'like', '%' . $request->color . '%')->get();
+          if(!empty($product)){
+             if (!empty($color->count() > 0)) {
+                 return $this->sendResponse_product($color,'Filter Color Product retrieved successfully.');
+             }
+             else{
+                 return $this->sendError('Filter Color Product not found.'); 
+             }
+         }
+         else{
+             return $this->sendError('Product not found.'); 
+         }
+ 
+
+
+        # size
+        $size = explode(",", $request->size);  
+        // $getsize = Product::whereIn('size',['s','m'])->get();
+        $getsize = Product::whereIn('size',$size)->get();
+
+        if(!empty($product)){
+            if (!empty($getsize->count() > 0)) {
+                return $this->sendResponse_product($getsize,'Filter size Product retrieved successfully.');
+            }
+            else{
+                return $this->sendError('Filter Color Product not found.'); 
+            }
+        }
+        else{
+            return $this->sendError('Product not found.'); 
+        }
+
+       
+        # price 
+        $price = explode(",", $request->price);
+        $min_price = implode(",", $price);
+        $max_price = array_pop($price);
+        // $pp = Product::whereBetween('price', [100,300])->get();
+        $getprice = Product::whereBetween('price', [$min_price,$max_price])->get();
+
+
+        # Brand 
+        $brand = explode(",", $request->brand);  
+        // $getbrand = Product::whereIn('brand',['naf','jack'])->get();
+        $getbrand = Product::whereIn('brand',$brand)->get();
+
+       
+       
+        
+
+
+
+
+
+
+
+
+
+        $size = Product::where('size', 'like', '%' . $request->size . '%')
+        ->where('color', 'like', '%' . $request->color . '%')
+        ->get();
+        
+        $product = Product::get();
+        $size = Product::where('size', 'like', '%' . $request->size . '%')->get();
+        
+        if(!empty($product)){
+            if (!empty($size->count() > 0)) {
+                return $this->sendResponse_product($size,'Filter size Product retrieved successfully.');
+            }
+            else{
+                return $this->sendError('Filter Color Product not found.'); 
+            }
+        }
+        else{
+            return $this->sendError('Product not found.'); 
+        }
+
+        // color filter
+        $color = Product::where('color', 'like', '%' . $request->color . '%')->get();
+       
+        $price = $request->price;
+        $min_price = Product::where('price', '<=', $price)->get();
+        $max_price = Product::where('price', '>=', $price)->get();
+        // dd(($min_price));
+
+        // min price filter
+        if(!empty($product)){
+            if (!empty($min_price->count() > 0)) {
+                return $this->sendResponse_product($min_price,'Min Price Product retrieved successfully.');
+            }
+            else{
+                return $this->sendError('Min or Max Price Product not found.'); 
+            }
+        }
+        else{
+            return $this->sendError('Product not found.'); 
+        }
+
+        // max price filter
+        // if(!empty($product)){
+        //     if (!empty($max_price->count() > 0)) {
+        //         return $this->sendResponse_product($max_price,'Max Price Product retrieved successfully.');
+        //     }
+        //     else{
+        //         return $this->sendError('Min or Max Price Product not found.'); 
+        //     }
+        // }
+        // else{
+        //     return $this->sendError('Product not found.'); 
+        // }
+           
+    }
 
     //-------- other way ------------------
 
@@ -126,6 +261,9 @@ class ProductsController extends BaseController
 
  	    echo json_encode($json);
 	}
+
+
+
 
     
 }

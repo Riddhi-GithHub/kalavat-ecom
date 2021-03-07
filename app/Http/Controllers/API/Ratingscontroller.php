@@ -30,7 +30,6 @@ class Ratingscontroller extends Controller
                 $json['success'] = 0;
                 $json['message'] = 'User or  Product not found.';
             }
-    
         }
         else{
             $json['success'] = 0;

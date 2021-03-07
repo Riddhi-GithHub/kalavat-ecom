@@ -37,7 +37,7 @@
                   <a href="#" class="mb-control" data-box="#mb-signout"><span class="fa fa-sign-out"></span></a>
                </li>
                <li class="xn-icon-button pull-right">
-                  <div style="margin-top: 16px;color: #fff;font-size: 14px;margin-right: 12px;">Welcome {{ Auth::user()->name }}</div>
+                  <div style="margin-top: 16px;color: #fff;font-size: 14px;margin-right: 12px;">Welcome {{ Auth::user()->fullname }}</div>
                </li>
                <!--END SIGN OUT -->
             </ul>
@@ -66,10 +66,6 @@
       </div>
 
 
-      
-
-
-
        <!-- START PRELOADS -->
         <audio id="audio-alert" src="{{ url('public/files/audio/alert.mp3') }}" preload="auto"></audio>
         <audio id="audio-fail" src="{{ url('public/files/audio/fail.mp3') }}" preload="auto"></audio>
@@ -90,7 +86,6 @@
         <!-- END THIS PAGE PLUGINS-->  
         
         <!-- START TEMPLATE -->
-        
         
         <script type="text/javascript" src="{{ url('public/files/js/plugins.js') }}"></script>        
         <script type="text/javascript" src="{{ url('public/files/js/actions.js') }}"></script>        

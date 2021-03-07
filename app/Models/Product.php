@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
 use App\Models\Sub_Category;
 use App\Models\product_images;
+use App\Models\Rating;
+
 
 class Product extends Model
 {
@@ -21,6 +23,11 @@ class Product extends Model
    public function subcategory(){
     return $this->belongsTo(Sub_Category::class,'sub_cat_id');
    }
+
+   public function rating(){
+    return $this->belongsTo(Rating::class,'product_id');
+   }
+
 
    public function images()
    {

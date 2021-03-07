@@ -14,6 +14,7 @@ use Auth;
 use Str;
 use File;
 use DB;
+use Mail;
 
 class ApiController extends Controller
 {
@@ -23,6 +24,10 @@ class ApiController extends Controller
 		
 		$this->token = !empty($request->header('token'))?$request->header('token'):'';
 	}
+	public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmail);
+    }
 
 
     public function app_login(Request $request)
@@ -272,10 +277,58 @@ class ApiController extends Controller
  	    echo json_encode($json);
     }
 
-    
-   
 
 
-    
 
+
+
+		public function forgot_password(Request $request)
+	 	{
+			 $user = User::whereEmail($request->email)->first();
+			 $otp = rand(1111,9999);
+			 if(($user) == null){
+				 return redirect()->back()->with(['error' => 'Email not Exciest']);
+			 }else{
+			 $user = User::find($user->id);
+			 $code = array('username' => "welcome");
+			 Mail::send(
+				 'Forgot',
+				 ['user'=>$user, 'code' =>$code],
+				 function($message) use ($user){
+					 $message->to($user->email);
+					 $message->subject($user->username, "reset your password");
+				 }
+			 );
+				$json['status'] = 1;
+				$json['message'] = 'Reset code send to your email.';
+			 }
+			echo json_encode($json);
+			//  return redirect()->back()->with(['success' => 'Reset code send to your email']); 
+		}
+
+		public function change_password(Request $request)
+		{
+			// $user = User::find('id');
+			$id = request()->id;
+			$user = User::find($id);
+			// dd($user);
+			return view('changePassword',['user'=>$user]);
+		}
+		public function store_password(Request $request)
+		{
+			$request->validate([
+				'new_password' => ['required'],
+				'new_confirm_password' => ['same:new_password'],
+				]);
+			
+			$user = User::find($request->get('id'));
+			$user->password=$request->input('password');
+			// $user->password = Hash::make($request->get('new_password'));
+			$user->password=$request->input('new_confirm_password');
+			$user->save();
+	
+			return redirect('admin/login')->with('success', 'Password Change Successfully!');  
+			// return back()->with('message','password change successfully');
+		}
+		
 }

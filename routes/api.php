@@ -32,6 +32,10 @@ Route::post('add_account', 'API\UsersController@add_account');
 Route::post('edit_account', 'API\UsersController@edit_account');
 Route::post('add_contact', 'API\UsersController@add_contact');
 
+Route::post('forgot_password','ApiController@forgot_password');
+Route::get('change-password/{id}','ApiController@change_password')->name('change-password');
+Route::post('change-password', 'ApiController@store_password')->name('password');   
+
 // address
 // Route::post('address_list', 'API\AddressController@address_list');
 // Route::post('add_address', 'API\AddressController@add_address');
@@ -51,9 +55,10 @@ Route::post('product_details', 'API\ProductsController@product_details');
 Route::post('product_search', 'API\ProductsController@product_search');
 // retrive product by subcategory
 Route::post('subcategory_product_details', 'API\ProductsController@subcategory_product_details');
-
+// retrive product images
 Route::post('image_list', 'API\ProductsController@getIamgeList');
-
+// retrive filtering product 
+Route::post('filter_product', 'API\ProductsController@filter_product');
 
 
 // add to favourite product

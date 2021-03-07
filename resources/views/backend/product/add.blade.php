@@ -158,7 +158,7 @@
                      </div>
                   </div> --}}
 
-                  <div class="form-group">
+                  {{-- <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Brand <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
@@ -166,19 +166,22 @@
                            <span style="color:red">{{  $errors->first('brand') }}</span>
                         </div>
                      </div>
-                  </div>
-
-                  {{-- <div class="form-check">
-                     <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">adidas
-                     <div class="col-md-8 col-xs-12">
-                        
-                     </div>   --}}
-                     {{-- <label class="form-check-label" for="defaultCheck1">
-                     </div>
-                       Default checkbox
-                     </label> --}}
+                  </div> --}}
 
                   <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Brand <span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input class="form-check-input" style="margin: 5px 6px 0px" type="checkbox" value="adidas" name="brand[]">adidas
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="adidas1" name="brand[]">adidas1
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="diesel" name="brand[]">diesel
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="naf naf" name="brand[]">naf naf
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="champian" name="brand[]">champian
+                        </div>
+                     </div>
+                  </div>  
+
+            <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Image <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">

@@ -214,7 +214,6 @@ class UsersController extends BaseController
         }
     }
     
-
     // store address in users table
     public function add_account(Request $request)
     {
@@ -231,6 +230,7 @@ class UsersController extends BaseController
             'state' => 'required',
             'zip_code' => 'required|min:6|max:6',
             'contry' => 'required',
+            'password' => 'required|min:6'
         ]);
 
         if($validator->fails()){
@@ -238,34 +238,82 @@ class UsersController extends BaseController
         }
 
         $user = User::where('mobile', '=', ($request->mobile))->first();
-        // dd($user); 
-            if (!empty($user->otp_verify == 1)) {
-                $user->fullname = $input['fullname'];
-                $user->username = $input['fullname'];
-                $user->email = $input['email'];
-                $user->address  = $input['address'];
-                $user->city  = $input['city'];
-                $user->state  = $input['state'];
-                $user->zip_code  = $input['zip_code'];
-                $user->contry  = $input['contry'];
-                $user->gender = $input['gender'];
-                $user->mobile = $input['mobile'];
-                $user->dob = $input['dob'];
-                $user->otp_verify = 2;
-                if ($request->hasFile('image')) {
-                    $image = $request->file('image');
-                    $no = rand(1111,9999);
-                    $image_name = time().$no.'.jpg';
-                    $i = $image->move(public_path('images/user'), $image_name);
-                    $user->image = $image_name;
-                } 
-                $user->save();
 
-                // $data = User::where('mobile', '=', ($request->mobile))->first();
-                return $this->sendResponse($user,'User add Successfully.');
+        // dd(empty($user));
+        if(!empty($user)){
+            if (!empty($user->otp_verify == 1)) {
+                    $user->fullname = $input['fullname'];
+                    $user->username = $input['fullname'];
+                    $user->email = $input['email'];
+                    $user->address  = $input['address'];
+                    $user->city  = $input['city'];
+                    $user->state  = $input['state'];
+                    $user->zip_code  = $input['zip_code'];
+                    $user->contry  = $input['contry'];
+                    $user->gender = $input['gender'];
+                    $user->mobile = $input['mobile'];
+                    $user->dob = $input['dob'];
+                    $user->otp_verify = 2;
+                    $user->password = Hash::make($input['password']);
+
+                    if ($request->hasFile('image')) {
+                        $image = $request->file('image');
+                        $no = rand(1111,9999);
+                        $image_name = time().$no.'.jpg';
+                        $i = $image->move(public_path('images/user'), $image_name);
+                        $user->image = $image_name;
+                    } 
+                    $user->save();
+
+                    // $data = User::where('mobile', '=', ($request->mobile))->first();
+                    return $this->sendResponse($user,'User add Successfully.');
+                }
+            else {
+                return $this->sendError('User not login');  
             }
-        else {
-            return $this->sendError('user not login');  
         }
+        else{
+            return $this->sendError('User not Found'); 
+        }
+ 
     }
+
+
+    public function forgot_password_old(Request $request)
+	{
+		$input = $request->all();
+		if (!empty($request->email)) {
+			// dd($request->mobile);
+			$otp = rand(1111,9999);
+			// $otp = 9999;
+            $user = User::where('email', '=', trim($request->email))->first();
+		     if (!empty($user)) {
+				$user->otp = 9999;
+
+				$resetLink = '';
+				if (!($input['email'])) {
+					$resetLink = env(
+						'ADMIN_LINK');
+				} else {
+					$resetLink = $this->getProtocol().'http://localhost/laravel/kalavat/public'.env('MAIN_DOMAIN');
+				}
+				dd($resetLink);
+				// $user->otp = $otp;
+		    	$message = "Your requested OTP for Mobile Number verification at Bookfast is  9999  Never share this with anyone.";
+				// $message = "Your requested OTP for Mobile Number verification at Bookfast is ".$otp."";
+				$this->generateOTP($user->mobile, $message, $otp);
+                // dd($user);
+				$user->save();
+				$json['status'] = 1;
+				$json['message'] = 'OTP resent successfully.';
+			} else {
+				$json['status'] = 0;
+				$json['message'] = 'Mobile number not found!';
+			}
+		} else {
+			$json['status'] = 0;
+			$json['message'] = 'Record not found.';
+		}
+		echo json_encode($json);
+	}
 }

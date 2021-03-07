@@ -17,8 +17,46 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index(Request $request)
     {
+        $id = Product::pluck('id');
+		foreach ($id as $d) {
+			$rating = Rating::with('restaurant')->where('ratings.rating_restaurant_id',$d)->count('ratings.rating_restaurant_id');
+		}
+
+
+    	//$getrecord = Product::orderBy('id', 'desc');
+        $getrecord = Product::orderBy('id', 'desc')->select('products.*');
+        $getrecord = $getrecord->join('categories', 'products.cat_id', '=', 'categories.id');
+    	
+    	if (!empty($request->id)) {
+			$getrecord = $getrecord->where('products.id', '=', $request->id);
+		}
+		
+        if (!empty($request->cat_name)) {
+			$getrecord = $getrecord->where('cat_name', 'like', '%' . $request->cat_name . '%');
+		}
+
+		if (!empty($request->product_name)) {
+			$getrecord = $getrecord->where('product_name', 'like', '%' . $request->product_name . '%');
+		}
+        if (!empty($request->price)) {
+			$getrecord = $getrecord->where('price', '=', $request->price);
+		}
+	
+    	// Search Box End
+    	$getrecord = $getrecord->paginate(40);
+    	$data['getrecord'] = $getrecord;
+    	$data['meta_title'] = 'Product List';
+    	return view('backend.product.list', $data);
+    }
+
+
+
+    public function index_backup(Request $request)
+    {
+
     	//$getrecord = Product::orderBy('id', 'desc');
         $getrecord = Product::orderBy('id', 'desc')->select('products.*');
         $getrecord = $getrecord->join('categories', 'products.cat_id', '=', 'categories.id');
@@ -80,7 +118,7 @@ class ProductController extends Controller
             'size' => 'required|max:30',
             'brand' => 'required|max:30',
             'images' => 'required|max:15000'
-              // 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            //   'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         
         $category = Category::get();
@@ -88,7 +126,11 @@ class ProductController extends Controller
 
         $category = Sub_Category::get();
         $sub_cat_id = $request->input('sub_cat_id');
-
+        
+         foreach($request->brand as $b){
+             $ba[] = $b;
+         }
+        // $brand[] =  $request->brand;
         $product_insert = new Product;
         $product_insert->cat_id = $cat_id;
         $product_insert->sub_cat_id = $sub_cat_id;
@@ -99,9 +141,23 @@ class ProductController extends Controller
         $product_insert->offer    = $request->offer;
         $product_insert->color   = $request->color;
         $product_insert->size = $request->size;
-        $product_insert->brand = $request->brand;
+        $product_insert['brand'] = $b;
+
+        // $brand = $request->input('brand');
+        // dd($product_insert);
         $product_insert->save();
-      
+
+        // foreach($request->brand as $b){
+        //     $ba[] = $b;
+        // $product =  Product::create([
+        //     'cat_id'        => $cat_id,
+        //     'sub_cat_id'        => $sub_cat_id,
+        //     'offer'        => $request->offer,
+        //     'size'        => $request->size,
+        //     'brand'        => $ba,
+        //     ]);
+        // }
+
         if($request->hasfile('images')) {
             foreach($request->file('images') as $file){
                     // $image_name = time().'-'.$file->getClientOriginalName();
