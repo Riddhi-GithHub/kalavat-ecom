@@ -100,7 +100,7 @@ class UsersController extends BaseController
                     return $this->sendError('Otp not Verified.');  
                 }
             } else {
-                return $this->sendError('Mobile number not match.'); 
+                return $this->sendError('User not exists.'); 
         }
     }
 
@@ -218,64 +218,77 @@ class UsersController extends BaseController
     public function add_account(Request $request)
     {
         $input = $request->all();
-        $validator = Validator::make($input, [
-            'fullname' => 'required',
-            'email' => 'required|unique:users',
-            'mobile' => 'required',
-            'dob' => 'required|date_format:d/m/Y',
-            'gender' => 'required',
-            'image' => 'required',
-            'address' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'zip_code' => 'required|min:6|max:6',
-            'contry' => 'required',
-            'password' => 'required|min:6'
-        ]);
+        // $validator = Validator::make($input, [
+            // 'fullname' => 'required',    
+            // 'email' => 'required|unique:users',
+            // 'mobile' => 'required',
+            // 'dob' => 'required|date_format:d/m/Y',
+            // 'gender' => 'required',
+            // 'image' => 'required',
+            // 'address' => 'required',
+            // 'city' => 'required',
+            // 'state' => 'required',   
+            // 'zip_code' => 'required|min:6|max:6',
+            // 'contry' => 'required',
+            // 'password' => 'required|min:6'
+        // ]);
+        // dd(!empty($validator));
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
-        }
+        // if($validator->fails()){
+        //     return $this->sendError('Validation Error.', $validator->errors());       
+        // }
+
+
 
         $user = User::where('mobile', '=', ($request->mobile))->first();
 
         // dd(empty($user));
-        if(!empty($user)){
-            if (!empty($user->otp_verify == 1)) {
-                    $user->fullname = $input['fullname'];
-                    $user->username = $input['fullname'];
-                    $user->email = $input['email'];
-                    $user->address  = $input['address'];
-                    $user->city  = $input['city'];
-                    $user->state  = $input['state'];
-                    $user->zip_code  = $input['zip_code'];
-                    $user->contry  = $input['contry'];
-                    $user->gender = $input['gender'];
-                    $user->mobile = $input['mobile'];
-                    $user->dob = $input['dob'];
-                    $user->otp_verify = 2;
-                    $user->password = Hash::make($input['password']);
+        if (!empty($request->mobile && $request->email)){
+            if(!empty($user)){
+                $email = User::where('email', '=', ($request->email))->count();
+                    // dd(empty($email));
+                if(empty($email)){
+                    if (!empty($user->otp_verify == 1)) {
+                            $user->fullname = $input['fullname'];
+                            $user->username = $input['fullname'];
+                            $user->email = $input['email'];
+                            $user->address  = $input['address'];
+                            $user->city  = $input['city'];
+                            $user->state  = $input['state'];
+                            $user->zip_code  = $input['zip_code'];
+                            $user->contry  = $input['contry'];
+                            $user->gender = $input['gender'];
+                            $user->mobile = $input['mobile'];
+                            $user->dob = $input['dob'];
+                            $user->otp_verify = 2;
+                            $user->password = Hash::make($input['password']);
 
-                    if ($request->hasFile('image')) {
-                        $image = $request->file('image');
-                        $no = rand(1111,9999);
-                        $image_name = time().$no.'.jpg';
-                        $i = $image->move(public_path('images/user'), $image_name);
-                        $user->image = $image_name;
-                    } 
-                    $user->save();
-
-                    // $data = User::where('mobile', '=', ($request->mobile))->first();
-                    return $this->sendResponse($user,'User add Successfully.');
+                            if ($request->hasFile('image')) {
+                                $image = $request->file('image');
+                                $no = rand(1111,9999);
+                                $image_name = time().$no.'.jpg';
+                                $i = $image->move(public_path('images/user'), $image_name);
+                                $user->image = $image_name;
+                            } 
+                            $user->save();
+                            // $data = User::where('mobile', '=', ($request->mobile))->first();
+                            return $this->sendResponse($user,'User add Successfully.');
+                        }
+                    else {
+                        return $this->sendError('User not login');  
+                    }
                 }
-            else {
-                return $this->sendError('User not login');  
+                else{
+                    return $this->sendError('Email allready exist.'); 
+                }
+            }
+            else{
+                return $this->sendError('Mobile not Match'); 
             }
         }
         else{
-            return $this->sendError('User not Found'); 
+            return $this->sendError('Mobile and Email Required.'); 
         }
- 
     }
 
 

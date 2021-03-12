@@ -114,12 +114,12 @@
                         </div>
                      </div>
                   </div> --}}
-                  <div class="form-group">
+
+                  {{-- <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Select Color <span style="color:red">*</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
                            <select id="color" name="color" class="form-control">
-                              {{-- <select class="custom-select form-control" id="cat_id" name="cat_id"> --}}
                               <option selected disabled>Select Color</option>
                               <option value="red">Red</option>
                               <option value="blue">blue</option>
@@ -129,14 +129,13 @@
                            </select>
                         </div>
                      </div>
-                  </div>
+                  </div> --}}
 
-                  <div class="form-group">
+                  {{-- <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Select Size <span style="color:red">*</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
                            <select id="size" name="size" class="form-control">
-                              {{-- <select class="custom-select form-control" id="cat_id" name="cat_id"> --}}
                               <option selected disabled>Select Size</option>
                               <option value="s">S</option>
                               <option value="m">M</option>
@@ -146,7 +145,7 @@
                            </select>
                         </div>
                      </div>
-                  </div>
+                  </div> --}}
 
                   {{-- <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Size <span style="color:red"> *</span></label>
@@ -167,6 +166,35 @@
                         </div>
                      </div>
                   </div> --}}
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Color <span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input class="form-check-input" style="margin: 5px 6px 0px" type="checkbox" value="Red" name="color[]">Red
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Blue" name="color[]">Blue
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Black" name="color[]">Black
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="White" name="color[]">White
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Pink" name="color[]">Pink
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Yellow" name="color[]">Yellow
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Orange" name="color[]">Orange
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Green" name="color[]">Green
+                        </div>
+                     </div>
+                  </div> 
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Size <span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input class="form-check-input" style="margin: 5px 6px 0px" type="checkbox" value="S" name="size[]">S
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="M" name="size[]">M
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="L" name="size[]">L
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="XL" name="size[]">XL
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="XXL" name="size[]">XXL
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="XXXL" name="size[]">XXXL
+                        </div>
+                     </div>
+                  </div> 
 
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Brand <span style="color:red"> *</span></label>

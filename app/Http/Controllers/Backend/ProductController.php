@@ -8,7 +8,13 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Sub_Category;
 use App\Models\product_images;
+use App\Models\Rating;
+use App\Models\Brand;
+use App\Models\Color;
+use App\Models\Size;
 use Illuminate\Support\Facades\Storage;
+use DB;
+
 
 class ProductController extends Controller
 {
@@ -20,43 +26,6 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        $id = Product::pluck('id');
-		foreach ($id as $d) {
-			$rating = Rating::with('restaurant')->where('ratings.rating_restaurant_id',$d)->count('ratings.rating_restaurant_id');
-		}
-
-
-    	//$getrecord = Product::orderBy('id', 'desc');
-        $getrecord = Product::orderBy('id', 'desc')->select('products.*');
-        $getrecord = $getrecord->join('categories', 'products.cat_id', '=', 'categories.id');
-    	
-    	if (!empty($request->id)) {
-			$getrecord = $getrecord->where('products.id', '=', $request->id);
-		}
-		
-        if (!empty($request->cat_name)) {
-			$getrecord = $getrecord->where('cat_name', 'like', '%' . $request->cat_name . '%');
-		}
-
-		if (!empty($request->product_name)) {
-			$getrecord = $getrecord->where('product_name', 'like', '%' . $request->product_name . '%');
-		}
-        if (!empty($request->price)) {
-			$getrecord = $getrecord->where('price', '=', $request->price);
-		}
-	
-    	// Search Box End
-    	$getrecord = $getrecord->paginate(40);
-    	$data['getrecord'] = $getrecord;
-    	$data['meta_title'] = 'Product List';
-    	return view('backend.product.list', $data);
-    }
-
-
-
-    public function index_backup(Request $request)
-    {
-
     	//$getrecord = Product::orderBy('id', 'desc');
         $getrecord = Product::orderBy('id', 'desc')->select('products.*');
         $getrecord = $getrecord->join('categories', 'products.cat_id', '=', 'categories.id');
@@ -118,6 +87,7 @@ class ProductController extends Controller
             'size' => 'required|max:30',
             'brand' => 'required|max:30',
             'images' => 'required|max:15000'
+
             //   'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         
@@ -127,9 +97,9 @@ class ProductController extends Controller
         $category = Sub_Category::get();
         $sub_cat_id = $request->input('sub_cat_id');
         
-         foreach($request->brand as $b){
-             $ba[] = $b;
-         }
+        //  foreach($request->brand as $b){
+        //      $ba[] = $b;
+        //  }
         // $brand[] =  $request->brand;
         $product_insert = new Product;
         $product_insert->cat_id = $cat_id;
@@ -139,24 +109,51 @@ class ProductController extends Controller
         $product_insert->price    = $request->price;
         $product_insert->quantity    = $request->quantity;
         $product_insert->offer    = $request->offer;
-        $product_insert->color   = $request->color;
-        $product_insert->size = $request->size;
-        $product_insert['brand'] = $b;
+        // $product_insert->color   = $request->color;
+        // $product_insert->size = $request->size;
+        // $product_insert['brand'] = $b;
 
         // $brand = $request->input('brand');
         // dd($product_insert);
         $product_insert->save();
 
-        // foreach($request->brand as $b){
-        //     $ba[] = $b;
-        // $product =  Product::create([
-        //     'cat_id'        => $cat_id,
-        //     'sub_cat_id'        => $sub_cat_id,
-        //     'offer'        => $request->offer,
-        //     'size'        => $request->size,
-        //     'brand'        => $ba,
-        //     ]);
-        // }
+        if($request->color) {
+            foreach($request->color as $c){
+                $color[] = $c;
+                // dd(Color::get());
+
+                $insert_color =  Color::create([
+                    'color_cat_id'        => $cat_id,
+                    'color_product_id'    => $product_insert->id,
+                    'color'               => $c,
+                    ]);
+                    // dd($insert_color);
+                }
+        }
+
+        if($request->size) {
+            foreach($request->size as $s){
+                $size[] = $s;
+                $insert_size =  Size::create([
+                    'size_cat_id'        => $cat_id,
+                    'size_product_id'    => $product_insert->id,
+                    'size'               => $s,
+                    ]);
+                }
+                // dd($size);
+        }
+
+        if($request->brand) {
+            foreach($request->brand as $b){
+                $brand[] = $b;
+                $insert_brand =  Brand::create([
+                    'brand_cat_id'        => $cat_id,
+                    'brand_product_id'    => $product_insert->id,
+                    'brand'               => $b,
+                    ]);
+                }
+                // dd($insert_brand);
+        }
 
         if($request->hasfile('images')) {
             foreach($request->file('images') as $file){
@@ -172,9 +169,12 @@ class ProductController extends Controller
                         ]);
                     }
                 }
-            // store single image
+            // store single image on product table
             $product = Product::find($product_insert->id);
             $product->img = $data[0];
+            $product->color = $color[0];
+            $product->size = $size[0];
+            $product->brand = $brand[0];
             $product->save();
         return redirect('admin/product')->with('success', 'Record created Successfully!'); 
     }
@@ -281,6 +281,23 @@ class ProductController extends Controller
 
     public function product_delete($id)
     {
+        $product = Product::find($id);
+
+        $images = DB::table('product_images')
+        ->where('product_id', $product->id)
+        // ->get();
+        ->get('images');
+        // dd($images);
+        // dd(($images[0]->images));
+
+        foreach ($images as $i) {
+            $img = $i->images;
+            // dd($i->images);
+            // dd(file_exists(public_path('images/product/'.$img)));
+            if(file_exists(public_path('images/product/'.$img))){
+                unlink(public_path('images/product/'.$img));
+            }
+        }
         $getrecord = Product::with('images')->find($id);
         $getrecord->delete();
         return redirect('admin/product')->with('error', 'Record deleted Successfully!');

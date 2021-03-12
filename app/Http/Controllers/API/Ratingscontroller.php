@@ -84,7 +84,7 @@ class Ratingscontroller extends Controller
                 $data = Rating::where('product_id', '=', trim($request->product_id))
                 ->where('user_id', '=', trim($request->user_id))
                 ->first();
-
+              
                 if (!empty($data)) {
                     $data->status  = 1;
                     $data->product_id = $request->product_id;
@@ -92,6 +92,14 @@ class Ratingscontroller extends Controller
                     $data->rating_avg = $request->rating_avg;
                     $data->rating_description = $request->rating_description;
                     $data->save();
+
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $data->product_id)
+                    ->avg('rating_avg');
+
+                    $product = Product::where('id','=',$request->product_id)->first();
+                    $product->rating_count  = $rates;
+                    $product->save();
 
                     $json['success'] = 1;
                     $json['message'] = 'Rating change Successfully.';

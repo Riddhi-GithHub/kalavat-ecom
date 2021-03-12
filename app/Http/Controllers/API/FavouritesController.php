@@ -85,13 +85,13 @@ class FavouritesController extends BaseController
                     $data->status  = $request->status;
                     $data->save();
                     $json['success'] = 1;
-                    $json['message'] = 'Favourite Product status change Successfully.';
+                    $json['message'] = 'Added to wishlist product status change Successfully.';
                     $json['favourite_list'] = $data;
                 }else{
                     $getdata = Favourites::create($request->all());
                     $getdata->save();
                     $json['success'] = 1;
-                    $json['message'] = 'Favourite Product add Successfully.';
+                    $json['message'] = 'Added to wishlist.';
                     $json['favourite_list'] = $getdata;
                 }
             }
@@ -128,26 +128,31 @@ class FavouritesController extends BaseController
 	}
 
     public function deleteFavouriteProdcut(Request $request)
-    {
-        // $data = Favourites::find($request->fav_id);
-		$data  = Favourites::where('status',1)->find($request->fav_id);
-        // $recode_update = Favourites::where('fav_id', '=' ,$request->fav_id)->where('product_id', '=' ,$request->product_id)->get();
-		// $recode_update  = Favourites::with('product')->where('product_id', '=' ,$request->product_id)->where('fav_id', '=' ,$request->fav_id)->get();
-
-            if(!empty($data))
-            {
-                // $recode_update->status  = trim($request->status);
-                $data->status  = '0';
-                $data->save();
-                $json['success'] = 1;
-                $json['message'] = 'Favourite prodcut deleted Successfully';
-            }
+	{
+        if (!empty($request->product_id && $request->user_id)) {
+            // dd(!empty($product && $user));
+                $data = Favourites::where('product_id', '=', trim($request->product_id))
+                ->where('user_id', '=', trim($request->user_id))
+                // ->where('status', '=', trim($request->status))
+                ->first();
+                // dd(!empty($data));
+                if (!empty($data)) {
+                    $data->status  = '0';
+                    $data->save();
+                    $json['success'] = 1;
+                    $json['message'] = 'Favourite prodcut deleted Successfully';
+                }else{
+                    $json['success'] = 0;
+                    $json['message'] = 'Product not found.';
+                }
+        }
         else{
-                $json['success'] = 0;
-                $json['message'] = 'Product not found.';
-            }
-		echo json_encode($json);
+        $json['success'] = 0;
+        $json['message'] = 'Fill Required Data';
+        }
+        echo json_encode($json);
     }
+   
 
     public function UpdateFavouriteProduct(Request $request)
 	{

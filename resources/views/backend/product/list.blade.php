@@ -85,12 +85,13 @@
                                 <th>Offer</th>
                                 <th>Total Price</th>
                                 <th>Image</th>
+                                {{-- <th>Rating</th> --}}
                                 <th>Created Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($getrecord as $value)
+                            @forelse($getrecord as $key=>$value)
                             <tr>
                                 <td> {{ $value->id }}</td>
                                 <td>{{ $value->category->cat_name }}</td>
@@ -98,13 +99,12 @@
                                 <td>{{ $value->price }}</td>
                                 <td>{{ $value->quantity }}</td>
                                 <td>{{ $value->offer }}</td>
-
                                 <td>{{ $value['price'] * $value['quantity'] -
                                     ($value['price']*  $value->offer/100) }}</td>
-
                                 <td><img alt="image name" src="{{ url('public/images/product/'.$value->img) }}" style="width:70px; height:70px;" /></td>
+                                {{-- <td>{{ $rating[$key] }}</td> --}}
+ 
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
-
                                 <td>
                                     <form method="get" action="{{ route('product.delete', $value->id) }}">
                                         <a href="{{ route('product.show',$value->id) }}"
@@ -145,6 +145,7 @@
                                     </form>
                                 </td>
                             </tr>
+
                             @empty
                             <tr>
                                 <td colspan="100%">Record not found.</td>

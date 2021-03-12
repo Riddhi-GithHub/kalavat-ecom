@@ -78,19 +78,27 @@ class CartController extends Controller
 
     public function deleteCartProdcut(Request $request)
     {
-        $data  = Cart::where('status',1)->find($request->cart_id);
-            if(!empty($data))
-            {
-                // $recode_update->status  = trim($request->status);
-                $data->status  = '0';
-                $data->save();
-                $json['success'] = 1;
-                $json['message'] = 'Prodcut deleted from Cart Successfully';
-            }
+        if (!empty($request->product_id && $request->user_id)) {
+            // dd(!empty($product && $user));
+                $data = Cart::where('product_id', '=', trim($request->product_id))
+                ->where('user_id', '=', trim($request->user_id))
+                // ->where('status', '=', trim($request->status))
+                ->first();
+                // dd(!empty($data));
+                if (!empty($data)) {
+                    $data->status  = '0';
+                    $data->save();
+                    $json['success'] = 1;
+                    $json['message'] = 'Favourite prodcut deleted Successfully';
+                }else{
+                    $json['success'] = 0;
+                    $json['message'] = 'Product not found.';
+                }
+        }
         else{
-                $json['success'] = 0;
-                $json['message'] = 'Product not found.';
-            }
-		echo json_encode($json);
+        $json['success'] = 0;
+        $json['message'] = 'Fill Required Data';
+        }
+        echo json_encode($json);
     }
 }

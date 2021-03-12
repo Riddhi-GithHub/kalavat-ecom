@@ -8,6 +8,10 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Sub_Category;
 use App\Models\product_images;
+use App\Models\Size;
+use App\Models\Brand;
+use App\Models\Color;
+use App\Models\Favourites;
 use Validator;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -15,7 +19,36 @@ use Illuminate\Support\Facades\Storage;
 class ProductsController extends BaseController
 {
     // retrive product by category
+
     public function product_details(Request $request)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input,[
+            'cat_id' => 'required',
+        ]);
+        
+        $cat = category::find($request->input('cat_id'));
+        // $product = Product::where('cat_id',$request->input('cat_id'))->get();
+        $product = Product::with('size','color')->where('cat_id',$request->input('cat_id'))->get();
+        // dd($product);
+
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors()); 
+        }elseif(!empty($cat)){
+            if(!empty($product->count() > 0)){
+                return $this->sendResponse_product($product,'Product Details retrieved successfully.');
+            }else{
+                    return $this->sendError('Product item not found.'); 
+            }   
+            }
+        else{
+            return $this->sendError('category not found.'); 
+        }
+    }
+
+
+    public function product_details_old(Request $request)
     {
         $input = $request->all();
         $validator = Validator::make($input,[
@@ -43,22 +76,92 @@ class ProductsController extends BaseController
     public function product_list(Request $request)
     {
         $product = Product::with('images')->get();
-        // $product = Product::get();
-        if(!empty($product)){
-            // foreach($product as $key=>$value){
-                // $id= $value->id;
-                // $images = product_images::with('products')->where('product_id',$id)->get();
-                // $path = $images[0]->images;
-                // if(!empty($images)) {
-                //     Storage::url($path);
-                // }
-                return $this->sendResponse_product($product,'Product retrieved successfully.');
-        }else{
-            return $this->sendError('Product not found.'); 
-        }
+        // $product = Product::select('products.*');
+        // $product = $product->join('favourites', 'products.product_id ', '=', 'favourites.fav_id');
+        // $fav = Favourites::where('user_id','=',$request->user_id)->get();
+        // dd($product);
+        
+            if(!empty($product)){
+                        return $this->sendResponse_product($product,'Product retrieved successfully.');
+                }else{
+                    return $this->sendError('Product not found.'); 
+                }
+        // }
+        // else{
+        //     return $this->sendError('User not found.'); 
+        // }
     }
 
     public function product_search(Request $request)
+    {
+        $result = array();
+        $users = Product::select('products.*');
+        $users = $users->join('categories', 'products.cat_id', '=', 'categories.id');
+
+        // $product = Product::where([['product_name',$request['product_name']],])->get();
+        // dd($product);
+        $users = $users->where('categories.cat_name', 'like', '%' . $request->product_name . '%');
+        dd($users);
+        $new = $users->where('products.product_name', 'like', '%' . $request->product_name . '%');
+        if(!empty($request->product_name)){
+            // $new = $new->where('products.product_name', 'like', '%' . $request->product_name . '%');
+            $data;
+         }
+
+
+        // if(!empty($request->cat_name)){
+        //    $users = $users->where('categories.cat_name', 'like', '%' . $request->cat_name . '%');
+        // }
+        // if(!empty($request->product_name)){
+        //    $users = $users->where('products.product_name', 'like', '%' . $request->product_name . '%');
+        // }
+        $users = $users->paginate(40);
+     
+        foreach ($users as $value) {
+
+            $data['id']             = $value->id;
+            $data['cat_name']      = !empty($value->category->cat_name) ? $value->category->cat_name : '';
+            $data['product_name']  = !empty($value->product_name) ? $value->product_name : '';
+            $result[] = $data;
+        }
+        $json['success'] = 1;
+        $json['message'] = 'All loaded successfully.';
+        $json['result'] = $result;
+        
+        echo json_encode($json);
+    }
+
+    public function product_search_vipul(Request $request)
+    {
+        $result = array();
+        $users = Product::select('products.*');
+        $users = $users->join('categories', 'products.cat_id', '=', 'categories.id');
+
+        if(!empty($request->cat_name)){
+           $users = $users->where('categories.cat_name', 'like', '%' . $request->cat_name . '%');
+        }
+        if(!empty($request->product_name)){
+           $users = $users->where('products.product_name', 'like', '%' . $request->product_name . '%');
+        }
+        $users = $users->paginate(40);
+     
+        foreach ($users as $value) {
+
+            $data['id']             = $value->id;
+            $data['cat_name']      = !empty($value->category->cat_name) ? $value->category->cat_name : '';
+            $data['product_name']  = !empty($value->product_name) ? $value->product_name : '';
+            $result[] = $data;
+        }
+        $json['success'] = 1;
+        $json['message'] = 'All loaded successfully.';
+        $json['result'] = $result;
+        
+        echo json_encode($json);
+    }
+
+
+
+    public function product_search_riddhi(Request $request)
     {
         $data = Category::with('product')->where('cat_name', 'like', '%' . $request->cat_name . '%')->get();
 
@@ -70,9 +173,12 @@ class ProductsController extends BaseController
                 return $this->sendError('Search Category Not Found.'); 
             }
         }
+        else{
+            return $this->sendError('Data Not Found.'); 
+        }
 
         if (!empty($request->product_name)) {
-            $product = Product::with('category,images')->where('product_name', 'like', '%' . $request->product_name . '%')->get();
+            $product = Product::with('category')->where('product_name', 'like', '%' . $request->product_name . '%')->get();
             if(!empty($product->count() > 0)){
                 return $this->sendResponse_product($product,'Search Category get Successfully.');
             }
@@ -80,8 +186,10 @@ class ProductsController extends BaseController
                 return $this->sendError('Search Product Not Found.'); 
             }
         }
+        else{
+            return $this->sendError('Data Not Found.'); 
+        }
     }
-
 
     public function subcategory_product_details(Request $request)
     {
@@ -107,139 +215,53 @@ class ProductsController extends BaseController
         }
     }
 
-    public function filter_product(Request $request)
+    public function filter_product(Request $request)  
     {
-        $product = Product::get();
+        $result = array();
+        $filter = Product::select('products.*');
+        $filter = $filter->join('categories', 'products.cat_id', '=', 'categories.id');
 
-          # all data 
-          $data['color'] = Product::where('color', 'like', '%' . $request->color . '%')->get();
-
-          $size = explode(",", $request->size);  
-          $data['size'] = Product::whereIn('size',$size)->get();
-
-          $price = explode(",", $request->price);
-          $min_price = implode(",", $price);
-          $max_price = array_pop($price);
-          // $pp = Product::whereBetween('price', [100,300])->get();
-          $data['price'] = Product::whereBetween('price', [$min_price,$max_price])->get();
-
-          dd($data);
-
-
-
-
-        # color
-          $color = Product::where('color', 'like', '%' . $request->color . '%')->get();
-          if(!empty($product)){
-             if (!empty($color->count() > 0)) {
-                 return $this->sendResponse_product($color,'Filter Color Product retrieved successfully.');
-             }
-             else{
-                 return $this->sendError('Filter Color Product not found.'); 
-             }
-         }
-         else{
-             return $this->sendError('Product not found.'); 
-         }
- 
-
-
-        # size
-        $size = explode(",", $request->size);  
-        // $getsize = Product::whereIn('size',['s','m'])->get();
-        $getsize = Product::whereIn('size',$size)->get();
-
-        if(!empty($product)){
-            if (!empty($getsize->count() > 0)) {
-                return $this->sendResponse_product($getsize,'Filter size Product retrieved successfully.');
-            }
-            else{
-                return $this->sendError('Filter Color Product not found.'); 
-            }
+        if(!empty($request->color)){
+           $filter = $filter->where('products.color', 'like', '%' . $request->color . '%');
         }
-        else{
-            return $this->sendError('Product not found.'); 
+        if(!empty($request->size)){
+            $size = explode(",", $request->size);  
+           $filter = $filter->whereIn('size',$size);
+        }
+        if(!empty($request->brand)){
+            $brand = explode(",", $request->brand);  
+            // $getbrand = Product::whereIn('brand',['naf','jack'])->get();
+           $filter = $filter->whereIn('brand',$brand);
+        }
+        if(!empty($request->price)){
+            $price = explode(",", $request->price);
+            $min_price = implode(",", $price);
+            $max_price = array_pop($price);
+            // $pp = Product::whereBetween('price', [100,300])->get();
+            // $getprice = Product::whereBetween('price', [$min_price,$max_price])->get();
+           $filter = $filter->whereBetween('price', [$min_price,$max_price]);
         }
 
-       
-        # price 
-        $price = explode(",", $request->price);
-        $min_price = implode(",", $price);
-        $max_price = array_pop($price);
-        // $pp = Product::whereBetween('price', [100,300])->get();
-        $getprice = Product::whereBetween('price', [$min_price,$max_price])->get();
+        $filter = $filter->paginate(40);
+     
+        foreach ($filter as $value) {
 
-
-        # Brand 
-        $brand = explode(",", $request->brand);  
-        // $getbrand = Product::whereIn('brand',['naf','jack'])->get();
-        $getbrand = Product::whereIn('brand',$brand)->get();
-
-       
-       
+            $data['id']             = $value->id;
+            $data['cat_name']      = !empty($value->category->cat_name) ? $value->category->cat_name : '';
+            $data['product_name']  = !empty($value->product_name) ? $value->product_name : '';
+            $data['price']  = !empty($value->price) ? $value->price : '';
+            $data['img']  = !empty($value->img) ? $value->img : '';
+            $data['color']  = !empty($value->color) ? $value->color : '';
+            $data['size']  = !empty($value->size) ? $value->size : '';
+            $data['brand']  = !empty($value->brand) ? $value->brand : '';
+            $result[] = $data;
+        }
+        $json['success'] = 1;
+        $json['message'] = 'All loaded successfully.';
+        $json['result'] = $result;
         
-
-
-
-
-
-
-
-
-
-        $size = Product::where('size', 'like', '%' . $request->size . '%')
-        ->where('color', 'like', '%' . $request->color . '%')
-        ->get();
+        echo json_encode($json);
         
-        $product = Product::get();
-        $size = Product::where('size', 'like', '%' . $request->size . '%')->get();
-        
-        if(!empty($product)){
-            if (!empty($size->count() > 0)) {
-                return $this->sendResponse_product($size,'Filter size Product retrieved successfully.');
-            }
-            else{
-                return $this->sendError('Filter Color Product not found.'); 
-            }
-        }
-        else{
-            return $this->sendError('Product not found.'); 
-        }
-
-        // color filter
-        $color = Product::where('color', 'like', '%' . $request->color . '%')->get();
-       
-        $price = $request->price;
-        $min_price = Product::where('price', '<=', $price)->get();
-        $max_price = Product::where('price', '>=', $price)->get();
-        // dd(($min_price));
-
-        // min price filter
-        if(!empty($product)){
-            if (!empty($min_price->count() > 0)) {
-                return $this->sendResponse_product($min_price,'Min Price Product retrieved successfully.');
-            }
-            else{
-                return $this->sendError('Min or Max Price Product not found.'); 
-            }
-        }
-        else{
-            return $this->sendError('Product not found.'); 
-        }
-
-        // max price filter
-        // if(!empty($product)){
-        //     if (!empty($max_price->count() > 0)) {
-        //         return $this->sendResponse_product($max_price,'Max Price Product retrieved successfully.');
-        //     }
-        //     else{
-        //         return $this->sendError('Min or Max Price Product not found.'); 
-        //     }
-        // }
-        // else{
-        //     return $this->sendError('Product not found.'); 
-        // }
-           
     }
 
     //-------- other way ------------------
@@ -263,7 +285,62 @@ class ProductsController extends BaseController
 	}
 
 
+    public function filter_product_backup(Request $request)
+    {
+        $product = Product::get();
 
+        # color data 
+        $color = Product::where('color', 'like', '%' . $request->color . '%')->get();
+          if (!empty($request->color)) {
+            if(!empty($color->count() > 0)){
+                return $this->sendResponse_product($color,'Search product get Successfully.');
+                }
+            else{
+                return $this->sendError('Data Not Found.'); 
+            }
+        }
 
-    
+        # size
+        $size = explode(",", $request->size);  
+        // $getsize = Product::whereIn('size',['s','m'])->get();
+        $getsize = Product::whereIn('size',$size)->get();
+        if (!empty($request->size)) {
+            if(!empty($getsize->count() > 0)){
+                return $this->sendResponse_product($getsize,'Search product get Successfully.');
+                }
+            else{
+                return $this->sendError('Data Not Found.'); 
+            }
+        }
+
+         # Brand 
+         $brand = explode(",", $request->brand);  
+         // $getbrand = Product::whereIn('brand',['naf','jack'])->get();
+         $getbrand = Product::whereIn('brand',$brand)->get();
+         if (!empty($request->brand)) {
+            if(!empty($getbrand->count() > 0)){
+                return $this->sendResponse_product($getbrand,'Search product get Successfully.');
+                }
+            else{
+                return $this->sendError('Data Not Found.'); 
+            }
+        }
+         
+        # price 
+        $price = explode(",", $request->price);
+        $min_price = implode(",", $price);
+        $max_price = array_pop($price);
+        // $pp = Product::whereBetween('price', [100,300])->get();
+        $getprice = Product::whereBetween('price', [$min_price,$max_price])->get();
+       
+        if (!empty($request->price)) {
+            if(!empty($getprice->count() > 0)){
+                return $this->sendResponse_product($getprice,'Search product get Successfully.');
+                }
+            else{
+                return $this->sendError('Data Not Found.'); 
+            }
+        }
+    }
+
 }

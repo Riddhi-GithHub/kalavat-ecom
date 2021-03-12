@@ -103,7 +103,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update_backup(Request $request, $id)
     {
         $validated = $request->validate([
             'cat_name'         => 'required',
@@ -124,6 +124,33 @@ class CategoryController extends Controller
         return redirect('admin/category')->with('warning', 'Record updated Successfully!');
     }
 
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'cat_name'         => 'required',
+        ]);
+            $category_update = Category::find($id);
+            $category_update->fill($validated);  
+
+
+            if (!empty($request->file('image')))
+            {
+                // dd(file_exists(public_path('images/category/'.$category_update->image)));
+                if (!empty($category_update->image) && file_exists(public_path('images/category/'.$category_update->image)))
+                {
+                    unlink(public_path('images/category/'.$category_update->image));
+                }
+                $image = $request->file('image');
+                    $no = rand(1111,9999);
+                    $image_name = time().$no.'.jpg';
+                    $i = $image->move(public_path('images/category'), $image_name);
+                    $category_update->image = $image_name;
+            }
+
+        $category_update->save();
+      
+        return redirect('admin/category')->with('warning', 'Record updated Successfully!');
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -140,6 +167,11 @@ class CategoryController extends Controller
     public function category_delete($id)
     {
         $getrecord = Category::find($id);
+        // dd(file_exists(public_path('images/category/'.$getrecord->image)));
+        if(file_exists(public_path('images/category/'.$getrecord->image))){
+            // dd('d');
+            unlink(public_path('images/category/'.$getrecord->image));
+        }
         $getrecord->delete();
         return redirect('admin/category')->with('error', 'Record successfully deleted!');
     }

@@ -7,13 +7,17 @@ use App\Models\Category;
 use App\Models\Sub_Category;
 use App\Models\product_images;
 use App\Models\Rating;
+use App\Models\Brand;
+use App\Models\Color;
+use App\Models\Size;
 
 
 class Product extends Model
 {
     protected $table = 'products';
     protected $fillable = [
-       'cat_id','sub_cat_id','product_name','description','img','price','quantity','offer','color','size','brand'
+       'cat_id','sub_cat_id','product_name','description','img','price','quantity','offer','color','size','brand',
+       'rating_count'
    ];
 
    public function category(){
@@ -28,11 +32,27 @@ class Product extends Model
     return $this->belongsTo(Rating::class,'product_id');
    }
 
+   public function brand(){
+        return $this->hasMany(Brand::class,'brand_product_id');
+   }
+
+    public function size(){
+        return $this->hasMany(Size::class,'size_product_id');
+    }
+
+    public function color(){
+        return $this->hasMany(Color::class,'color_product_id');
+    }
 
    public function images()
    {
        return $this->hasMany('App\Models\product_images',"product_id");
    }             
+
+   public function favourite()
+   {
+       return $this->hasMany('App\Models\Favourites',"product_id");
+   }   
 
    public function cate()
    {
