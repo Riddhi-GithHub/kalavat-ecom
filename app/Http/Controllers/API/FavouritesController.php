@@ -112,7 +112,7 @@ class FavouritesController extends BaseController
 	    // $result  = array();
 		// $getresult  = Favourites::with('user','product')->where('user_id', '=' ,$request->user_id)->where('product_id', '=' ,$request->product_id)->get();
 		// $getresult  = Favourites::with('product')->where('user_id', '=' ,$request->user_id)->get();
-        $getresult  = Favourites::with('product','product.images')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
+        $getresult  = Favourites::with('product','product.images','product.color','product.size')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
 
         if(!empty($getresult->count() > 0)){
             $json['success'] = 1;
@@ -141,6 +141,7 @@ class FavouritesController extends BaseController
                     $data->save();
                     $json['success'] = 1;
                     $json['message'] = 'Favourite prodcut deleted Successfully';
+                    $json['favourite_list'] = $data;
                 }else{
                     $json['success'] = 0;
                     $json['message'] = 'Product not found.';
@@ -153,7 +154,6 @@ class FavouritesController extends BaseController
         echo json_encode($json);
     }
    
-
     public function UpdateFavouriteProduct(Request $request)
 	{
         if (!empty($request->product_id && $request->user_id)) {
@@ -189,5 +189,4 @@ class FavouritesController extends BaseController
         }
         echo json_encode($json);
     }
-
 }

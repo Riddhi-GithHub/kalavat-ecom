@@ -12,6 +12,7 @@ use App\Models\Rating;
 use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Size;
+use App\Models\Manufacturing;
 use Illuminate\Support\Facades\Storage;
 use DB;
 
@@ -66,7 +67,7 @@ class ProductController extends Controller
         $data['meta_title'] = "Add product";
     	return view('backend.product.add', $data);
     }
-
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -75,21 +76,36 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product_insert = request()->validate([
+        $input = request()->validate([
             'cat_id'         => 'required',
             'sub_cat_id'         => 'required',
             'product_name'      => 'required',
             'description' => 'required|string|max:2000',
             'price' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
             'quantity' => 'required|integer|min:1',
-            'offer' => 'required|integer|min:1',
             'color' => 'required|max:30',
             'size' => 'required|max:30',
             'brand' => 'required|max:30',
-            'images' => 'required|max:15000'
+            'images' => 'required|max:15000',
 
-            //   'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'sort_desc'      => 'required',
+            'size_and_fit'      => 'required',
+            'material_and_care'      => 'required',
+            'style_note'      => 'required',
+
+            'address'      => 'required',
+            'city'      => 'required|string',
+            'state'      => 'required|string',
+            'contry'      => 'required|string',
+            'zip_code'      => 'required|min:6|max:6',
+            'manufacture_by'      => 'required|string',
+            'manufacture_date'      => 'required|date_format:m-d-Y',
+
         ]);
+        // dd($product_insert);
+            // 'item_model_num'      => 'required',
+            // 'offer' => 'integer|min:1',
+            //   'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         
         $category = Category::get();
         $cat_id = $request->input('cat_id');
@@ -101,6 +117,16 @@ class ProductController extends Controller
         //      $ba[] = $b;
         //  }
         // $brand[] =  $request->brand;
+
+        // dd($product_insert);
+        // $p = Product::create($product_insert);
+        // dd($product_insert->item_model_num);
+        // if($request->item_model_num){
+            // }
+            // dd($p);
+            $model_num = rand(1111111111,9999999999);
+            $num = 'KL'.$model_num;
+
         $product_insert = new Product;
         $product_insert->cat_id = $cat_id;
         $product_insert->sub_cat_id = $sub_cat_id;
@@ -109,10 +135,14 @@ class ProductController extends Controller
         $product_insert->price    = $request->price;
         $product_insert->quantity    = $request->quantity;
         $product_insert->offer    = $request->offer;
-        // $product_insert->color   = $request->color;
-        // $product_insert->size = $request->size;
+        $product_insert->sort_desc    = $request->sort_desc;
+        $product_insert->size_and_fit    = $request->size_and_fit;
+        $product_insert->style_note    = $request->style_note;
+        $product_insert->material_and_care    = $request->material_and_care;
+        $product_insert->item_model_num    = $num;
+        $product_insert->offer    = $request->offer;
+        
         // $product_insert['brand'] = $b;
-
         // $brand = $request->input('brand');
         // dd($product_insert);
         $product_insert->save();
@@ -124,6 +154,7 @@ class ProductController extends Controller
 
                 $insert_color =  Color::create([
                     'color_cat_id'        => $cat_id,
+                    'color_subcat_id'        => $sub_cat_id,
                     'color_product_id'    => $product_insert->id,
                     'color'               => $c,
                     ]);
@@ -136,6 +167,7 @@ class ProductController extends Controller
                 $size[] = $s;
                 $insert_size =  Size::create([
                     'size_cat_id'        => $cat_id,
+                    'size_subcat_id'     => $sub_cat_id,
                     'size_product_id'    => $product_insert->id,
                     'size'               => $s,
                     ]);
@@ -155,6 +187,22 @@ class ProductController extends Controller
                 // dd($insert_brand);
         }
 
+        if($product_insert->id) {
+            // foreach($request->brand as $b){
+                $manufacture =  Manufacturing::create([
+                    'product_id'        => $product_insert->id,
+                    'address'            => $request->address,
+                    'city'            => $request->city,
+                    'state'            => $request->state,
+                    'contry'            => $request->contry,
+                    'zip_code'            => $request->zip_code,
+                    'manufacture_by'      => $request->manufacture_by,
+                    'manufacture_date'    => $request->manufacture_date,
+                    ]);
+                // }
+                // dd($manufacture);
+        }
+
         if($request->hasfile('images')) {
             foreach($request->file('images') as $file){
                     // $image_name = time().'-'.$file->getClientOriginalName();
@@ -167,8 +215,8 @@ class ProductController extends Controller
                         'product_id'        => $product_insert->id,
                         'images'             => $image_name,
                         ]);
-                    }
-                }
+            }
+        }
             // store single image on product table
             $product = Product::find($product_insert->id);
             $product->img = $data[0];
@@ -201,11 +249,12 @@ class ProductController extends Controller
     public function edit($id)
     {
         $data['getcategory'] = Category::get();
-        $data['getproduct'] = Product::with('category')->find($id);
+        // $data['getproduct'] = Product::with('category','manufacturing','brand','size','color')->find($id);
+        $data['getproduct'] = Product::with('category','manufacturing')->find($id);
+        // dd($data);
         $data['getimages'] = Product_images::where('product_id',$id)->get();
         $data['meta_title'] = "Edit Product";
         return view('backend.product.edit', $data);
-
         // $category = Category::get();
         // $item = Product::with('category')->find($id);  
         // return view('ProductItem.edit',compact('item','category'));
@@ -226,15 +275,51 @@ class ProductController extends Controller
             'description' => 'required|string|max:2000',
             'price' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
             'quantity' => 'required|integer|min:1',
-            'offer' => 'required|integer|min:1',
             'color' => 'required|max:30',
             'size' => 'required|max:30',
             'brand' => 'required|max:30',
+
+            'sort_desc'      => 'required',
+            'size_and_fit'      => 'required',
+            'material_and_care'      => 'required',
+            'style_note'      => 'required',
+
+            'address'      => 'required',
+            'city'      => 'required|string',
+            'state'      => 'required|string',
+            'contry'      => 'required|string',
+            'zip_code'      => 'required|min:6|max:6',
+            'manufacture_by'      => 'required|string',
+            'manufacture_date'      => 'required|date_format:m-d-Y',
+            
             // 'images' => 'required|max:15000'
         ]);
         $category = Category::get();
         $product = Product::with('category')->find($id);
-            
+
+            // if($id){
+                $manufacture = Manufacturing::where('product_id',$id)->first();
+                $manufacture->product_id = $id;
+                $manufacture->address = $request->address;
+                $manufacture->city = $request->city;
+                $manufacture->state = $request->state;
+                $manufacture->contry = $request->contry;
+                $manufacture->zip_code = $request->zip_code;
+                $manufacture->manufacture_by = $request->manufacture_by;
+                $manufacture->manufacture_date = $request->manufacture_date;
+                // $manufacture ([
+                    // 'product_id'        => $id,
+                    // 'address'            => $request->address,
+                    // 'city'            => $request->city,
+                    // 'state'            => $request->state,
+                    // 'contry'            => $request->contry,
+                    // 'zip_code'            => $request->zip_code,
+                    // 'manufacture_by'      => $request->manufacture_by,
+                    // 'manufacture_date'    => $request->manufacture_date,
+                    // ]);
+                $manufacture->save();
+            // }
+
             if($request->hasfile('images')) {
                 $images_update = Product_images::where('product_id',$id)->delete();
                 // dd($images_update);
@@ -255,7 +340,7 @@ class ProductController extends Controller
                     $product = Product::find($id);
                     $product->img = $data[0];
                     $product->save();
-                }
+            }
         
         $product->fill($validated);        
         $product->save();

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
+use App\Models\Rating_images;
 use App\User;
 
 class Rating extends Model
@@ -27,4 +28,9 @@ class Rating extends Model
     public function user(){
         return $this->belongsTo(User::class,'user_id');
     }
+
+    public function images()
+   {
+       return $this->hasMany('App\Models\Rating_images',"rating_id");
+   }     
 }

@@ -35,6 +35,7 @@
                               <option value="{{$categoryData->id}}">{{$categoryData->cat_name}}</option>
                               @endforeach
                            </select>
+                           <span style="color:red">{{  $errors->first('cat_id') }}</span>
                         </div>
                      </div>
                   </div>
@@ -49,6 +50,7 @@
                               <option value="{{$subcategoryData->id}}">{{$subcategoryData->sub_cat_name}}</option>
                               @endforeach
                            </select>
+                           <span style="color:red">{{  $errors->first('sub_cat_id') }}</span>
                         </div>
                      </div>
                   </div>
@@ -99,7 +101,7 @@
                      <label class="col-md-2 col-xs-12 control-label">Offer <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
-                           <input name="offer" value="{{ old('offer') }}" placeholder="Offer" type="text" class="form-control" />
+                           <input name="offer" value="{{ old('offer') }}" placeholder="Offer" type="number" class="form-control" />
                            <span style="color:red">{{  $errors->first('offer') }}</span>
                         </div>
                      </div>
@@ -166,6 +168,128 @@
                         </div>
                      </div>
                   </div> --}}
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Short Description<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="sort_desc" value="{{ old('sort_desc') }}" placeholder="Short Description" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('sort_desc') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Size And Fit<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="size_and_fit" value="{{ old('size_and_fit') }}" placeholder="Size And Fit" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('size_and_fit') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Material And Care<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="material_and_care" value="{{ old('material_and_care') }}" placeholder="Material And Care" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('material_and_care') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Style Note<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="style_note" value="{{ old('style_note') }}" placeholder="Style Note" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('style_note') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  {{-- <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Item Model Num<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="item_model_num" value="{{ old('item_model_num') }}" placeholder="Item Model Num" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('item_model_num') }}</span>
+                        </div>
+                     </div>
+                  </div> --}}
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing Address<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="address" value="{{ old('address') }}" placeholder="Manufacturing Address" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('address') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing City<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="city" value="{{ old('city') }}" placeholder="Manufacturing City" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('city') }}</span>
+                        </div>
+                     </div>
+                  </div>
+                  
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing Contry<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="contry" value="{{ old('contry') }}" placeholder="Manufacturing Contry" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('contry') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing State<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="state" value="{{ old('state') }}" placeholder="Manufacturing State" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('state') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing Zip-Code<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="zip_code" value="{{ old('zip_code') }}" placeholder="Manufacturing Zip-Code" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('zip_code') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing By<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="manufacture_by" value="{{ old('manufacture_by') }}" placeholder="Manufacturing By" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('manufacture_by') }}</span>
+                        </div>
+                     </div>
+                  </div>
+                  
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing Date<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="manufacture_date" value="{{ old('manufacture_date') }}" placeholder="Manufacturing Date" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('manufacture_date') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Color <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
@@ -178,6 +302,7 @@
                            <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Yellow" name="color[]">Yellow
                            <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Orange" name="color[]">Orange
                            <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Green" name="color[]">Green
+                           <span style="color:red">{{  $errors->first('color') }}</span>
                         </div>
                      </div>
                   </div> 
@@ -192,6 +317,7 @@
                            <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="XL" name="size[]">XL
                            <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="XXL" name="size[]">XXL
                            <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="XXXL" name="size[]">XXXL
+                           <span style="color:red">{{  $errors->first('size') }}</span>
                         </div>
                      </div>
                   </div> 
@@ -205,6 +331,7 @@
                            <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="diesel" name="brand[]">diesel
                            <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="naf naf" name="brand[]">naf naf
                            <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="champian" name="brand[]">champian
+                           <span style="color:red">{{  $errors->first('brand') }}</span>
                         </div>
                      </div>
                   </div>  

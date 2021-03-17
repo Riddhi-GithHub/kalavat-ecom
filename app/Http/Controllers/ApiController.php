@@ -8,6 +8,7 @@ use App\User;
 use App\Models\Favourites;
 use App\Models\Slider;
 use App\Models\Version_Setting;
+use App\Models\Cart;
 use Hash;
 use Validator;
 use Auth;
@@ -277,10 +278,21 @@ class ApiController extends Controller
  	    echo json_encode($json);
     }
 
+	// count cart and favourite
+	public function count_list(Request $request)
+	{
+        $cart = Cart::where('user_id',$request->user_id)->count();
+        $fav = Favourites::where('user_id',$request->user_id)->count();
 
+				$data['cart_count']      = $cart;
+				$data['fav_count']      = $fav;
 
-
-
+			$json['success'] = 1;
+			$json['message'] = 'Count loaded Successfully.';
+			$json['result'] = $data;
+			
+			echo json_encode($json);
+	}
 
 		public function forgot_password(Request $request)
 	 	{

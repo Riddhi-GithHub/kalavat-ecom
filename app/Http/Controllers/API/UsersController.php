@@ -248,20 +248,22 @@ class UsersController extends BaseController
                 $email = User::where('email', '=', ($request->email))->count();
                     // dd(empty($email));
                 if(empty($email)){
-                    if (!empty($user->otp_verify == 1)) {
+                    if (!empty($user->otp_verify != 0)) {
                             $user->fullname = $input['fullname'];
                             $user->username = $input['fullname'];
                             $user->email = $input['email'];
                             $user->address  = $input['address'];
                             $user->city  = $input['city'];
                             $user->state  = $input['state'];
-                            $user->zip_code  = $input['zip_code'];
+                            // $user->zip_code  = $input['zip_code'];      // required 
+                            $user->zip_code  = $request->zip_code;          // is empty working
                             $user->contry  = $input['contry'];
                             $user->gender = $input['gender'];
                             $user->mobile = $input['mobile'];
                             $user->dob = $input['dob'];
                             $user->otp_verify = 2;
-                            $user->password = Hash::make($input['password']);
+                            // $user->password = Hash::make($input['password']);
+                            $user->password = Hash::make($request->password);
 
                             if ($request->hasFile('image')) {
                                 $image = $request->file('image');
@@ -290,7 +292,6 @@ class UsersController extends BaseController
             return $this->sendError('Mobile and Email Required.'); 
         }
     }
-
 
     public function forgot_password_old(Request $request)
 	{

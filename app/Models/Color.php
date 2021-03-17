@@ -10,7 +10,7 @@ class Color extends Model
 {
     protected $table = 'colors';
     protected $fillable = [
-       'color_cat_id','color_product_id','color'
+       'color_cat_id','color_subcat_id','color_product_id','color'
     ];
 
    public function product(){

@@ -10,7 +10,7 @@ class Size extends Model
 {
     protected $table = 'sizes';
     protected $fillable = [
-       'size_cat_id','size_product_id','size'
+       'size_cat_id','size_subcat_id','size_product_id','size'
    ];
 
    public function product(){

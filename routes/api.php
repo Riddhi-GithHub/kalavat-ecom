@@ -59,6 +59,8 @@ Route::post('subcategory_product_details', 'API\ProductsController@subcategory_p
 Route::post('image_list', 'API\ProductsController@getIamgeList');
 // retrive filtering product 
 Route::post('filter_product', 'API\ProductsController@filter_product');
+# sort By Product
+Route::post('sort_by_product', 'API\ProductsController@sort_by_product');
 
 
 // add to favourite product
@@ -106,6 +108,12 @@ Route::post('app_slider_list', 'ApiController@app_slider_list');
 Route::post('app_product_rating_add', 'API\Ratingscontroller@app_product_rating_add');
 Route::post('app_product_rating_list', 'API\Ratingscontroller@app_product_rating_list');
 Route::post('app_product_rating_update', 'API\Ratingscontroller@app_product_rating_update');
+
+# count cart and favourite
+Route::post('count_list', 'ApiController@count_list');
+
+
+
 
 
 

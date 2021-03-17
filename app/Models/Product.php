@@ -11,13 +11,12 @@ use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Size;
 
-
 class Product extends Model
 {
     protected $table = 'products';
     protected $fillable = [
        'cat_id','sub_cat_id','product_name','description','img','price','quantity','offer','color','size','brand',
-       'rating_count'
+       'rating_count','sort_desc','size_and_fit','material_and_care','style_note'
    ];
 
    public function category(){
@@ -47,7 +46,7 @@ class Product extends Model
    public function images()
    {
        return $this->hasMany('App\Models\product_images',"product_id");
-   }             
+   }            
 
    public function favourite()
    {
@@ -59,4 +58,8 @@ class Product extends Model
        return $this->belongsTo('App\Models\Category',"id","id");
    } 
    
+   public function manufacturing()
+   {
+       return $this->hasMany('App\Models\Manufacturing',"product_id");
+   }   
 }

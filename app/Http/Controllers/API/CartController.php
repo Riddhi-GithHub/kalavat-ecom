@@ -60,7 +60,7 @@ class CartController extends Controller
 
     public function getCartList(Request $request)
 	{
-        $getresult  = Cart::with('product','product.images')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
+        $getresult  = Cart::with('product.size','product.color','product','product.images')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
         // $getresult  = Favourites::with('product')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
 
         if(!empty($getresult->count() > 0)){
@@ -89,7 +89,8 @@ class CartController extends Controller
                     $data->status  = '0';
                     $data->save();
                     $json['success'] = 1;
-                    $json['message'] = 'Favourite prodcut deleted Successfully';
+                    $json['message'] = 'Cart prodcut deleted Successfully';
+                    $json['cart_list'] = $data;
                 }else{
                     $json['success'] = 0;
                     $json['message'] = 'Product not found.';
@@ -101,4 +102,5 @@ class CartController extends Controller
         }
         echo json_encode($json);
     }
+
 }

@@ -50,7 +50,7 @@
                         <div class="">
                            <input name="product_name" value="{{ $getproduct->product_name }}"
                               placeholder="Product Name" type="text" required class="form-control" />
-                           <span style="color:red">{{ $errors->first('username') }}</span>
+                           <span style="color:red">{{ $errors->first('product_name') }}</span>
                         </div>
                      </div>
                   </div>
@@ -90,7 +90,7 @@
                      <label class="col-md-2 col-xs-12 control-label">Offer </span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
-                           <input name="offer" value="{{ $getproduct->offer }}" placeholder="Offer" type="text" class="form-control" />
+                           <input name="offer" value="{{ $getproduct->offer }}" placeholder="Offer" type="number" class="form-control" />
                            <span style="color:red">{{  $errors->first('offer') }}</span>
                         </div>
                      </div>
@@ -125,6 +125,131 @@
                         </div>
                      </div>
                   </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Short Description</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="sort_desc" value="{{ $getproduct->sort_desc }}" placeholder="Short Description" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('sort_desc') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Size And Fit</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="size_and_fit" value="{{ $getproduct->size_and_fit }}" placeholder="Size And Fit" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('size_and_fit') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Material And Care</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="material_and_care" value="{{ $getproduct->material_and_care }}" placeholder="Material And Care" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('material_and_care') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Style Note</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="style_note" value="{{ $getproduct->style_note }}" placeholder="Style Note" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('style_note') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing Address</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                         @foreach ($getproduct->manufacturing as $item)
+                           <input name="address" value="{{ $item->address }}" placeholder="Manufacturing Address" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('address') }}</span>
+                        @endforeach
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing City</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                         @foreach ($getproduct->manufacturing as $item)
+                           <input name="city" value="{{  $item->city }}" placeholder="Manufacturing City" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('city') }}</span>
+                           @endforeach
+                        </div>
+                     </div>
+                  </div>
+                  
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing Contry</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                         @foreach ($getproduct->manufacturing as $item)
+                           <input name="contry" value="{{  $item->contry }}" placeholder="Manufacturing Contry" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('contry') }}</span>
+                           @endforeach
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing State</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                         @foreach ($getproduct->manufacturing as $item)
+                           <input name="state" value="{{  $item->state }}" placeholder="Manufacturing State" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('state') }}</span>
+                           @endforeach
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing Zip-Code</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                         @foreach ($getproduct->manufacturing as $item)
+                           <input name="zip_code" value="{{  $item->zip_code }}" placeholder="Manufacturing Zip-Code" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('zip_code') }}</span>
+                           @endforeach
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing By</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                         @foreach ($getproduct->manufacturing as $item)
+                           <input name="manufacture_by" value="{{  $item->manufacture_by }}" placeholder="Manufacturing By" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('manufacture_by') }}</span>
+                           @endforeach
+                        </div>
+                     </div>
+                  </div>
+                  
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing Date</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           @foreach ($getproduct->manufacturing as $item)
+                           <input name="manufacture_date" value="{{  $item->manufacture_date }}" placeholder="Manufacturing Date" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('manufacture_date') }}</span>
+                           @endforeach
+                        </div>
+                     </div>
+                  </div>
+
 
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Images </span></label>

@@ -24,18 +24,20 @@ class ProductsController extends BaseController
     {
         $input = $request->all();
         $validator = Validator::make($input,[
-            'cat_id' => 'required',
+            // 'cat_id' => 'required',
+            'sub_cat_id' => 'required',
         ]);
         
         $cat = category::find($request->input('cat_id'));
+        $subcat = Sub_Category::find($request->input('sub_cat_id'));
         // $product = Product::where('cat_id',$request->input('cat_id'))->get();
-        $product = Product::with('size','color')->where('cat_id',$request->input('cat_id'))->get();
+        // $product = Product::with('size','color','images')->where('cat_id',$request->input('cat_id'))->get();
+        $product = Product::with('size','color','images')->where('sub_cat_id',$request->input('sub_cat_id'))->get();
         // dd($product);
-
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors()); 
-        }elseif(!empty($cat)){
+        }elseif(!empty($subcat)){
             if(!empty($product->count() > 0)){
                 return $this->sendResponse_product($product,'Product Details retrieved successfully.');
             }else{
@@ -43,7 +45,7 @@ class ProductsController extends BaseController
             }   
             }
         else{
-            return $this->sendError('category not found.'); 
+            return $this->sendError('Subcategory not found.'); 
         }
     }
 
@@ -75,13 +77,37 @@ class ProductsController extends BaseController
     // retrive all product
     public function product_list(Request $request)
     {
-        $product = Product::with('images')->get();
-        // $product = Product::select('products.*');
-        // $product = $product->join('favourites', 'products.product_id ', '=', 'favourites.fav_id');
-        // $fav = Favourites::where('user_id','=',$request->user_id)->get();
-        // dd($product);
-        
+        $product = Product::with('images','favourite','size','color')->get();
+        $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
+
+        $result = array();
+        // dd($user);
+        // if(!empty($user->count() > 0)){
+        //     $product['status'] = 1;
+        // }
+        if(!empty($user->count() > 0)){
+            foreach($product as $p){
+            $pid = $p->id;
+                $getresult  = Favourites::
+                    where('status',1)->where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->get();
+            // dd($getresult);
+            // $product = $product->where('fav_status','=',1);
+            // $product->fav_status  = 1;
+            // $product =  Product::with('images')->where('fav_status','=',1)->get();
+            //  $product = $product['fav_status'];
+            }
+        }
+
+        // if(!empty($user->status == 1)){
+        //     $json['driverprofilestatus'] = !empty($user->status) ? $user->status: '1';
+        // }else{
+        //     $json['driverprofilestatus'] = !empty($user->status) ? $user->status: '0';
+        // }
+
+
             if(!empty($product)){
+                        // $product['fav_status'] = 1;
                         return $this->sendResponse_product($product,'Product retrieved successfully.');
                 }else{
                     return $this->sendError('Product not found.'); 
@@ -92,17 +118,71 @@ class ProductsController extends BaseController
         // }
     }
 
-    public function product_search(Request $request)
+    public function product_search_test_run(Request $request)
     {
         $result = array();
+        $search =$request->search;
+
+        $product = Product::where('product_name', $search)->whereHas('category', function($q) use ($search) {
+            $q->where('cat_name', $search);
+        })->get();
+
+        dd($product);
+
+        // $product = Product::whereHas('category', function($q) {
+        //     $q->where('cat_name', 'man');
+        // })->get();
+        
+        $data['pro'] = Product::with('category')
+        ->where('products.product_name', 'like', '%' . $request->search . '%')
+        // ->orwhere('categories.cat_name', 'like', '%' . $request->search . '%')
+        ->get();
+
+        $data['cat'] = Product::whereHas('category', function($q) use ($search) {
+            $q->where('cat_name', $search);
+        })->get();
+
+        $result[] = $data;
+        dd($result);
+
+        // $product = Product::with('category')
+        // ->where('products.product_name', 'like', '%' . $request->search . '%')
+        // // ->orwhere('categories.cat_name', 'like', '%' . $request->search . '%')
+        // ->get();
+        // $items = Product
+        //     ::join('categories', 'products.cat_id', '=', 'categories.id')
+        //     ->where ('products.product_name', 'LIKE', '%' . $q . '%' ) 
+        //     ->orWhere('categories.cat_name', 'LIKE', '%' . $q . '%')
+        //     ->select('*')
+        //     ->get();
+
+            $products = Product::join('categories', function($builder) {
+                $builder->on('categories.id', '=', 'products.cat_id');
+                // here you can add more conditions on tags table.
+            })
+            // join('sub_categories', function($builder) {
+            //     $builder->on('sub_categories.id', '=', 'products.tag_id');
+            //     // here you can add more conditions on subcategories table.
+            // })
+            ->where('product_name', 'LIKE', '%'.$q.'%')
+            ->get();
+    
+        dd($items);
+
+
+        // $cat = category::with('product')
+        //         ->where('cat_name','like', '%' . $request->search . '%')
+        //         ->get();
+
+
         $users = Product::select('products.*');
         $users = $users->join('categories', 'products.cat_id', '=', 'categories.id');
 
         // $product = Product::where([['product_name',$request['product_name']],])->get();
         // dd($product);
-        $users = $users->where('categories.cat_name', 'like', '%' . $request->product_name . '%');
+        $users = $users->orwhere('categories.cat_name', 'like', '%' . $request->search . '%')->get();
         dd($users);
-        $new = $users->where('products.product_name', 'like', '%' . $request->product_name . '%');
+        $new = $users->where('products.product_name', 'like', '%' . $request->search . '%');
         if(!empty($request->product_name)){
             // $new = $new->where('products.product_name', 'like', '%' . $request->product_name . '%');
             $data;
@@ -131,7 +211,7 @@ class ProductsController extends BaseController
         echo json_encode($json);
     }
 
-    public function product_search_vipul(Request $request)
+    public function product_search(Request $request)
     {
         $result = array();
         $users = Product::select('products.*');
@@ -158,7 +238,6 @@ class ProductsController extends BaseController
         
         echo json_encode($json);
     }
-
 
 
     public function product_search_riddhi(Request $request)
@@ -199,7 +278,9 @@ class ProductsController extends BaseController
         ]);
         
         $cat = Sub_Category::find($request->input('sub_cat_id'));
-        $product = Product::where('sub_cat_id',$request->input('sub_cat_id'))->get();
+        // $product = Product::where('sub_cat_id',$request->input('sub_cat_id'))->get();
+        $product = Product::with('size','color','images')->where('sub_cat_id',$request->input('sub_cat_id'))->get();
+
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors()); 
@@ -341,6 +422,59 @@ class ProductsController extends BaseController
                 return $this->sendError('Data Not Found.'); 
             }
         }
+    }
+
+
+    public function sort_by_product(Request $request)
+    {
+        $result = array();
+        $sorting = Product::with('images')->orderBy('id','desc')->get();
+        // $sorting = $sorting->orderBy('id','desc');
+        dd($sorting);
+        // $sorting = Product::select('products.*');
+        // $sorting = $sorting->join('categories', 'products.cat_id', '=', 'categories.id');
+
+        if(!empty($request->newest)){
+           $sorting = $sorting->latest();
+        }
+        // if(!empty($request->size)){
+        //     $size = explode(",", $request->size);  
+        //    $sorting = $sorting->whereIn('size',$size);
+        // }
+        // if(!empty($request->brand)){
+        //     $brand = explode(",", $request->brand);  
+        //     // $getbrand = Product::whereIn('brand',['naf','jack'])->get();
+        //    $sorting = $sorting->whereIn('brand',$brand);
+        // }
+        // if(!empty($request->price)){
+        //     $price = explode(",", $request->price);
+        //     $min_price = implode(",", $price);
+        //     $max_price = array_pop($price);
+        //     // $pp = Product::whereBetween('price', [100,300])->get();
+        //     // $getprice = Product::whereBetween('price', [$min_price,$max_price])->get();
+        //    $sorting = $sorting->whereBetween('price', [$min_price,$max_price]);
+        // }
+
+        // $sorting = $sorting->paginate(40);
+     
+        // foreach ($sorting as $value) {
+
+        //     $data['id']             = $value->id;
+        //     $data['cat_name']      = !empty($value->category->cat_name) ? $value->category->cat_name : '';
+        //     $data['product_name']  = !empty($value->product_name) ? $value->product_name : '';
+        //     $data['price']  = !empty($value->price) ? $value->price : '';
+        //     $data['img']  = !empty($value->img) ? $value->img : '';
+        //     $data['color']  = !empty($value->color) ? $value->color : '';
+        //     $data['size']  = !empty($value->size) ? $value->size : '';
+        //     $data['brand']  = !empty($value->brand) ? $value->brand : '';
+        //     $result[] = $data;
+        // }
+        $json['success'] = 1;
+        $json['message'] = 'All loaded successfully.';
+        $json['result'] = $result;
+        
+        echo json_encode($sorting);
+    
     }
 
 }

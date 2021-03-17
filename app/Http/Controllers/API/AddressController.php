@@ -145,8 +145,34 @@ class AddressController extends BaseController
 
 
 
-
     public function Address_Add(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        if(!empty($user)) {
+            $user->fullname  = trim($request->fullname);
+            $user->username  = trim($request->fullname);
+            $user->address  = trim($request->address);
+            $user->city  = trim($request->city);
+            $user->state  = trim($request->state);
+            $user->zip_code  = trim($request->zip_code);
+            $user->contry  = trim($request->contry);
+            $user->save();
+            $json['success'] = 1;
+            $json['message'] = 'Address add Successfully.';
+            $json['user_address'] = $user;
+        }
+
+        else{
+            $json['success'] = 0;
+            $json['message'] = 'User not found.';
+        }
+
+ 	    echo json_encode($json);
+        //$address->amount  = trim($request->amount);
+	}
+
+    public function Address_Add_addressTable(Request $request)
     {
         $user = User::find($request->user_id);
 
@@ -201,7 +227,8 @@ class AddressController extends BaseController
 	{
 	    $result  = array();
 		// $getresult  = Favourites::with('user','product')->where('user_id', '=' ,$request->user_id)->where('product_id', '=' ,$request->product_id)->get();
-		$getresult  = address::where('user_id', '=' ,$request->user_id)->get();
+		// $getresult  = address::where('user_id', '=' ,$request->user_id)->get();
+		$getresult  = User::where('id', '=' ,$request->user_id)->get();
 
         if(!empty($getresult->count() > 0)){
             $json['success'] = 1;
