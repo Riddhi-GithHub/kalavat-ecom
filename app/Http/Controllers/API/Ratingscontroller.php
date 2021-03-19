@@ -152,7 +152,7 @@ class Ratingscontroller extends Controller
             $user = User::find($request->input('user_id'));
             // dd(!empty($product && $user));
             if(!empty($product && $user)){
-                $data = Rating::where('product_id', '=', trim($request->product_id))
+                $data = Rating::with('ratingimages')->where('product_id', '=', trim($request->product_id))
                 ->where('user_id', '=', trim($request->user_id))
                 ->first();
               
@@ -164,6 +164,31 @@ class Ratingscontroller extends Controller
                     $data->rating_description = $request->rating_description;
                     $data->save();
 
+                    if($request->hasfile('images')) {
+                        $images_remove = Rating_images::where('rating_id','=',$data->id)->delete();
+                        // dd($images_update);
+
+                        foreach($request->file('images') as $file){
+                            // $image_name = time().'-'.$file->getClientOriginalName();
+                            $no = rand(1111,9999);
+                            $image_name = time().$no.'.jpg';
+                            $file->move(public_path('images/rating'), $image_name);
+                            // $input['images']=json_encode($data);
+                            $new[] = $image_name;
+                            // dd($new);
+                                $image =  Rating_images::create([
+                                    'rating_id'        => $data->id,
+                                    'images'           => $image_name,
+                                ]);
+                        }
+                        // dd($new);
+                    }
+                      // store single image on product table
+                      $rat_img = Rating::find($data->id);
+                      $rat_img->rating_images = $new[0];
+                      $rat_img->save();
+
+
                     $rates = DB::table('ratings')
                     ->where('product_id', $data->product_id)
                     ->avg('rating_avg');
@@ -173,7 +198,7 @@ class Ratingscontroller extends Controller
                     $product->save();
 
                     $json['success'] = 1;
-                    $json['message'] = 'Rating change Successfully.';
+                    $json['message'] = 'Thanks for the rating!';
                     $json['rating_list'] = $data;
                 }else{
                     $input = $request->all();
@@ -207,12 +232,12 @@ class Ratingscontroller extends Controller
                     $rat_img->rating_images = $data[0];
                     $rat_img->save();
 
-                    $rat_data = $data = Rating::where('product_id', '=', trim($request->product_id))
+                    $rat_data = $data = Rating::with('ratingimages')->where('product_id', '=', trim($request->product_id))
                     ->where('user_id', '=', trim($request->user_id))
                     ->first();
 
                     $json['success'] = 1;
-                    $json['message'] = 'Rating add Successfully.';
+                    $json['message'] = 'Thanks for the rating!';
                     $json['rating_list'] = $rat_data;
                 }
             }

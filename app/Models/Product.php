@@ -10,6 +10,7 @@ use App\Models\Rating;
 use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Size;
+use App\Models\ProductDetails;
 
 class Product extends Model
 {
@@ -62,4 +63,8 @@ class Product extends Model
    {
        return $this->hasMany('App\Models\Manufacturing',"product_id");
    }   
+   public function productdetails()
+   {
+       return $this->hasMany('App\Models\ProductDetails',"product_id");
+   }  
 }

@@ -12,6 +12,7 @@ use App\Models\Size;
 use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Favourites;
+use App\Models\ProductDetails;
 use Validator;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -74,48 +75,81 @@ class ProductsController extends BaseController
         }
     }
 
+      // retrive all product more information
+      public function product_more_information(Request $request)
+      {
+        if($request->product_id){
+
+          $data = Product::with('images','favourite','size','color','manufacturing','productdetails')
+          ->where('id',$request->product_id)->first();
+
+        //   dd($product);
+        //   $data = ProductDetails::where('product_id',$data->product_id)->first();
+  
+            if($data){
+                $json['success'] = 1;
+                $json['message'] = 'All loaded successfully.';
+                $json['list'] = $data;
+            }
+            else{
+            $json['success'] = 0;
+            $json['message'] = 'data not found';
+            }
+        }
+        else{
+            $json['success'] = 0;
+            $json['message'] = 'Fill product_id';
+        }
+        echo json_encode($json);
+
+        // $product = Product::with('images','favourite','size','color','manufacturing','productdetails')
+        // ->where('id',$request->product_id)->first();
+        //       if($product){
+        //                   // $product['fav_status'] = 1;
+        //                   return $this->sendResponse_product($product,'Product retrieved successfully.');
+        //       }else{
+        //           return $this->sendError('Product not found.'); 
+        //       }
+        // }
+        // else{
+        //     return $this->sendError('Fill Required data.'); 
+        // }
+
+      }
+
     // retrive all product
     public function product_list(Request $request)
     {
-        $product = Product::with('images','favourite','size','color')->get();
-        $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
-
-        $result = array();
-        // dd($user);
-        // if(!empty($user->count() > 0)){
-        //     $product['status'] = 1;
-        // }
-        if(!empty($user->count() > 0)){
-            foreach($product as $p){
-            $pid = $p->id;
-                $getresult  = Favourites::
-                    where('status',1)->where('user_id', '=' ,$request->user_id)
-                    ->where('product_id', '=' ,$pid)->get();
-            // dd($getresult);
-            // $product = $product->where('fav_status','=',1);
-            // $product->fav_status  = 1;
-            // $product =  Product::with('images')->where('fav_status','=',1)->get();
-            //  $product = $product['fav_status'];
+        if($request->user_id){
+            $product = Product::with('images','size','color')->get();
+            $is_fav="";
+            $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
+      
+            if(!empty($user->count() > 0)){
+                foreach($product as $p){
+                $pid = $p->id;
+                    $getresult  = Favourites::
+                        where('user_id', '=' ,$request->user_id)
+                        ->where('product_id', '=' ,$pid)->first();
+                        if(!empty($getresult)){
+                            $is_fav=$getresult->status;
+                            //dd($is_fav);
+                            $p['is_fav']=$is_fav;
+                            //dd($p);
+                        }else{
+                            $p['is_fav']=0;
+                        }
+                }
+            }
+            if(!empty($product)){
+                        return $this->sendResponse_product($product,'Product retrieved successfully.');
+            }else{
+                return $this->sendError('Product not found.'); 
             }
         }
-
-        // if(!empty($user->status == 1)){
-        //     $json['driverprofilestatus'] = !empty($user->status) ? $user->status: '1';
-        // }else{
-        //     $json['driverprofilestatus'] = !empty($user->status) ? $user->status: '0';
-        // }
-
-
-            if(!empty($product)){
-                        // $product['fav_status'] = 1;
-                        return $this->sendResponse_product($product,'Product retrieved successfully.');
-                }else{
-                    return $this->sendError('Product not found.'); 
-                }
-        // }
-        // else{
-        //     return $this->sendError('User not found.'); 
-        // }
+        else{
+            return $this->sendError('Fill Required data!'); 
+        }
     }
 
     public function product_search_test_run(Request $request)
@@ -239,7 +273,6 @@ class ProductsController extends BaseController
         echo json_encode($json);
     }
 
-
     public function product_search_riddhi(Request $request)
     {
         $data = Category::with('product')->where('cat_name', 'like', '%' . $request->cat_name . '%')->get();
@@ -298,6 +331,67 @@ class ProductsController extends BaseController
 
     public function filter_product(Request $request)  
     {
+        if (!empty($request->sub_cat_id)) {
+            $result = array();
+            $filter = Product::with('category','images','size','color')
+            ->where('sub_cat_id',$request->sub_cat_id)->get();
+
+            // $filter = Product::with('subcategory')->select('products.*')->where('sub_cat_id',$request->sub_cat_id);
+            // $filter = $filter->join('categories', 'products.cat_id', '=', 'categories.id');
+
+            if(!empty($request->color)){
+                $filter = $filter->where('products.color', 'like', '%' . $request->color . '%');
+                // return $this->sendResponse_product($product,'Product retrieved successfully.');
+            }
+            if(!empty($request->size)){
+                $size = explode(",", $request->size);  
+            $filter = $filter->whereIn('size',$size);
+            }
+            if(!empty($request->brand)){
+                $brand = explode(",", $request->brand);  
+                // $getbrand = Product::whereIn('brand',['naf','jack'])->get();
+            $filter = $filter->whereIn('brand',$brand);
+            }
+            if(!empty($request->price)){
+                $price = explode(",", $request->price);
+                $min_price = implode(",", $price);
+                $max_price = array_pop($price);
+                // $pp = Product::whereBetween('price', [100,300])->get();
+                // $getprice = Product::whereBetween('price', [$min_price,$max_price])->get();
+            $filter = $filter->whereBetween('price', [$min_price,$max_price]);
+            }
+
+            // $filter = $filter->paginate(40);
+        
+            foreach ($filter as $value) {
+
+                $data['id']             = $value->id;
+                $data['cat_name']      = !empty($value->category->cat_name) ? $value->category->cat_name : '';
+                $data['product_name']  = !empty($value->product_name) ? $value->product_name : '';
+                $data['price']  = !empty($value->price) ? $value->price : '';
+                $data['img']  = !empty($value->img) ? $value->img : '';
+                $data['color']  = !empty($value->color) ? $value->color : '';
+                $data['size']  = !empty($value->size) ? $value->size : '';
+                $data['brand']  = !empty($value->brand) ? $value->brand : '';
+                $result[] = $data;
+            }
+
+            $json['success'] = 1;
+            $json['message'] = 'All loaded successfully.';
+            // $json['result'] = $result;
+            $json['result'] = $filter;
+        }
+        else{
+        $json['success'] = 0;
+        $json['message'] = 'Fill sub_cat_id';
+        }
+        echo json_encode($json);
+        
+    }
+
+
+    public function filter_product_subcat(Request $request)  
+    {
         $result = array();
         $filter = Product::select('products.*');
         $filter = $filter->join('categories', 'products.cat_id', '=', 'categories.id');
@@ -345,6 +439,48 @@ class ProductsController extends BaseController
         
     }
 
+    public function filter_product_get(Request $request)
+    {
+        if (!empty($request->sub_cat_id)) {
+            $filter = Product::with('size','color','brand')
+            ->where('sub_cat_id',$request->sub_cat_id)->get();
+
+            $size = Size::where('size_subcat_id',$request->sub_cat_id)->get();
+            $color = Color::where('color_subcat_id',$request->sub_cat_id)->get();
+            $brand = Brand::where('brand_subcat_id',$request->sub_cat_id)->get();
+            // dd($color);
+
+            $min = $filter->min('price');
+            $max = $filter->max('price');
+
+            // foreach($filter as $s)
+            // {
+            //     $size[] = $s->size;
+            // }
+            // dd($size);
+            if($size && $color && $brand && $min && $max){
+                $json['success'] = 1;
+                $json['message'] = 'All loaded successfully.';
+                $json['min_price'] = $min;
+                $json['max_price'] = $max;
+                $json['get_size'] = $size;
+                $json['get_color'] = $color;
+                $json['get_brand'] = $brand;
+                // $json['product_list'] = $filter;
+            }
+            else{
+                $json['success'] = 0;
+                $json['message'] = 'Data not found';
+            }
+
+        }
+        else{
+        $json['success'] = 0;
+        $json['message'] = 'Fill sub_cat_id';
+        }
+        echo json_encode($json);
+    }
+
     //-------- other way ------------------
 
     public function getIamgeList(Request $request)
@@ -364,7 +500,6 @@ class ProductsController extends BaseController
 
  	    echo json_encode($json);
 	}
-
 
     public function filter_product_backup(Request $request)
     {
@@ -423,7 +558,6 @@ class ProductsController extends BaseController
             }
         }
     }
-
 
     public function sort_by_product(Request $request)
     {

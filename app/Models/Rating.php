@@ -29,7 +29,7 @@ class Rating extends Model
         return $this->belongsTo(User::class,'user_id');
     }
 
-    public function images()
+    public function ratingimages()
    {
        return $this->hasMany('App\Models\Rating_images',"rating_id");
    }     

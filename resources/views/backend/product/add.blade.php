@@ -67,10 +67,10 @@
                   </div>
 
                   <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Description<span style="color:red"> *</span></label>
+                     <label class="col-md-2 col-xs-12 control-label">Long Description<span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
-                           <input name="description" value="{{ old('description') }}" placeholder="Description" type="text" class="form-control" />
+                           <input name="description" value="{{ old('description') }}" placeholder="Long Description" type="text" class="form-control" />
                            <span style="color:red">{{  $errors->first('description') }}</span>
                         </div>
                      </div>
@@ -103,6 +103,16 @@
                         <div class="">
                            <input name="offer" value="{{ old('offer') }}" placeholder="Offer" type="number" class="form-control" />
                            <span style="color:red">{{  $errors->first('offer') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Short Description<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="sort_desc" value="{{ old('sort_desc') }}" placeholder="Short Description" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('sort_desc') }}</span>
                         </div>
                      </div>
                   </div>
@@ -169,45 +179,15 @@
                      </div>
                   </div> --}}
 
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Short Description<span style="color:red"> *</span></label>
+                  {{-- <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">More Description<span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
-                           <input name="sort_desc" value="{{ old('sort_desc') }}" placeholder="Short Description" type="text" class="form-control" />
-                           <span style="color:red">{{  $errors->first('sort_desc') }}</span>
+                           <input name="title_description[]" value="{{ old('title_description') }}" placeholder="More Description" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('title_description') }}</span>
                         </div>
                      </div>
-                  </div>
-
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Size And Fit<span style="color:red"> *</span></label>
-                     <div class="col-md-8 col-xs-12">
-                        <div class="">
-                           <input name="size_and_fit" value="{{ old('size_and_fit') }}" placeholder="Size And Fit" type="text" class="form-control" />
-                           <span style="color:red">{{  $errors->first('size_and_fit') }}</span>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Material And Care<span style="color:red"> *</span></label>
-                     <div class="col-md-8 col-xs-12">
-                        <div class="">
-                           <input name="material_and_care" value="{{ old('material_and_care') }}" placeholder="Material And Care" type="text" class="form-control" />
-                           <span style="color:red">{{  $errors->first('material_and_care') }}</span>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Style Note<span style="color:red"> *</span></label>
-                     <div class="col-md-8 col-xs-12">
-                        <div class="">
-                           <input name="style_note" value="{{ old('style_note') }}" placeholder="Style Note" type="text" class="form-control" />
-                           <span style="color:red">{{  $errors->first('style_note') }}</span>
-                        </div>
-                     </div>
-                  </div>
+                  </div> --}}
 
                   {{-- <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Item Model Num<span style="color:red"> *</span></label>
@@ -289,7 +269,6 @@
                      </div>
                   </div>
 
-
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Color <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
@@ -336,7 +315,7 @@
                      </div>
                   </div>  
 
-            <div class="form-group">
+                  <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Image <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
@@ -347,22 +326,99 @@
                      </div>
                   </div>
 
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">More Description Title</label>
+                     <div class="col-md-8 col-xs-12">
+                        <table class="table">
+                           <tr>
+                              <th>Add Title</th>
+                              <th>Action</th>
+                           </tr>
+                           <tr>
+                              <td><input  class="form-control" placeholder="More Description title" name="option[100][title]" type="text"></td>
+                              <td><a href="#" class="item_remove btn btn-danger" placeholder="More Description Title">Remove</a></td>
+                           </tr>
+                           <tr id="item_below_row100">
+                              <td colspan="100%">
+                                 <button type="button" id="100" class="btn btn-primary add_row">Add</button>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+                  <span id="getNewMainOption"></span>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">More Description</label>
+                     <div class="col-md-8 col-xs-12">
+                        <table class="table">
+                           <tr>
+                              <th>Add Description</th>
+                              <th>Action</th>
+                           </tr>
+                           <tr>
+                              <td><input  class="form-control" placeholder="More Description" name="optiondesc[200][title_description]" type="text"></td>
+                              <td><a href="#" class="item_remove btn btn-danger" placeholder="More Description">Remove</a></td>
+                           </tr>
+                           <tr id="item_below_row200">
+                              <td colspan="100%">
+                                 <button type="button" id="200" class="btn btn-primary add_row_new">Add</button>
+                              </td>
+                              {{-- <td><a href="#" class="item_remove btn btn-danger">Remove</a></td> --}}
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+                  <span id="getNewMainOption"></span>
+
                 </div>
                <div class="panel-footer">
                   <button class="btn btn-primary pull-right">Submit</button>
                </div>
             </div>
          </form>
-
                   {{-- End --}}
-                    
                 </div>
             </div>
         </div>
  
 @endsection
-  @section('script')
+@section('script')
   <script type="text/javascript">
-   
+  var item_row = 101;
+   $("body").delegate(".add_row","click",function(e) {
+      var id = $(this).attr('id');
+      e.preventDefault();
+      // var html = '';
+      html    ='<tr><td><input  class="form-control" required name="option['+item_row+'][title]" type="text"></td>\n\
+              <td><a href="#" class="item_remove btn btn-danger">Remove</a></td>\n\
+              </tr>';
+      $("#item_below_row"+id).before(html);
+      item_row++;
+   });
+   $('body').delegate(".item_remove", "click", function(e){
+    e.preventDefault();
+    $(this).parent().parent().remove();
+   });
   </script>
+
+<script type="text/javascript">
+   var item_row = 201;
+    $("body").delegate(".add_row_new","click",function(e) {
+       var id = $(this).attr('id');
+       e.preventDefault();
+       // var html = '';
+       html    ='<tr><td><input  class="form-control" required name="optiondesc['+item_row+'][title_description]" type="text"></td>\n\
+               <td><a href="#" class="item_remove btn btn-danger">Remove</a></td>\n\
+               </tr>';
+       $("#item_below_row"+id).before(html);
+       item_row++;
+    });
+    $('body').delegate(".item_remove", "click", function(e){
+     e.preventDefault();
+     $(this).parent().parent().remove();
+    });
+   </script>
+
 @endsection
+

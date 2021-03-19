@@ -57,10 +57,14 @@ Route::post('product_search', 'API\ProductsController@product_search');
 Route::post('subcategory_product_details', 'API\ProductsController@subcategory_product_details');
 // retrive product images
 Route::post('image_list', 'API\ProductsController@getIamgeList');
-// retrive filtering product 
+// retrive filtering product apply
 Route::post('filter_product', 'API\ProductsController@filter_product');
+// retrive filtering product 
+Route::post('filter_product_get', 'API\ProductsController@filter_product_get');
 # sort By Product
 Route::post('sort_by_product', 'API\ProductsController@sort_by_product');
+# product more informattion
+Route::post('product_more_information', 'API\ProductsController@product_more_information');
 
 
 // add to favourite product
@@ -88,6 +92,7 @@ Route::post('address_list', 'API\AddressController@Address_List');
 Route::post('add_to_cart', 'API\CartController@addProductToCart');
 Route::post('cart_list', 'API\CartController@getCartList');
 Route::post('delete_to_cart', 'API\CartController@deleteCartProdcut');
+Route::post('plus_remove_quantity_cart', 'API\CartController@plus_remove_quantity_cart');
 
 # Order
 Route::post('add_order', 'API\OrdersController@AddOrder');

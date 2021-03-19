@@ -13,6 +13,7 @@ use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Size;
 use App\Models\Manufacturing;
+use App\Models\ProductDetails;
 use Illuminate\Support\Facades\Storage;
 use DB;
 
@@ -76,41 +77,37 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $input = request()->validate([
-            'cat_id'         => 'required',
-            'sub_cat_id'         => 'required',
-            'product_name'      => 'required',
-            'description' => 'required|string|max:2000',
-            'price' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
-            'quantity' => 'required|integer|min:1',
-            'color' => 'required|max:30',
-            'size' => 'required|max:30',
-            'brand' => 'required|max:30',
-            'images' => 'required|max:15000',
+        // $input = request()->validate([
+        //     // 'cat_id'         => 'required',
+        //     // 'sub_cat_id'         => 'required',
+        //     // 'product_name'      => 'required',
+        //     // 'description' => 'required|string|max:2000',
+        //     // 'price' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
+        //     // 'quantity' => 'required|integer|min:1',
+        //     // 'color' => 'required|max:30',
+        //     // 'size' => 'required|max:30',
+        //     // 'brand' => 'required|max:30',
+        //     // 'images' => 'required|max:15000',
 
-            'sort_desc'      => 'required',
-            'size_and_fit'      => 'required',
-            'material_and_care'      => 'required',
-            'style_note'      => 'required',
+        //     'title'      => 'required',
+        //     'title_description'      => 'required',
 
-            'address'      => 'required',
-            'city'      => 'required|string',
-            'state'      => 'required|string',
-            'contry'      => 'required|string',
-            'zip_code'      => 'required|min:6|max:6',
-            'manufacture_by'      => 'required|string',
-            'manufacture_date'      => 'required|date_format:m-d-Y',
+        //     // 'address'      => 'required',
+        //     // 'city'      => 'required|string',
+        //     // 'state'      => 'required|string',
+        //     // 'contry'      => 'required|string',
+        //     // 'zip_code'      => 'required|min:6|max:6',
+        //     // 'manufacture_by'      => 'required|string',
+        //     // 'manufacture_date'      => 'required|date_format:m-d-Y',
 
-        ]);
+        // ]);
+
         // dd($product_insert);
             // 'item_model_num'      => 'required',
             // 'offer' => 'integer|min:1',
             //   'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         
-        $category = Category::get();
         $cat_id = $request->input('cat_id');
-
-        $category = Sub_Category::get();
         $sub_cat_id = $request->input('sub_cat_id');
         
         //  foreach($request->brand as $b){
@@ -119,17 +116,13 @@ class ProductController extends Controller
         // $brand[] =  $request->brand;
 
         // dd($product_insert);
-        // $p = Product::create($product_insert);
-        // dd($product_insert->item_model_num);
-        // if($request->item_model_num){
-            // }
-            // dd($p);
-            $model_num = rand(1111111111,9999999999);
-            $num = 'KL'.$model_num;
+        $model_num = rand(1111111111,9999999999);
+        $num = 'KL'.$model_num;
 
         $product_insert = new Product;
-        $product_insert->cat_id = $cat_id;
-        $product_insert->sub_cat_id = $sub_cat_id;
+        // $product_insert->cat_id = $cat_id;
+        $product_insert->cat_id = $request->cat_id;
+        $product_insert->sub_cat_id = $request->sub_cat_id;
         $product_insert->product_name = strtolower($request->product_name);
         $product_insert->description    = $request->description;
         $product_insert->price    = $request->price;
@@ -141,11 +134,7 @@ class ProductController extends Controller
         $product_insert->material_and_care    = $request->material_and_care;
         $product_insert->item_model_num    = $num;
         $product_insert->offer    = $request->offer;
-        
-        // $product_insert['brand'] = $b;
-        // $brand = $request->input('brand');
-        // dd($product_insert);
-        $product_insert->save();
+        // $product_insert->save();
 
         if($request->color) {
             foreach($request->color as $c){
@@ -180,6 +169,7 @@ class ProductController extends Controller
                 $brand[] = $b;
                 $insert_brand =  Brand::create([
                     'brand_cat_id'        => $cat_id,
+                    'brand_subcat_id'     => $sub_cat_id,
                     'brand_product_id'    => $product_insert->id,
                     'brand'               => $b,
                     ]);
@@ -217,6 +207,37 @@ class ProductController extends Controller
                         ]);
             }
         }
+
+        if(!empty($request->option)) {
+            foreach ($request->option as $value) {
+                if(!empty($value['title'])) {
+                    $detail = new ProductDetails;
+                    $detail->product_id = $product_insert->id;
+                    $detail->title     = !empty($value['title']) ? $value['title'] : '';
+                    // $detail->title_description     = !empty($value['title_description']) ? $value['title_description'] : '';
+                    // $detail->save();
+                    $d[] = $detail;
+                }
+            }
+        }
+        
+        
+        if(!empty($request->optiondesc)) {
+            foreach ($request->optiondesc as $val) {
+                if(!empty($val['title_description'])) {
+                    $detail = new ProductDetails;
+                    $detail->product_id = $product_insert->id;
+                    $detail->title_description     = !empty($val['title_description']) ? $val['title_description'] : '';
+                    // $detail->save();
+                    $d[] = $detail;
+                }
+            }
+            dd($d);
+        }
+
+
+
+
             // store single image on product table
             $product = Product::find($product_insert->id);
             $product->img = $data[0];

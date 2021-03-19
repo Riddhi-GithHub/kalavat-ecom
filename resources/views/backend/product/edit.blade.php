@@ -265,6 +265,30 @@
                      </div>
                   </div>
 
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Board Sub Option</label>
+                     <div class="col-md-8 col-xs-12">
+                        <table class="table">
+                           <tr>
+                              <th>STD Level</th>
+                              <th>Action</th>
+                           </tr>
+                           <tr>
+                              <td><input  class="form-control"  name="option[100][board_std_level_name]" type="text"></td>
+                              <td><a href="#" class="item_remove btn btn-danger">Remove</a></td>
+                           </tr>
+                           <tr id="item_below_row100">
+                              <td colspan="100%">
+                                 <button type="button" id="100" class="btn btn-primary add_row">Add</button>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+                  <span id="getNewMainOption"></span>
+
+
                </div>
                <div class="panel-footer">
                   <button class="btn btn-primary pull-right">Update</button>
@@ -279,7 +303,23 @@
 
 @endsection
 @section('script')
-<script type="text/javascript">
+  <script type="text/javascript">
+  var item_row = 101;
+   $("body").delegate(".add_row","click",function(e) {
+      var id = $(this).attr('id');
+      e.preventDefault();
+      // var html = '';
+      html    ='<tr><td><input  class="form-control" required name="option['+item_row+'][board_std_level_name]" type="text"></td>\n\
+              <td><a href="#" class="item_remove btn btn-danger">Remove</a></td>\n\
+              </tr>';
+      $("#item_below_row"+id).before(html);
+      item_row++;
+   });
+   $('body').delegate(".item_remove", "click", function(e){
+    e.preventDefault();
+    $(this).parent().parent().remove();
+   });
+  </script>
 
-</script>
+
 @endsection

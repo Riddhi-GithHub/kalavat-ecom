@@ -140,7 +140,7 @@ class FavouritesController extends BaseController
                     $data->status  = '0';
                     $data->save();
                     $json['success'] = 1;
-                    $json['message'] = 'Favourite prodcut deleted Successfully';
+                    $json['message'] = 'Item deleted Successfully';
                     $json['favourite_list'] = $data;
                 }else{
                     $json['success'] = 0;

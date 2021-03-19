@@ -103,4 +103,21 @@ class CartController extends Controller
         echo json_encode($json);
     }
 
+    public function plus_remove_quantity_cart(Request $request)
+    {
+        $getresult  = Cart::with('product.size','product.color','product','product.images')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
+        // $getresult  = Favourites::with('product')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
+        
+        if(!empty($getresult->count() > 0)){
+            $json['success'] = 1;
+            $json['message'] = 'Cart list loaded Successfully.';
+            $json['cart_list'] = $getresult;
+        }
+        else{
+            $json['success'] = 0;
+            $json['message'] = 'Product not found.';
+        }
+
+ 	    echo json_encode($json);
+    }
 }
