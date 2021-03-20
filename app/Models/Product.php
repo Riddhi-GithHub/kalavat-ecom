@@ -16,8 +16,8 @@ class Product extends Model
 {
     protected $table = 'products';
     protected $fillable = [
-       'cat_id','sub_cat_id','product_name','description','img','price','quantity','offer','color','size','brand',
-       'rating_count','sort_desc','size_and_fit','material_and_care','style_note'
+       'cat_id','sub_cat_id','product_name','description','img','price','quantity','offer','color','sizess','brand',
+       'sort_desc','size_and_fit','material_and_care','style_note'
    ];
 
    public function category(){

@@ -214,11 +214,12 @@ class ProductController extends Controller
                     $detail = new ProductDetails;
                     $detail->product_id = $product_insert->id;
                     $detail->title     = !empty($value['title']) ? $value['title'] : '';
-                    // $detail->title_description     = !empty($value['title_description']) ? $value['title_description'] : '';
+                    $detail->title_description     = !empty($value['title_description']) ? $value['title_description'] : '';
                     // $detail->save();
                     $d[] = $detail;
                 }
             }
+            dd($d);
         }
         
         
@@ -232,10 +233,8 @@ class ProductController extends Controller
                     $d[] = $detail;
                 }
             }
-            dd($d);
+            // dd($d);
         }
-
-
 
 
             // store single image on product table
@@ -256,7 +255,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $data['getproduct'] = Product::with('images')->find($id);
+        $data['getdata'] = Product::with('images')->find($id);
         $data['meta_title'] = "View product";
         return view('backend.product.view', $data);
     }
@@ -407,5 +406,12 @@ class ProductController extends Controller
         $getrecord = Product::with('images')->find($id);
         $getrecord->delete();
         return redirect('admin/product')->with('error', 'Record deleted Successfully!');
+    }
+
+
+    public function import(Request $request)
+    {
+        dd('f');
+        # code...
     }
 }

@@ -22,12 +22,21 @@ class CategoriesController extends BaseController
 
     public function subcategory_list(Request $request)
     {
-        $subcat = Sub_Category::get();
-        if(!empty($subcat)){
-            return $this->sendResponse_subcategory($subcat,'Subcategory retrieved Successfully.');
-        }else{
-                return $this->sendError('Subcategory not found.'); 
+        if($request->cat_id){
+            $cat = category::find($request->cat_id);
+            if(!empty($cat)){
+                 $subcat = Sub_Category::where('cat_id','=',$request->cat_id)->get();
+                if(!empty($subcat->count() > 0)){
+                    return $this->sendResponse_subcategory($subcat,'Subcategory retrieved Successfully.');
+                }else{
+                        return $this->sendError('Subcategory not found.'); 
+                    }
+            }else{
+                return $this->sendError('Category not found.'); 
             }
+        }else{
+            return $this->sendError('Fill Required Data.'); 
+        }
     }
 
 }

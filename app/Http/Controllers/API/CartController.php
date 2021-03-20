@@ -60,20 +60,44 @@ class CartController extends Controller
 
     public function getCartList(Request $request)
 	{
-        $getresult  = Cart::with('product.size','product.color','product','product.images')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
-        // $getresult  = Favourites::with('product')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
+        if($request->user_id){
+            $getresult  = Cart::with('product.size','product.color','product','product.images')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
+            // $getresult  = Favourites::with('product')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
+            // dd($getresult->product);
 
-        if(!empty($getresult->count() > 0)){
-            $json['success'] = 1;
-            $json['message'] = 'Cart list loaded Successfully.';
-            $json['cart_list'] = $getresult;
+            $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
+            $is_fav="";
+
+                foreach($getresult as $p){
+                    // dd($p->product_id);
+                    $fav  = Favourites::
+                        where('user_id', '=' ,$request->user_id)
+                        ->where('product_id', '=' ,$p->product_id)->first();
+                        if(!empty($fav)){
+                            $is_fav=$fav->status;
+                            //dd($is_fav);
+                            $p['is_fav']=$is_fav;
+                            //dd($p);
+                        }else{
+                            $p['is_fav']=0;
+                        }
+                }
+
+            if(!empty($getresult->count() > 0)){
+                $json['success'] = 1;
+                $json['message'] = 'Cart list loaded Successfully.';
+                $json['cart_list'] = $getresult;
+            }
+            else{
+                $json['success'] = 0;
+                $json['message'] = 'Product not found.';
+            }
         }
         else{
             $json['success'] = 0;
-            $json['message'] = 'Product not found.';
+            $json['message'] = 'Fill Required Data.';
         }
-
- 	    echo json_encode($json);
+        echo json_encode($json);
 	}
 
     public function deleteCartProdcut(Request $request)
@@ -101,7 +125,7 @@ class CartController extends Controller
         $json['message'] = 'Fill Required Data';
         }
         echo json_encode($json);
-    }
+    } 
 
     public function plus_remove_quantity_cart(Request $request)
     {

@@ -68,8 +68,6 @@ class FavouritesController extends BaseController
 
     // --------- using base controller ----finish-------
 
-
-
     public function AddFavouriteProduct(Request $request)
 	{
         if (!empty($request->product_id && $request->user_id && $request->status)) {
@@ -113,6 +111,21 @@ class FavouritesController extends BaseController
 		// $getresult  = Favourites::with('user','product')->where('user_id', '=' ,$request->user_id)->where('product_id', '=' ,$request->product_id)->get();
 		// $getresult  = Favourites::with('product')->where('user_id', '=' ,$request->user_id)->get();
         $getresult  = Favourites::with('product','product.images','product.color','product.size')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
+
+        $rating_count ="";
+            foreach($getresult as $p){
+                $pid = $p->product_id;
+                // dd($pid);
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
+
+                        if(!empty($rates)){
+                            $p['rating_count']=$rates;
+                        }else{
+                            $p['rating_count']=0;
+                        }
+            }
 
         if(!empty($getresult->count() > 0)){
             $json['success'] = 1;

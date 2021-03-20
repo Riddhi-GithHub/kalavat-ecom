@@ -113,6 +113,8 @@ Route::post('app_slider_list', 'ApiController@app_slider_list');
 Route::post('app_product_rating_add', 'API\Ratingscontroller@app_product_rating_add');
 Route::post('app_product_rating_list', 'API\Ratingscontroller@app_product_rating_list');
 Route::post('app_product_rating_update', 'API\Ratingscontroller@app_product_rating_update');
+Route::post('app_rating_helpful', 'API\Ratingscontroller@app_rating_helpful');
+
 
 # count cart and favourite
 Route::post('count_list', 'ApiController@count_list');

@@ -27,7 +27,7 @@
                 Product ID :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getproduct->id }}
+                {{ $getdata->id }}
               </div>
             </div>
 
@@ -36,7 +36,7 @@
                 Product Name :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getproduct->product_name }}
+                {{ $getdata->product_name }}
               </div>
             </div>
 
@@ -45,7 +45,7 @@
                 Description :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getproduct->description }}
+                {{ $getdata->description }}
               </div>
             </div>
 
@@ -54,7 +54,7 @@
                 Price :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getproduct->price }}
+                {{ $getdata->price }}
               </div>
             </div>
 
@@ -63,7 +63,7 @@
                 Quantity:
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getproduct->quantity }}
+                {{ $getdata->quantity }}
               </div>
             </div>
 
@@ -72,7 +72,7 @@
                 Offer :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getproduct->offer }}
+                {{ $getdata->offer }}
               </div>
             </div>
 
@@ -81,7 +81,7 @@
                 Color :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getproduct->color }}
+                {{ $getdata->color }}
               </div>
             </div>
 
@@ -90,7 +90,7 @@
                 Size :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getproduct->size }}
+                {{ $getdata->size }}
               </div>
             </div>
 
@@ -100,7 +100,7 @@
                 Brand :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getproduct->brand }}
+                {{ $getdata->brand }}
               </div>
             </div>
 
@@ -109,11 +109,11 @@
                 Images :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                @foreach ($getproduct->images as $item)
+                @foreach ($getdata->images as $item)
                   <img alt="image name" src="{{ url('public/images/product/'.$item->images) }}"
                   style="width:70px; height:70px;" />
                 @endforeach
-                {{-- <img alt="image name" src="{{ url('public/images/product/'.$getproduct->img) }}"
+                {{-- <img alt="image name" src="{{ url('public/images/product/'.$getdata->img) }}"
                   style="width:70px; height:70px;" /> --}}
               </div>
             </div>

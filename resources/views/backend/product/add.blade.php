@@ -371,6 +371,29 @@
                   </div>
                   <span id="getNewMainOption"></span>
 
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Sub Option</label>
+                     <div class="col-md-8 col-xs-12">
+                        <table class="table">
+                           <tr>
+                              <th>Name</th>
+                              <th>Price</th>
+                              <th>Action</th>
+                           </tr>
+                           <tr>
+                              <td><input  class="form-control"  name="option[100][main_option][1][option_name]" type="text"></td>
+                              <td><input  class="form-control number" name="option[100][main_option][1][option_price]" type="text"></td>
+                              <td><a href="#" class="item_remove btn btn-danger">Remove</a></td>
+                           </tr>
+                           <tr id="item_below_row100">
+                              <td colspan="100%">
+                                 <button type="button" id="100" class="btn btn-primary add_row">Add</button>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+
                 </div>
                <div class="panel-footer">
                   <button class="btn btn-primary pull-right">Submit</button>

@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderDetails;
+use App\Models\Favourites;
 use App\User;
 use Validator;
 use Str;
@@ -40,6 +41,23 @@ class OrdersController extends Controller
     public function ListOrder(Request $request)
 	{
         $getresult  = Order::with('product')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
+
+        $is_fav="";
+            foreach($getresult as $p){
+                // dd($getresult);
+            $pid = $p->product_id;
+                $fav  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+                    if(!empty($fav)){
+                        $is_fav=$fav->status;
+                        //dd($is_fav);
+                        $p['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $p['is_fav']=0;
+                    }
+            }
 
         if(!empty($getresult->count() > 0)){
             $json['success'] = 1;
