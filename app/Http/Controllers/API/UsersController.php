@@ -238,8 +238,6 @@ class UsersController extends BaseController
         //     return $this->sendError('Validation Error.', $validator->errors());       
         // }
 
-
-
         $user = User::where('mobile', '=', ($request->mobile))->first();
 
         // dd(empty($user));
@@ -330,4 +328,32 @@ class UsersController extends BaseController
 		}
 		echo json_encode($json);
 	}
+
+    public function bank_details(Request $request)
+    {
+        if (!empty($request->user_id)){
+             $user = User::where('id', '=', ($request->user_id))->first();
+            //  dd(!empty($user));
+            if(!empty($user)){
+                    if (!empty($user->otp_verify != 0)) {
+                        // dd('d');
+                            $user->bank_holdername  = $request->bank_holdername;          
+                            $user->account_no  = $request->account_no;          
+                            $user->IFSC_code  = $request->IFSC_code;          
+                            $user->save();
+                            return $this->sendResponse($user,'Bank Details add Successfully.');
+                        }
+                    else {
+                        return $this->sendError('User not login');  
+                    }
+            }
+            else{
+                return $this->sendError('Mobile not Match'); 
+            }
+        }
+        else{
+            return $this->sendError('Fill user_id.'); 
+        }
+    }
+
 }

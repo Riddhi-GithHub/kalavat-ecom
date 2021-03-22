@@ -31,6 +31,7 @@ Route::post('login', 'API\UsersController@login');
 Route::post('add_account', 'API\UsersController@add_account');
 Route::post('edit_account', 'API\UsersController@edit_account');
 Route::post('add_contact', 'API\UsersController@add_contact');
+Route::post('bank_details', 'API\UsersController@bank_details');
 
 Route::post('forgot_password','ApiController@forgot_password');
 Route::get('change-password/{id}','ApiController@change_password')->name('change-password');

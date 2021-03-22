@@ -21,7 +21,8 @@ class User extends Authenticatable
     protected $fillable = [
         'fullname','username', 'email','gender',
         'is_admin','is_delete','status','mobile','otp','otp_verify',
-        'token','user_token','address','city','state','zip_code','contry'
+        'token','user_token','address','city','state','zip_code','contry',
+        'bank_holdername','account_no','IFSC_code'
     ];
 
     

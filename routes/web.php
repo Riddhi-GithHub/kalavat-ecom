@@ -40,6 +40,7 @@ Route::group(['middleware' => 'admin'], function(){
 	Route::resource('admin/category','Backend\CategoryController');
 	Route::get('admin/category/delete/{id}', 'Backend\CategoryController@category_delete')->name('category.delete');
 
+	Route::get('admin/product/importexcel', 'Backend\ProductController@import')->name('product.import_excel');
 	Route::resource('admin/product','Backend\ProductController');
 	Route::get('admin/product/delete/{id}', 'Backend\ProductController@product_delete')->name('product.delete');
 
@@ -70,6 +71,5 @@ Route::group(['middleware' => 'admin'], function(){
 	Route::post('admin/slider/update/{id}', 'Backend\SliderController@slider_update');
 	Route::get('admin/slider/delete/{id}', 'Backend\SliderController@slider_delete')->name('slider.delete');
 
-	Route::get('admin/products/importexcel', 'Backend\ProductController@import')->name('product.import_excel');
 
 });

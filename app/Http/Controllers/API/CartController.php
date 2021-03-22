@@ -67,7 +67,6 @@ class CartController extends Controller
 
             $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
             $is_fav="";
-
                 foreach($getresult as $p){
                     // dd($p->product_id);
                     $fav  = Favourites::
@@ -82,6 +81,22 @@ class CartController extends Controller
                             $p['is_fav']=0;
                         }
                 }
+
+            $rating_count ="";
+                foreach($getresult as $p){
+                    $pid = $p->product_id;
+                    // dd($pid);
+                        $rates = DB::table('ratings')
+                        ->where('product_id', $pid)
+                        ->avg('rating_avg');
+    
+                            if(!empty($rates)){
+                                $p['rating_count']=$rates;
+                            }else{
+                                $p['rating_count']=0;
+                            }
+                }
+    
 
             if(!empty($getresult->count() > 0)){
                 $json['success'] = 1;

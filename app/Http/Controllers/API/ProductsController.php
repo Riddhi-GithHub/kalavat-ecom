@@ -71,8 +71,6 @@ class ProductsController extends BaseController
             }
 
             // $filter = "";
-
-            // $filter = Product::with('images','size','color')
             // ->where('sub_cat_id',$request->sub_cat_id)->get();
 
             // if(!empty($request->size)){
@@ -86,16 +84,16 @@ class ProductsController extends BaseController
                     // $filter = $filter->size->whereIn('size',$size);
                     // dd($filter);
             // }
-        // dd($ss);
+            // dd($ss);
 
             if(!empty($request->color)){
                 $filter = $filter->where('color', 'like', '%' . $request->color . '%');
                 // return $this->sendResponse_product($product,'Product retrieved successfully.');
             }
-            // if(!empty($request->size)){
-            //     $size = explode(",", $request->size);  
-            //     $filter = $filter->whereIn('size',$size);
-            // }
+            if(!empty($request->size)){
+                $size = explode(",", $request->size);  
+                $filter = $filter->whereIn('sizess',$size);
+            }
             if(!empty($request->brand)){
                 $brand = explode(",", $request->brand);  
                 // $getbrand = Product::whereIn('brand',['naf','jack'])->get();
@@ -110,8 +108,6 @@ class ProductsController extends BaseController
                 $filter = $filter->whereBetween('price', [$min_price,$max_price]);
             }
 
-
-
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors()); 
         }elseif(!empty($subcat)){
@@ -125,7 +121,6 @@ class ProductsController extends BaseController
             return $this->sendError('Subcategory not found.'); 
         }
     }
-
 
     public function product_details_old(Request $request)
     {
@@ -237,100 +232,72 @@ class ProductsController extends BaseController
         }
     }
 
-    public function product_search_test_run(Request $request)
+    public function product_search(Request $request)
     {
-        $result = array();
-        $search =$request->search;
+        if($request->user_id){
+            $search =$request->search;
 
-        $product = Product::where('product_name', $search)->whereHas('category', function($q) use ($search) {
-            $q->where('cat_name', $search);
-        })->get();
-
-        dd($product);
-
-        // $product = Product::whereHas('category', function($q) {
-        //     $q->where('cat_name', 'man');
-        // })->get();
-        
-        $data['pro'] = Product::with('category')
-        ->where('products.product_name', 'like', '%' . $request->search . '%')
-        // ->orwhere('categories.cat_name', 'like', '%' . $request->search . '%')
-        ->get();
-
-        $data['cat'] = Product::whereHas('category', function($q) use ($search) {
-            $q->where('cat_name', $search);
-        })->get();
-
-        $result[] = $data;
-        dd($result);
-
-        // $product = Product::with('category')
-        // ->where('products.product_name', 'like', '%' . $request->search . '%')
-        // // ->orwhere('categories.cat_name', 'like', '%' . $request->search . '%')
-        // ->get();
-        // $items = Product
-        //     ::join('categories', 'products.cat_id', '=', 'categories.id')
-        //     ->where ('products.product_name', 'LIKE', '%' . $q . '%' ) 
-        //     ->orWhere('categories.cat_name', 'LIKE', '%' . $q . '%')
-        //     ->select('*')
-        //     ->get();
-
-            $products = Product::join('categories', function($builder) {
-                $builder->on('categories.id', '=', 'products.cat_id');
-                // here you can add more conditions on tags table.
+            $product = Product::with('images','color','size')
+            ->orwhereHas('category', function($q) use ($search){
+                $q->where('product_name', "like", "%{$search}%");
+                $q->orwhere('cat_name', "like", "%{$search}%");
+            // })->get();
             })
-            // join('sub_categories', function($builder) {
-            //     $builder->on('sub_categories.id', '=', 'products.tag_id');
-            //     // here you can add more conditions on subcategories table.
-            // })
-            ->where('product_name', 'LIKE', '%'.$q.'%')
-            ->get();
-    
-        dd($items);
+            ->orwhereHas('subcategory', function($q) use ($search){
+                $q->where('product_name', "like", "%{$search}%");
+                $q->orwhere('sub_cat_name', "like", "%{$search}%");
+            })
+            ->orwhereHas('brand', function($q) use ($search){
+                $q->where('product_name',"like", "%{$search}%");
+                $q->orwhere('brand',"like", "%{$search}%");
+            })->get();
 
+            $is_fav="";
+            foreach($product as $p){
+            $pid = $p->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $p['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $p['is_fav']=0;
 
-        // $cat = category::with('product')
-        //         ->where('cat_name','like', '%' . $request->search . '%')
-        //         ->get();
+                    }
+            }
 
+            $rating_count ="";
+            foreach($product as $p){
+                $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
 
-        $users = Product::select('products.*');
-        $users = $users->join('categories', 'products.cat_id', '=', 'categories.id');
+                        if(!empty($rates)){
+                            $p['rating_count']=$rates;
+                        }else{
+                            $p['rating_count']=0;
+                        }
+            }
 
-        // $product = Product::where([['product_name',$request['product_name']],])->get();
-        // dd($product);
-        $users = $users->orwhere('categories.cat_name', 'like', '%' . $request->search . '%')->get();
-        dd($users);
-        $new = $users->where('products.product_name', 'like', '%' . $request->search . '%');
-        if(!empty($request->product_name)){
-            // $new = $new->where('products.product_name', 'like', '%' . $request->product_name . '%');
-            $data;
-         }
-
-
-        // if(!empty($request->cat_name)){
-        //    $users = $users->where('categories.cat_name', 'like', '%' . $request->cat_name . '%');
-        // }
-        // if(!empty($request->product_name)){
-        //    $users = $users->where('products.product_name', 'like', '%' . $request->product_name . '%');
-        // }
-        $users = $users->paginate(40);
-     
-        foreach ($users as $value) {
-
-            $data['id']             = $value->id;
-            $data['cat_name']      = !empty($value->category->cat_name) ? $value->category->cat_name : '';
-            $data['product_name']  = !empty($value->product_name) ? $value->product_name : '';
-            $result[] = $data;
+            // dd($product);
+            if (!empty($request->search)) {
+                    return $this->sendResponse_product($product,'Search Data Loaded Successfully.');
+            }
+            else{
+                return $this->sendResponse_product($product,'All Loaded Successfully.');
+            }
         }
-        $json['success'] = 1;
-        $json['message'] = 'All loaded successfully.';
-        $json['result'] = $result;
-        
-        echo json_encode($json);
+        else{
+            return $this->sendError('Fill Required data!'); 
+        }
+       
     }
 
-    public function product_search(Request $request)
+    public function product_search_vipul(Request $request)
     {
         $result = array();
         $users = Product::select('products.*');
@@ -459,9 +426,35 @@ class ProductsController extends BaseController
         
     }
 
-
-    public function filter_product_subcat(Request $request)  
+    public function filter_product_test(Request $request)  
     {
+        $name ="";
+        $color =$request->color;
+        $size = explode(",", $request->size);  
+        $brand = explode(",", $request->brand);  
+
+        $price = explode(",", $request->price);
+        $min_price = implode(",", $price);
+        $max_price = array_pop($price);
+
+        // $product = Product::with('images','color','size')
+        $product = Product::
+       orwhereHas('color', function($q) use ($color,$name){
+           $q->where('product_name', "=", $name);
+           $q->where('color', "like", "%{$color}%");
+        // })->get();
+        })
+        ->orwhereHas('size', function($q) use ($size,$name){
+            // $q->where('product_name', "=", $name);
+            $q->whereIn('size',$size);
+        })
+        ->orwhereHas('brand', function($q) use ($brand,$name){
+            // $q->where('product_name', "=", $name);
+            $q->whereIn('brand',$brand);
+        })->get();
+
+        dd($product);
+
         $result = array();
         $filter = Product::select('products.*');
         $filter = $filter->join('categories', 'products.cat_id', '=', 'categories.id');

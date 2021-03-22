@@ -19,8 +19,14 @@ class OrderDetailsController extends Controller
 {
     public function Add_cart_to_Order(Request $request)
 	{
+        //SELECT * FROM `carts` WHERE `cart_id` IN (2,1)
         // $getdata['user'] = User::find($request->input('user_id'));
-        $getdata = Cart::find($request->input('order_cart_id'));
+        $getdata = Cart::with('product','user')->get();
+        // dd($getdata);
+        $cart_id = explode(",", $request->order_cart_id);
+        // dd($cart_id);  
+        $d = $getdata->whereIn('cart_id',$cart_id);
+        dd($d);
 
         if(!empty($getdata)){
             $add_data = OrderDetails::create($request->all());
