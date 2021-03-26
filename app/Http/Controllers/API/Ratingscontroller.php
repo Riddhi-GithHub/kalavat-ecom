@@ -19,7 +19,7 @@ class Ratingscontroller extends Controller
     public function app_product_rating_list(Request $request)
     {
         if (!empty($request->product_id && $request->user_id )) {
-            
+          
             $rates = Rating::with('user')
             ->where('product_id', '=' ,$request->product_id)
             ->get();
@@ -89,7 +89,6 @@ class Ratingscontroller extends Controller
         }
         echo json_encode($json);
     }
-    // 
 
     public function app_product_rating_add_single_images(Request $request)
 	{

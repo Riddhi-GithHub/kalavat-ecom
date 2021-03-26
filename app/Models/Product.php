@@ -16,7 +16,7 @@ class Product extends Model
 {
     protected $table = 'products';
     protected $fillable = [
-       'cat_id','sub_cat_id','product_name','description','img','price','quantity',
+       'cat_id','sub_cat_id','sale_id','product_name','description','img','price','quantity',
        'offer','colorrr','branddd',
        'sort_desc','size_and_fit','material_and_care','style_note'
    ];
@@ -63,9 +63,15 @@ class Product extends Model
    public function manufacturing()
    {
        return $this->hasMany('App\Models\Manufacturing',"product_id");
-   }   
+   } 
+
    public function productdetails()
    {
        return $this->hasMany('App\Models\ProductDetails',"product_id");
+   }  
+
+   public function catalog()
+   {
+       return $this->hasMany('App\Models\Catalog',"product_id");
    }  
 }

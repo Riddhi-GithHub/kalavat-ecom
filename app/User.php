@@ -30,6 +30,14 @@ class User extends Authenticatable
         return $this->hasOne(address::class,'user_id');
     }
 
+    public function order(){
+        return $this->hasOne(address::class,'user_id');
+    }
+
+    public function orderdetail(){
+        return $this->hasOne(address::class,'user_id');
+    }
+
     public function contact(){
         return $this->hasOne(ContactUs::class,'user_id');
     }

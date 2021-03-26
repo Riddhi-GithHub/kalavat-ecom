@@ -31,6 +31,7 @@ Route::post('login', 'API\UsersController@login');
 Route::post('add_account', 'API\UsersController@add_account');
 Route::post('edit_account', 'API\UsersController@edit_account');
 Route::post('add_contact', 'API\UsersController@add_contact');
+Route::post('bank_detail_add', 'API\UsersController@bank_detail_add');
 Route::post('bank_details', 'API\UsersController@bank_details');
 
 Route::post('forgot_password','ApiController@forgot_password');
@@ -66,6 +67,11 @@ Route::post('filter_product_get', 'API\ProductsController@filter_product_get');
 Route::post('sort_by_product', 'API\ProductsController@sort_by_product');
 # product more informattion
 Route::post('product_more_information', 'API\ProductsController@product_more_information');
+# sale wise product list
+Route::post('sale_product_list', 'API\ProductsController@sale_product_list');
+# product list sale wise
+Route::post('sale_product_details', 'API\ProductsController@sale_product_details');
+
 
 
 // add to favourite product
@@ -93,22 +99,25 @@ Route::post('address_list', 'API\AddressController@Address_List');
 Route::post('add_to_cart', 'API\CartController@addProductToCart');
 Route::post('cart_list', 'API\CartController@getCartList');
 Route::post('delete_to_cart', 'API\CartController@deleteCartProdcut');
-Route::post('plus_remove_quantity_cart', 'API\CartController@plus_remove_quantity_cart');
+Route::post('cart_quantity_update', 'API\CartController@cart_quantity_update');
 
 # Order
-Route::post('add_order', 'API\OrdersController@AddOrder');
-Route::post('edit_order', 'API\OrdersController@EditOrder');
-Route::post('order_list', 'API\OrdersController@ListOrder');
-Route::post('delete_order', 'API\OrdersController@DeleteOrder');
+Route::post('add_order', 'API\OrdersController@add_order');
+Route::post('order_list', 'API\OrdersController@order_list');
+Route::post('order_details', 'API\OrdersController@order_details');
 
 # Order Details
-Route::post('add_cart_to_order', 'API\OrderDetailsController@Add_cart_to_Order');
+// Route::post('add_cart_to_order', 'API\OrderDetailsController@Add_cart_to_Order');
+Route::post('add_cart_to_order', 'API\OrdersController@add_cart_to_order');
 
 ## APP_VERSION_SETTING_UPDATE
 Route::post('app_version_setting_update', 'ApiController@app_version_setting_update');
 
 # Slider
 Route::post('app_slider_list', 'ApiController@app_slider_list');
+# banner click
+Route::post('app_banner_click', 'ApiController@app_banner_click');
+
 
 # Rating 
 Route::post('app_product_rating_add', 'API\Ratingscontroller@app_product_rating_add');
@@ -116,9 +125,16 @@ Route::post('app_product_rating_list', 'API\Ratingscontroller@app_product_rating
 Route::post('app_product_rating_update', 'API\Ratingscontroller@app_product_rating_update');
 Route::post('app_rating_helpful', 'API\Ratingscontroller@app_rating_helpful');
 
-
 # count cart and favourite
 Route::post('count_list', 'ApiController@count_list');
+
+# search 
+Route::post('app_home_page_search_list', 'ApiController@app_home_page_search_list');
+
+# App catlog/chat
+Route::post('app_catlog_list', 'ApiController@app_catlog_list');
+
+
 
 
 

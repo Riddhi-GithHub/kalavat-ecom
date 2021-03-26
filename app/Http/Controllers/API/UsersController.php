@@ -329,7 +329,7 @@ class UsersController extends BaseController
 		echo json_encode($json);
 	}
 
-    public function bank_details(Request $request)
+    public function bank_detail_add(Request $request)
     {
         if (!empty($request->user_id)){
              $user = User::where('id', '=', ($request->user_id))->first();
@@ -342,6 +342,28 @@ class UsersController extends BaseController
                             $user->IFSC_code  = $request->IFSC_code;          
                             $user->save();
                             return $this->sendResponse($user,'Bank Details add Successfully.');
+                        }
+                    else {
+                        return $this->sendError('User not login');  
+                    }
+            }
+            else{
+                return $this->sendError('Mobile not Match'); 
+            }
+        }
+        else{
+            return $this->sendError('Fill user_id.'); 
+        }
+    }
+
+    public function bank_details(Request $request)
+    {
+        if (!empty($request->user_id)){
+             $user = User::where('id', '=', ($request->user_id))->first();
+            //  dd(!empty($user));
+            if(!empty($user)){
+                    if (!empty($user->otp_verify != 0)) {
+                        return $this->sendResponse($user,'Bank Details add Successfully.');
                         }
                     else {
                         return $this->sendError('User not login');  

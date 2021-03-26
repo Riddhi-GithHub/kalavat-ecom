@@ -33,7 +33,7 @@ class CartController extends Controller
                     $data->color  = $request->color;
                     $data->size  = $request->size;
                     $data->quantity  = $request->quantity;
-                    $data->total_price  = $request->total_price;
+                    $data->sub_total_price  = $request->sub_total_price;
                     $data->save();
                     $json['success'] = 1;
                     $json['message'] = 'Product added into Cart Successfully.';
@@ -142,19 +142,29 @@ class CartController extends Controller
         echo json_encode($json);
     } 
 
-    public function plus_remove_quantity_cart(Request $request)
+    public function cart_quantity_update(Request $request)
     {
-        $getresult  = Cart::with('product.size','product.color','product','product.images')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
-        // $getresult  = Favourites::with('product')->where('status',1)->where('user_id', '=' ,$request->user_id)->get();
-        
-        if(!empty($getresult->count() > 0)){
-            $json['success'] = 1;
-            $json['message'] = 'Cart list loaded Successfully.';
-            $json['cart_list'] = $getresult;
+        if($request->cart_id && $request->quantity){
+            $getresult  = Cart::where('cart_id', '=' ,$request->cart_id)->first();
+            // dd($getresult);
+            
+            if(!empty($getresult)){
+                $getresult->quantity  = $request->quantity;
+                $getresult->sub_total_price  = $request->sub_total_price;
+                $getresult->save();
+
+                $json['success'] = 1;
+                $json['message'] = 'Cart quantity change Successfully.';
+                $json['cart_list'] = $getresult;
+            }
+            else{
+                $json['success'] = 0;
+                $json['message'] = 'Cart not found.';
+            }
         }
         else{
             $json['success'] = 0;
-            $json['message'] = 'Product not found.';
+            $json['message'] = 'Fill required data.';
         }
 
  	    echo json_encode($json);

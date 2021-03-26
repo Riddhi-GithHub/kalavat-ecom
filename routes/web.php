@@ -71,5 +71,7 @@ Route::group(['middleware' => 'admin'], function(){
 	Route::post('admin/slider/update/{id}', 'Backend\SliderController@slider_update');
 	Route::get('admin/slider/delete/{id}', 'Backend\SliderController@slider_delete')->name('slider.delete');
 
+	Route::resource('admin/sale','Backend\SaleController');
+	Route::get('admin/sale/delete/{id}', 'Backend\SaleController@sale_delete')->name('sale.delete');
 
 });

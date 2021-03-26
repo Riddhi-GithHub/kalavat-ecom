@@ -11,16 +11,19 @@ use App\Models\product_images;
 use App\Models\Size;
 use App\Models\Brand;
 use App\Models\Color;
+use App\Models\Rating;
+use App\Models\Cart;
 use App\Models\Favourites;
 use App\Models\ProductDetails;
+use App\Models\Sale;
 use Validator;
 use DB;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class ProductsController extends BaseController
 {
     // retrive product by category
-
     public function product_details(Request $request)
     {
         $input = $request->all();
@@ -62,9 +65,9 @@ class ProductsController extends BaseController
                     $rates = DB::table('ratings')
                     ->where('product_id', $pid)
                     ->avg('rating_avg');
-
-                        if(!empty($rates)){
-                            $p['rating_count']=$rates;
+                    $num = (double) $rates;
+                        if(!empty($num)){
+                            $p['rating_count']=$num;
                         }else{
                             $p['rating_count']=0;
                         }
@@ -146,7 +149,7 @@ class ProductsController extends BaseController
         }
     }
 
-      // retrive all product more information
+    // retrive all product more information
     public function product_more_information(Request $request)
     {
         if($request->product_id && $request->user_id){
@@ -156,9 +159,8 @@ class ProductsController extends BaseController
           $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
             
           $is_fav="";
-        //   if(!empty($user->count() > 0)){
-              foreach($product as $p){
-                //   dd($request->product_id);
+            foreach($product as $p){
+                    //   dd($request->product_id);
                   $getresult  = Favourites::
                       where('user_id', '=' ,$request->user_id)
                       ->where('product_id', '=' ,$request->product_id)->first();
@@ -170,14 +172,151 @@ class ProductsController extends BaseController
                       }else{
                           $p['is_fav']=0;
                       }
-              }
-        //   }
+            }
+
+        $rating_count ="";
+        foreach($product as $p){
+            $pid = $p->id;
+                $rates = DB::table('ratings')
+                ->where('product_id', $pid)
+                ->avg('rating_avg');
+
+                $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+        }
 
           if(!empty($product)){
                       return $this->sendResponse_product($product,'Product retrieved successfully.');
           }else{
               return $this->sendError('Product not found.'); 
           }
+        }
+        else{
+            return $this->sendError('Fill Required data!'); 
+        }
+    }
+
+    // retrive all product with sale
+    public function sale_product_list(Request $request)
+    {
+        if($request->user_id){
+            $today =\Carbon\Carbon::now()->format('Y-m-d H:i:s');
+            // $sale = Sale::where('sale_end_date','>=',$today)->get();
+            // $getalldata = Sale::with('product','product.images','product.size','product.color')
+            //                 ->where('sale_end_date','>=',$today)->get();
+
+        $getalldata = Sale::
+        where('sale_end_date','>=',$today)->get();
+            $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
+            
+            // $is_fav="";
+            //     foreach($getalldata as $dataf){
+            //     $productdata = $dataf->product;
+            //         foreach($productdata as $f){
+            //             $p_id = $f->id;
+            //             $getresult  = Favourites::
+            //             where('user_id', '=' ,$request->user_id)
+            //             ->where('product_id', '=' ,$p_id)->first();
+                        
+            //             if(!empty($getresult)){
+            //                 $is_fav=$getresult->status;
+            //                 //dd($is_fav);
+            //                 $f['is_fav']=$is_fav;
+            //                 //dd($p);
+            //             }else{
+            //                 $f['is_fav']=0;
+            //             }
+            //         }    
+            //     }
+
+            // $rating_count ="";
+            // foreach($getalldata as $datap){
+            //     // dd($p->product);
+            //     $productdata = $datap->product;
+            //     foreach($productdata as $p){
+            //         // dd($p->id);
+            //         $pid = $p->id;
+            //         $rates = DB::table('ratings')
+            //         ->where('product_id', $pid)
+            //         ->avg('rating_avg');
+            //         // if(!empty($rates)){
+            //         //     $p['rating_count']=$rates;
+            //         //     // $p->product['rating_count']=$rates;
+            //         // }else{
+            //         //     $p['rating_count']=0;
+            //         //     // $p->product['rating_count']=0;
+            //         // }
+            //         $num = (double) $rates;
+            //             if(!empty($num)){
+            //                 $p['rating_count']=$num;
+            //             }else{
+            //                 $p['rating_count']=0;
+            //             }
+            //     }
+                
+            // }
+
+            if(!empty($getalldata)){
+                        return $this->sendResponse_product($getalldata,'Product retrieved successfully.');
+            }else{
+                return $this->sendError('Product not found.'); 
+            }
+        }
+        else{
+            return $this->sendError('Fill Required data!'); 
+        }
+    }
+
+    // retrive all product details sale wise
+    public function sale_product_details(Request $request)
+    {
+        if($request->user_id && $request->sale_id){
+            // $data = 
+            $product = Product::with('images','size','color')
+                            ->where('sale_id',$request->sale_id)->get();
+
+            $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
+            
+            $is_fav="";
+                foreach($product as $p){
+                $pid = $p->id;
+                    $getresult  = Favourites::
+                        where('user_id', '=' ,$request->user_id)
+                        ->where('product_id', '=' ,$pid)->first();
+                        if(!empty($getresult)){
+                            $is_fav=$getresult->status;
+                            //dd($is_fav);
+                            $p['is_fav']=$is_fav;
+                            //dd($p);
+                        }else{
+                            $p['is_fav']=0;
+                        }
+                }
+
+            $rating_count ="";
+            foreach($product as $p){
+                $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
+
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+            }
+
+            if(!empty($product)){
+                        return $this->sendResponse_product($product,'Product retrieved successfully.');
+            }else{
+                return $this->sendError('Product not found.'); 
+            }
         }
         else{
             return $this->sendError('Fill Required data!'); 
@@ -214,11 +353,12 @@ class ProductsController extends BaseController
                     ->where('product_id', $pid)
                     ->avg('rating_avg');
 
-                        if(!empty($rates)){
-                            $p['rating_count']=$rates;
-                        }else{
-                            $p['rating_count']=0;
-                        }
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
             }
 
             if(!empty($product)){
@@ -276,11 +416,12 @@ class ProductsController extends BaseController
                     ->where('product_id', $pid)
                     ->avg('rating_avg');
 
-                        if(!empty($rates)){
-                            $p['rating_count']=$rates;
-                        }else{
-                            $p['rating_count']=0;
-                        }
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
             }
 
             // dd($product);
@@ -538,8 +679,8 @@ class ProductsController extends BaseController
 
         }
         else{
-        $json['success'] = 0;
-        $json['message'] = 'Fill sub_cat_id';
+            $json['success'] = 0;
+            $json['message'] = 'Fill sub_cat_id';
         }
         echo json_encode($json);
     }
@@ -624,54 +765,191 @@ class ProductsController extends BaseController
 
     public function sort_by_product(Request $request)
     {
-        $result = array();
-        $sorting = Product::with('images')->orderBy('id','desc')->get();
-        // $sorting = $sorting->orderBy('id','desc');
-        dd($sorting);
-        // $sorting = Product::select('products.*');
-        // $sorting = $sorting->join('categories', 'products.cat_id', '=', 'categories.id');
+        if($request->sub_cat_id && $request->user_id && $request->sorting_data ){
+            $result = array();
+            $sorting = Product::with('images','size','color')->where('sub_cat_id',$request->sub_cat_id);
+            $sorting_all = $sorting->get();
+        // $sorting = $sorting->orderBy('id','desc')->pluck('id');
+        // dd($sorting);
 
-        if(!empty($request->newest)){
-           $sorting = $sorting->latest();
-        }
-        // if(!empty($request->size)){
-        //     $size = explode(",", $request->size);  
-        //    $sorting = $sorting->whereIn('size',$size);
-        // }
-        // if(!empty($request->brand)){
-        //     $brand = explode(",", $request->brand);  
-        //     // $getbrand = Product::whereIn('brand',['naf','jack'])->get();
-        //    $sorting = $sorting->whereIn('brand',$brand);
-        // }
-        // if(!empty($request->price)){
-        //     $price = explode(",", $request->price);
-        //     $min_price = implode(",", $price);
-        //     $max_price = array_pop($price);
-        //     // $pp = Product::whereBetween('price', [100,300])->get();
-        //     // $getprice = Product::whereBetween('price', [$min_price,$max_price])->get();
-        //    $sorting = $sorting->whereBetween('price', [$min_price,$max_price]);
-        // }
+            $is_fav="";
+            foreach($sorting as $p){
+            $pid = $p->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $p['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $p['is_fav']=0;
+                    }
+            }
 
-        // $sorting = $sorting->paginate(40);
-     
-        // foreach ($sorting as $value) {
+            $rating_count ="";
+            foreach($sorting as $p){
+                $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
 
-        //     $data['id']             = $value->id;
-        //     $data['cat_name']      = !empty($value->category->cat_name) ? $value->category->cat_name : '';
-        //     $data['product_name']  = !empty($value->product_name) ? $value->product_name : '';
-        //     $data['price']  = !empty($value->price) ? $value->price : '';
-        //     $data['img']  = !empty($value->img) ? $value->img : '';
-        //     $data['color']  = !empty($value->color) ? $value->color : '';
-        //     $data['size']  = !empty($value->size) ? $value->size : '';
-        //     $data['brand']  = !empty($value->brand) ? $value->brand : '';
-        //     $result[] = $data;
-        // }
-        $json['success'] = 1;
-        $json['message'] = 'All loaded successfully.';
-        $json['result'] = $result;
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+            }
+
+            $sorting_data = $request->sorting_data; 
         
-        echo json_encode($sorting);
-    
+            if($sorting_data == 1){
+                $sorting = $sorting->orderBy('id','desc')->get();
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+            }
+            elseif($sorting_data == 2){
+                $sorting = $sorting->orderBy('price')->get();
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+            }
+            elseif($sorting_data == 3){
+                $sorting = $sorting->orderBy('price','desc')->get();
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+            }
+            elseif($sorting_data == 4){
+                $rates = Rating::orderBy('rating_avg','desc')->get();
+                foreach($rates as $r){
+                    $p_id[] = $r->product_id;
+                }
+                // dd($p_id);
+                $sorting = $sorting->whereIn('id',$p_id)->orderBy('id','desc')->get();
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+            }
+
+            elseif($sorting_data == 5){
+                $cart = Cart::get();
+                foreach($cart as $c){
+                    $c_p_id[] = $c->product_id;
+                }
+
+                $fav = Favourites::get();
+                foreach($fav as $f){
+                    $f_p_id[] = $f->product_id;
+                }
+                // dd($c_p_id);
+                $i['c'] = $c_p_id;
+                $i['f'] = $f_p_id;
+                
+                $sorting = $sorting->whereIn('id',$c_p_id)
+                ->orwhereIn('id',$f_p_id)->where('sub_cat_id',$request->sub_cat_id)->get();
+                // $sorting = $sorting->get();
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+            }
+
+            else{
+                return $this->sendResponse_product($sorting_all,'Product retrieved successfully.'); 
+            }
+        }
+        else{
+            return $this->sendError('Fill Required data!'); 
+        }
+    }
+
+    public function sort_by_product__(Request $request)
+    {
+        if($request->sub_cat_id && $request->user_id ){
+            $result = array();
+            $sorting = Product::with('images','size','color')->where('sub_cat_id',$request->sub_cat_id);
+            $sorting = $sorting->get();
+        // $sorting = $sorting->orderBy('id','desc')->pluck('id');
+        // dd($sorting);
+
+            $is_fav="";
+            foreach($sorting as $p){
+            $pid = $p->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $p['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $p['is_fav']=0;
+                    }
+            }
+
+            $rating_count ="";
+            foreach($sorting as $p){
+                $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
+
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+            }
+
+        
+            if(!empty($request->newest == 'newest')){
+                $sorting = $sorting->orderBy('id','desc')->get();
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+            }
+            elseif(!empty($request->lowest_to_high == 'lowest')){
+                $sorting = $sorting->orderBy('price')->get();
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+            }
+            elseif(!empty($request->highest_to_low == 'highest')){
+                $sorting = $sorting->orderBy('price','desc')->get();
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+            }
+            elseif(!empty($request->customer_review == 'review')){
+                $rates = Rating::orderBy('rating_avg','desc')->get();
+                foreach($rates as $r){
+                    $p_id[] = $r->product_id;
+                }
+                // dd($p_id);
+                $sorting = $sorting->whereIn('id',$p_id)->orderBy('id','desc')->get();
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+            }
+
+            elseif(!empty($request->popular == 'popular')){
+                $cart = Cart::get();
+                foreach($cart as $c){
+                    $c_p_id[] = $c->product_id;
+                }
+
+                $fav = Favourites::get();
+                foreach($fav as $f){
+                    $f_p_id[] = $f->product_id;
+                }
+                // dd($c_p_id);
+                $i['c'] = $c_p_id;
+                $i['f'] = $f_p_id;
+                // dd($i);
+
+                // $s = explode(",", $c_p_id);  
+                // $sorting = $sorting->whereIn('id',$i)->where('sub_cat_id',$request->sub_cat_id)->get();
+                
+                $sorting = $sorting->whereIn('id',$c_p_id)
+                ->orwhereIn('id',$f_p_id)->where('sub_cat_id',$request->sub_cat_id)->get();
+                // $sorting = $sorting->get();
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+            }
+
+            else{
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+            }
+        }
+        else{
+            return $this->sendError('Fill Required data!'); 
+        }
     }
 
 }

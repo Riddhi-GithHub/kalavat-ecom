@@ -17,7 +17,7 @@ use DB;
 
 class OrderDetailsController extends Controller
 {
-    public function Add_cart_to_Order(Request $request)
+    public function Add_cart_to_Order_extra(Request $request)
 	{
         //SELECT * FROM `carts` WHERE `cart_id` IN (2,1)
         // $getdata['user'] = User::find($request->input('user_id'));
@@ -26,16 +26,24 @@ class OrderDetailsController extends Controller
         $cart_id = explode(",", $request->order_cart_id);
         // dd($cart_id);  
         $d = $getdata->whereIn('cart_id',$cart_id);
-        dd($d);
+        // dd($d);
 
         if(!empty($getdata)){
+            foreach($getdata as $data){
+                // dd($data->user->id);
             $add_data = OrderDetails::create($request->all());
-            $add_data->order_user_id = $getdata->user_id;
-            $add_data->order_product_id = $getdata->product_id;
-            $add_data->order_cart_id = $getdata->cart_id;
-            $add_data->quantity = $getdata->quantity;
-            $add_data->total_order_price = $getdata->total_price;
+            // $add_data->order_user_id = $getdata->user_id;
+            // $add_data->order_product_id = $getdata->product_id;
+            // $add_data->order_cart_id = $getdata->cart_id;
+            // $add_data->quantity = $getdata->quantity;
+            // $add_data->total_order_price = $getdata->total_price;
+            $add_data->order_user_id = $data->user->id;
+            $add_data->order_product_id = $data->product->product_id;
+            $add_data->order_cart_id = $data->cart_id;
+            $add_data->quantity = $data->quantity;
+            $add_data->total_order_price = $data->total_price;
             $add_data->save();
+            }
             $json['success'] = 1;
             $json['message'] = 'Order confirm Successfully.';
             $json['order_list'] = $add_data;
@@ -47,4 +55,5 @@ class OrderDetailsController extends Controller
 
  	    echo json_encode($json);
 	}
+    
 }

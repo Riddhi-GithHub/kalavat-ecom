@@ -15,6 +15,10 @@
                 <a href="{{ url('admin/user') }}"><span class="fa fa-user"></span> <span class="xn-text">User List</span></a>
             </li>
 
+            <li class="@if ( Request::segment(2)== 'sale') active @endif">
+                <a href="{{ url('admin/sale') }}"><span class="fa fa-gift"></span> <span class="xn-text">Sale List</span></a>
+            </li>
+
             <li class="@if ( Request::segment(2)== 'category') active @endif">
                 <a href="{{ url('admin/category') }}"><span class="fa fa-list"></span> <span class="xn-text">Category List</span></a>
             </li>

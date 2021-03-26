@@ -10,7 +10,8 @@ class Order extends Model
 {
     protected $table="orders";
     protected $primaryKey="order_id";
-    protected $fillable=['order_id','product_id','user_id','tracking_num','quantity','total_price','delivery_date','status'];
+    // protected $fillable=['order_id','product_id','user_id','tracking_num','quantity','total_price','delivery_date','status'];
+    protected $fillable=['order_id','cart_id','user_id','tracking_num','quantity','total_price','delivery_date','status'];
     /**
      * The attributes that should be hidden for arrays.
      *

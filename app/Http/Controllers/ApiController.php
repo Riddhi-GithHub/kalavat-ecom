@@ -9,6 +9,12 @@ use App\Models\Favourites;
 use App\Models\Slider;
 use App\Models\Version_Setting;
 use App\Models\Cart;
+use App\Models\Category;
+use App\Models\Sub_Category;
+use App\Models\Product;
+use App\Models\Brand;
+use App\Models\Color;
+use App\Models\Catalog;
 use Hash;
 use Validator;
 use Auth;
@@ -29,6 +35,31 @@ class ApiController extends Controller
     {
         $this->notify(new VerifyEmail);
     }
+
+	# app_catlog
+	public function app_catlog_list(Request $reques)
+	{
+		$getresult  = Catalog::get();
+		
+		if(!empty($getresult)){
+			
+			foreach($getresult as $result){
+				$product_id = $result->product_id;
+				$array_product_id = explode(',', $product_id);
+				$product = Product::with('images','size','color')->whereIn('id',$array_product_id)->get();
+				$result['product_list'] = $product;
+			}
+		
+			$json['status'] = 1;
+			$json['message'] = 'Catalog list Loaded Successfully.';
+			$json['catalog_list'] = $getresult;
+		}
+		else{
+			$json['status'] = 0;
+			$json['message'] = 'Data not Found.';
+		}
+        echo json_encode($json);
+	}
 
 
     public function app_login(Request $request)
@@ -294,6 +325,7 @@ class ApiController extends Controller
 			echo json_encode($json);
 	}
 
+	# strat forgot password
 		public function forgot_password(Request $request)
 	 	{
 			 $user = User::whereEmail($request->email)->first();
@@ -342,5 +374,198 @@ class ApiController extends Controller
 			return redirect('admin/login')->with('success', 'Password Change Successfully!');  
 			// return back()->with('message','password change successfully');
 		}
+	# end forgot password 
+
+
+	# banner click
+	public function app_banner_click(Request $request)
+	{
+		if($request->type){
+			$type = $request->type;
+			// $slider = Slider::where('cat_id',$type)->first();
+			// dd($slider->cat_id);
+			// $cat = category::where('id',$slider->cat_id)->get();
+			// dd($cat);
+			$value = [1,2,3];
+
+			// dd(!empty($value));
+
+			if($type == 1){
+				$json['success'] = 1;
+				$json['message'] = 'Slider Category data';
+				$json['type'] = 1;
+				$json['type_name'] = 'category';
+			}
+			elseif($type == 2){
+				$json['success'] = 1;
+				$json['message'] = 'Slider Subcategory data';
+				$json['type'] = 2;
+				$json['type_name'] = 'subcategory';
+			}
+			elseif($type == 3){
+				$json['success'] = 1;
+				$json['message'] = 'Slider Brand data';
+				$json['type'] = 3;
+				$json['type_name'] = 'brand';
+			}
+			elseif(!empty($value)){
+				$json['success'] = 1;
+				$json['message'] = 'Slider data not found';
+			}
+		}
+		else{
+            $json['success'] = 0;
+            $json['message'] = 'Fill Required data';
+        }
+		
+		echo json_encode($json);
+	}
+
+		public function app_home_page_search_list(Request $request){
+		$result  = array();
+		// $Category_Array = array();
+		$Sub_Categories_Array = array();
+		$Product_Array = array();
+		$Brand_Array = array();
+		$Colors_Array = array();
+
+		$get_category       = Category::orderBy('id', 'desc');
+		$get_sub_categories = Sub_Category::orderBy('id', 'desc');
+		$get_products       = Product::orderBy('id', 'desc');
+		$get_brands         = Brand::orderBy('id', 'desc');
+		$get_colors         = Color::orderBy('id', 'desc');
+// Category Start
+		// if(!empty($request->search)){
+		// 	$get_category = $get_category->orwhere('categories.cat_name', 'like', '%' . $request->search . '%');
+		// }
+
+		// $get_category = $get_category->paginate(80);
+
+		// foreach ($get_category as $key_value) {
+		// 	$data_x['id']               = !empty($key_value->id) ? $key_value->id : '';
+		// 	$data_x['cat_name']         = !empty($key_value->cat_name) ? $key_value->cat_name : '';	
+		// 	$data_x['image']            = !empty($key_value->image) ? $key_value->image : '';
+		// 	// $result[] = $data_x;
+		// 	$Category_Array[] = $data_x;
+		// }
+
+		// $result['category_list'] = $Category_Array;
+// Category End
+// Sub Category Start
+		if(!empty($request->search)){
+			$get_sub_categories = $get_sub_categories->orwhere('sub_categories.sub_cat_name', 'like', '%' . $request->search . '%');
+		}
+
+		$get_sub_categories = $get_sub_categories->paginate(80);
+
+		foreach ($get_sub_categories as $keys_value) {
+			$data_xy['id']               = !empty($keys_value->id) ? $keys_value->id : '';
+			$data_xy['product_name'] = !empty($keys_value->sub_cat_name) ? $keys_value->sub_cat_name : '';	
+			$data_xy['colorrr']      = !empty($keys_value->product_s->colorrr) ? $keys_value->product_s->colorrr : '';	
+			$data_xy['branddd']      = !empty($keys_value->product_s->branddd) ? $keys_value->product_s->branddd : '';	
+			$data_xy['img']          = !empty($keys_value->product_s->img) ? $keys_value->product_s->img : '';	
+			$data_xy['sort_desc']    = !empty($keys_value->product_s->sort_desc) ? $keys_value->product_s->sort_desc : '';	
+			$data_xy['description']  = !empty($keys_value->product_s->description) ? $keys_value->product_s->description : '';	
+			$data_xy['price']        = !empty($keys_value->product_s->price) ? $keys_value->product_s->price : '';	
+
+			// $data_xy['sub_cat_name']     = !empty($keys_value->sub_cat_name) ? $keys_value->sub_cat_name : '';	
+			// $data_xy['cat_image']         = !empty($keys_value->category->image) ? $keys_value->category->image : '';	
+			// $result[] = $data_xy;
+			$Sub_Categories_Array[] = $data_xy;
+		}
+
+		$result['category_list'] = $Sub_Categories_Array;
+// Sub Category End
+// Product Start
+		if(!empty($request->search)){
+			$get_products = $get_products->orwhere('products.product_name', 'like', '%' . $request->search . '%')->orwhere('products.colorrr', 'like', '%' . $request->search . '%')->orwhere('products.branddd', 'like', '%' . $request->search . '%');
+		}
+
+		$get_products = $get_products->paginate(80);
+
+		foreach ($get_products as $keyss_value) {
+			$data_xys['id']           = !empty($keyss_value->id) ? $keyss_value->id : '';
+			$data_xys['product_name'] = !empty($keyss_value->product_name) ? $keyss_value->product_name : '';	
+			$data_xys['colorrr']      = !empty($keyss_value->colorrr) ? $keyss_value->colorrr : '';	
+			$data_xys['branddd']      = !empty($keyss_value->branddd) ? $keyss_value->branddd : '';	
+			$data_xys['img']          = !empty($keyss_value->img) ? $keyss_value->img : '';	
+			$data_xys['sort_desc']    = !empty($keyss_value->sort_desc) ? $keyss_value->sort_desc : '';	
+			$data_xys['description']  = !empty($keyss_value->description) ? $keyss_value->description : '';	
+			$data_xys['price']        = !empty($keyss_value->price) ? $keyss_value->price : '';	
+			// $result[] = $data_xys;
+			$Product_Array[] = $data_xys;
+		}
+
+		$result['product_list'] = $Product_Array;
+// Product End
+// Brand Start
+		if(!empty($request->search)){
+			$get_brands = $get_brands->orwhere('brands.brand', 'like', '%' . $request->search . '%');
+		}
+
+		$get_brands = $get_brands->paginate(80);
+
+		foreach ($get_brands as $kyss_value) {
+			$data_xsys['id']        = !empty($kyss_value->id) ? $kyss_value->id : '';
+			$data_xsys['product_name']     = !empty($kyss_value->brand) ? $kyss_value->brand : '';	
+			$data_xsys['colorrr']     = !empty($kyss_value->product->colorrr) ? $kyss_value->product->colorrr : '';
+			$data_xsys['branddd']      = !empty($kyss_value->product->branddd) ? $kyss_value->product->branddd : '';	
+				
+			$data_xsys['img'] = !empty($kyss_value->product->img) ? $kyss_value->product->img : '';	
+			
+			$data_xsys['sort_desc']    = !empty($kyss_value->product->sort_desc) ? $kyss_value->product->sort_desc : '';	
+			$data_xsys['description']  = !empty($kyss_value->product->description) ? $kyss_value->product->description : '';
+			$data_xsys['price']        = !empty($kyss_value->product->price) ? $kyss_value->product->price : '';	
+
+
+			//$data_xsys['brand_category'] = !empty($kyss_value->category->cat_name) ? $kyss_value->category->cat_name : '';
+			// $data_xsys['brand_subcat_name'] = !empty($kyss_value->subcategory->sub_cat_name) ? $kyss_value->subcategory->sub_cat_name : '';	
+			
+			
+			
+			// $result[] = $data_xsys;
+			$Brand_Array[] = $data_xsys;
+		}
+
+		$result['brand_list'] = $Brand_Array;
+// Brand End
+// color start
+		if(!empty($request->search)){
+			$get_colors = $get_colors->orwhere('colors.color', 'like', '%' . $request->search . '%');
+		}
+
+		$get_colors = $get_colors->paginate(80);
+
+		foreach ($get_colors as $kyss_vaslue) {
+			$data_xssys['id']        = !empty($kyss_vaslue->id) ? $kyss_vaslue->id : '';
+			$data_xssys['product_name']     = !empty($kyss_vaslue->brand) ? $kyss_vaslue->brand : '';	
+			$data_xssys['colorrr']     = !empty($kyss_vaslue->color) ? $kyss_vaslue->color : '';
+			$data_xssys['branddd']      = !empty($kyss_vaslue->product->branddd) ? $kyss_vaslue->product->branddd : '';	
+				
+			$data_xssys['img'] = !empty($kyss_vaslue->product->img) ? $kyss_vaslue->product->img : '';	
+			
+			$data_xssys['sort_desc']    = !empty($kyss_vaslue->product->sort_desc) ? $kyss_vaslue->product->sort_desc : '';	
+			$data_xssys['description']  = !empty($kyss_vaslue->product->description) ? $kyss_vaslue->product->description : '';
+			$data_xssys['price']        = !empty($kyss_vaslue->product->price) ? $kyss_vaslue->product->price : '';	
+
+			// $data_xssys['color']     = !empty($kyss_vaslue->color) ? $kyss_vaslue->color : '';	
+			// $data_xssys['color_img'] = !empty($kyss_vaslue->product->img) ? $kyss_vaslue->product->img : '';	
+			// $data_xssys['cat_name']     = !empty($kyss_vaslue->category->cat_name) ? $kyss_vaslue->category->cat_name : '';	
+			
+			// $result[] = $data_xssys;
+			$Colors_Array[] = $data_xssys;
+		}
+
+		$result['color_list'] = $Colors_Array;
+// color end		
+
+		$json['status']  = 1;
+		$json['message'] = 'All list loaded successfully.';
+		$json['result']  = $result;
+		echo json_encode($json);
+
+	}
+
+
 		
 }
