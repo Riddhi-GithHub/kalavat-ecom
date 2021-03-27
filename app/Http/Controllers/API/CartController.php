@@ -16,7 +16,6 @@ use DB;
 
 class CartController extends Controller
 {
-
     public function addProductToCart(Request $request)
 	{
         if (!empty($request->product_id && $request->user_id && $request->status)) {
@@ -24,26 +23,29 @@ class CartController extends Controller
             $user = User::find($request->input('user_id'));
             // dd(!empty($product && $user));
             if(!empty($product && $user)){
-                $data = Cart::where('product_id', '=', trim($request->product_id))
+                $get_cart_data = Cart::where('product_id', '=', trim($request->product_id))
                 ->where('user_id', '=', trim($request->user_id))
-                // ->where('status', '=', trim($request->status))
+                ->where('color', '=', trim($request->color))
+                ->where('size', '=', trim($request->size))
                 ->first();
-                if (!empty($data)) {
-                    $data->status  = $request->status;
-                    $data->color  = $request->color;
-                    $data->size  = $request->size;
-                    $data->quantity  = $request->quantity;
-                    $data->sub_total_price  = $request->sub_total_price;
-                    $data->save();
+                // dd($get_cart_data);
+                
+                if (!empty($get_cart_data)) {
+                    $get_cart_data->status  = $request->status;
+                    $get_cart_data->color  = $request->color;
+                    $get_cart_data->size  = $request->size;
+                    $get_cart_data->quantity  = $request->quantity;
+                    $get_cart_data->sub_total_price  = $request->sub_total_price;
+                    $get_cart_data->save();
                     $json['success'] = 1;
                     $json['message'] = 'Product added into Cart Successfully.';
-                    $json['cart_list'] = $data;
+                    $json['cart_list'] = $get_cart_data;
                 }else{
-                    $getdata = Cart::create($request->all());
-                    $getdata->save();
+                    $add_cart_data = Cart::create($request->all());
+                    $add_cart_data->save();
                     $json['success'] = 1;
                     $json['message'] = 'Product added  into Cart Successfully.';
-                    $json['cart_list'] = $getdata;
+                    $json['cart_list'] = $add_cart_data;
                 }
             }
             else{
@@ -90,11 +92,12 @@ class CartController extends Controller
                         ->where('product_id', $pid)
                         ->avg('rating_avg');
     
-                            if(!empty($rates)){
-                                $p['rating_count']=$rates;
-                            }else{
-                                $p['rating_count']=0;
-                            }
+                        $num = (double) $rates;
+                        if(!empty($num)){
+                            $p['rating_count']=$num;
+                        }else{
+                            $p['rating_count']=0;
+                        }
                 }
     
 
@@ -117,11 +120,12 @@ class CartController extends Controller
 
     public function deleteCartProdcut(Request $request)
     {
-        if (!empty($request->product_id && $request->user_id)) {
+        if (!empty($request->cart_id && $request->user_id)) {
             // dd(!empty($product && $user));
-                $data = Cart::where('product_id', '=', trim($request->product_id))
-                ->where('user_id', '=', trim($request->user_id))
-                // ->where('status', '=', trim($request->status))
+                // $data = Cart::where('product_id', '=', trim($request->product_id))
+                // ->where('user_id', '=', trim($request->user_id))
+
+                $data = Cart::where('cart_id', '=', trim($request->cart_id))
                 ->first();
                 // dd(!empty($data));
                 if (!empty($data)) {
@@ -169,4 +173,5 @@ class CartController extends Controller
 
  	    echo json_encode($json);
     }
+    
 }

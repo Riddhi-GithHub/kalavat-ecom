@@ -27,7 +27,7 @@
                 Product ID :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getdata->id }}
+                {{ $getproduct->id }}
               </div>
             </div>
 
@@ -36,7 +36,7 @@
                 Product Name :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getdata->product_name }}
+                {{ $getproduct->product_name }}
               </div>
             </div>
 
@@ -45,7 +45,7 @@
                 Description :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getdata->description }}
+                {{ $getproduct->description }}
               </div>
             </div>
 
@@ -54,7 +54,7 @@
                 Price :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getdata->price }}
+                {{ $getproduct->price }}
               </div>
             </div>
 
@@ -63,7 +63,7 @@
                 Quantity:
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getdata->quantity }}
+                {{ $getproduct->quantity }}
               </div>
             </div>
 
@@ -72,16 +72,19 @@
                 Offer :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getdata->offer }}
+                {{ $getproduct->offer }}
               </div>
             </div>
+
 
             <div class="form-group">
               <label class="col-md-3 control-label">
                 Color :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getdata->color }}
+                @foreach($getcolor as $colordata)
+                  <input class="form-check-input" style="margin: 5px 6px 0px" checked="checked" type="checkbox" value="{{ $colordata->id }}">{{ $colordata->color}}
+                @endforeach
               </div>
             </div>
 
@@ -90,17 +93,20 @@
                 Size :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getdata->size }}
+                @foreach($getsize as $sizedata)
+                  <input class="form-check-input" style="margin: 5px 6px 0px" checked="checked" type="checkbox" value="{{ $sizedata->id }}">{{ $sizedata->size}}
+                @endforeach
               </div>
             </div>
-
 
             <div class="form-group">
               <label class="col-md-3 control-label">
                 Brand :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                {{ $getdata->brand }}
+                @foreach($getbrand as $branddata)
+                <input class="form-check-input" style="margin: 5px 6px 0px" checked="checked" type="checkbox" value="{{ $branddata->id }}">{{ $branddata->brand}}
+               @endforeach
               </div>
             </div>
 
@@ -109,11 +115,11 @@
                 Images :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
-                @foreach ($getdata->images as $item)
+                @foreach ($getproduct->images as $item)
                   <img alt="image name" src="{{ url('public/images/product/'.$item->images) }}"
                   style="width:70px; height:70px;" />
                 @endforeach
-                {{-- <img alt="image name" src="{{ url('public/images/product/'.$getdata->img) }}"
+                {{-- <img alt="image name" src="{{ url('public/images/product/'.$getproduct->img) }}"
                   style="width:70px; height:70px;" /> --}}
               </div>
             </div>

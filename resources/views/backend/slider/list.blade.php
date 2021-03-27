@@ -39,8 +39,8 @@
                         </div>
                         <div class="col-md-3">
                             <label>Slider Name</label>
-                            <input type="text" class="form-control" value="{{ Request()->slider_name }}" placeholder="Slider Name"
-                                name="slider_name">
+                            <input type="text" class="form-control" value="{{ Request()->slider_name }}"
+                                placeholder="Slider Name" name="slider_name">
                         </div>
 
                         <div style="clear: both;"></div>
@@ -65,6 +65,8 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Slider Name</th>
+                                <th>Slider Offer</th>
+                                <th>Slider Discount</th>
                                 <th>Slider Image</th>
                                 <th>Created Date</th>
                                 <th>Action</th>
@@ -75,11 +77,12 @@
                             <tr>
                                 <td> {{ $value->id }}</td>
                                 <td>{{ $value->slider_name }}</td>
-                                <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
+                                <td>{{ $value->offer }}</td>
+                                <td>{{ $value->discount }}</td>
                                 <td><img alt="image name" src="{{ url('public/images/slider/'.$value->slider_image) }}"
-                                    style="width:70px; height:70px;" /></td>
+                                        style="width:70px; height:70px;" /></td>
+                                <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
                                 <td>
-                                   
                                     <form method="get" action="{{ route('slider.delete', $value->id) }}">
                                         {{-- <a href="{{ url('admin/slider/view/'.$value->id) }}"
                                             class="btn btn-primary btn-rounded btn-sm"><span
@@ -87,41 +90,41 @@
                                         <a href="{{ url('admin/slider/edit/'.$value->id) }}"
                                             class="btn btn-success btn-rounded btn-sm"><span
                                                 class="fa fa-pencil"></span></a>
-                                       
-                                            <button type="submit" class="btn btn-danger btn-rounded btn-sm"
-                                                onclick="return confirm('Sure Want Delete?')"><span
-                                                    class="fa fa-trash-o"></span></button>
-                                            <div class="modal" id="mdelete" role="dialog" aria-labelledby="moddelete">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="moddelete">Confirm Delete</h5>
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Are you sure you want to delete?</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <input type="hidden" name="txtid" id="txtid" />
-                                                            <input type="text" name="uid" id="uid" />
-                                                            <button type="button" class="btn btn-danger "
-                                                                data-dismiss="modal">No</button>
-                                                            <span class="text-right">
-                                                                <button type="button"
-                                                                    class="btn btn-primary btndelete">Yes</button>
-                                                            </span>
-                                                        </div>
+
+                                        <button type="submit" class="btn btn-danger btn-rounded btn-sm"
+                                            onclick="return confirm('Sure Want Delete?')"><span
+                                                class="fa fa-trash-o"></span></button>
+                                        <div class="modal" id="mdelete" role="dialog" aria-labelledby="moddelete">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="moddelete">Confirm Delete</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to delete?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="hidden" name="txtid" id="txtid" />
+                                                        <input type="text" name="uid" id="uid" />
+                                                        <button type="button" class="btn btn-danger "
+                                                            data-dismiss="modal">No</button>
+                                                        <span class="text-right">
+                                                            <button type="button"
+                                                                class="btn btn-primary btndelete">Yes</button>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    {{-- </div> --}}
+                                        {{--
+                                                     </div> --}}
                                     </form>
-                </td>
-                </tr>
+                                </td>
+                             </tr>
                 @empty
                 <tr>
                     <td colspan="100%">Record not found.</td>

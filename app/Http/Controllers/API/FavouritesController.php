@@ -17,7 +17,7 @@ class FavouritesController extends BaseController
 {
 
     // --------- using base controller ----start-------
-    public function add_favourite_(Request $request)
+    public function add_favourite___backup(Request $request)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -83,7 +83,7 @@ class FavouritesController extends BaseController
                     $data->status  = $request->status;
                     $data->save();
                     $json['success'] = 1;
-                    $json['message'] = 'Added to wishlist product status change Successfully.';
+                    $json['message'] = 'Added to wishlist.';
                     $json['favourite_list'] = $data;
                 }else{
                     $getdata = Favourites::create($request->all());
@@ -120,11 +120,12 @@ class FavouritesController extends BaseController
                     ->where('product_id', $pid)
                     ->avg('rating_avg');
 
-                        if(!empty($rates)){
-                            $p['rating_count']=$rates;
-                        }else{
-                            $p['rating_count']=0;
-                        }
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
             }
 
         if(!empty($getresult->count() > 0)){

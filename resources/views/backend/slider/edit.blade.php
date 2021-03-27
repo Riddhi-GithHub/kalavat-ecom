@@ -40,6 +40,26 @@
                   </div>
 
                   <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Offer</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="offer" value="{{ $getslider->offer }}" placeholder="Offer" min=1  max="99" oninput="validity.valid||(value='');" type="number" class="form-control" />
+                           <span style="color:red">{{  $errors->first('offer') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Discount</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="discount" value="{{ $getslider->discount }}" placeholder="Discount" min=1  max="99" oninput="validity.valid||(value='');" type="number" class="form-control" />
+                           <span style="color:red">{{  $errors->first('discount') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Slider Image </span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">

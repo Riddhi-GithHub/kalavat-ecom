@@ -28,21 +28,51 @@
                <div class="panel-heading">
                   <h3 class="panel-title">Edit Product</h3>
                </div>
-
                <div class="panel-body">
-                 <div class="form-group">
-                  <label class="col-md-2 col-xs-12 control-label">Category Name </span></label>
-                  <div class="col-md-8 col-xs-12">
-                     <div class="">
-                        <select id="cat_id" name="cat_id" class="form-control">
-                           <option value="{{$getproduct->category->id}}">{{$getproduct->category->cat_name}}</option>
-                           @foreach($getcategory as $categoryData)
-                           <option value="{{$categoryData->id}}">{{$categoryData->cat_name}}</option>
-                           @endforeach
-                        </select>
+                 
+                  <div class="form-group">
+                   <label class="col-md-2 col-xs-12 control-label">Category Name </span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <select id="cat_id" name="cat_id" class="form-control">
+                              <option value="{{$getproduct->category->id}}">{{$getproduct->category->cat_name}}</option>
+                              @foreach($getcategory as $categoryData)
+                              <option value="{{$categoryData->id}}">{{$categoryData->cat_name}}</option>
+                              @endforeach
+                           </select>
+                        </div>
                      </div>
                   </div>
-               </div>
+
+                 <div class="form-group">
+                   <label class="col-md-2 col-xs-12 control-label">Sub Category Name </span></label>
+                   <div class="col-md-8 col-xs-12">
+                      <div class="">
+                         <select id="sub_cat_id" name="sub_cat_id" class="form-control">
+                            <option value="{{$getproduct->subcategory->id}}">{{$getproduct->subcategory->sub_cat_name}}</option>
+                            @foreach($getsubcategory as $subcategoryData)
+                            <option value="{{$subcategoryData->id}}">{{$subcategoryData->sub_cat_name}}</option>
+                            @endforeach
+                         </select>
+                      </div>
+                   </div>
+                 </div>
+
+                  <div class="form-group">
+                    <label class="col-md-2 col-xs-12 control-label">Sale Name </span></label>
+                    <div class="col-md-8 col-xs-12">
+                       <div class="">
+                            <select id="sale_id" name="sale_id" class="form-control">
+                             @if(!@empty($getproduct->sale))
+                                 <option value="{{$getproduct->sale->id}}">{{$getproduct->sale->sale_title}}</option> 
+                             @endif
+                             @foreach($getsale as $saleData)
+                             <option value="{{$saleData->id}}">{{$saleData->sale_title}}</option>
+                             @endforeach
+                          </select>
+                       </div>
+                    </div>
+                  </div> 
 
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Product Name</label>
@@ -90,38 +120,8 @@
                      <label class="col-md-2 col-xs-12 control-label">Offer </span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
-                           <input name="offer" value="{{ $getproduct->offer }}" placeholder="Offer" type="number" class="form-control" />
+                           <input name="offer" value="{{ $getproduct->offer }}" placeholder="Offer"  type="number" class="form-control"  min=1  max="99" oninput="validity.valid||(value='');" />
                            <span style="color:red">{{  $errors->first('offer') }}</span>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Color </span></label>
-                     <div class="col-md-8 col-xs-12">
-                        <div class="">
-                           <input name="color" value="{{ $getproduct->color }}" placeholder="Color" type="text" class="form-control" />
-                           <span style="color:red">{{  $errors->first('color') }}</span>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Size </span></label>
-                     <div class="col-md-8 col-xs-12">
-                        <div class="">
-                           <input name="size" value="{{ $getproduct->size }}" placeholder="Size" type="text" class="form-control" />
-                           <span style="color:red">{{  $errors->first('size') }}</span>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Brand </span></label>
-                     <div class="col-md-8 col-xs-12">
-                        <div class="">
-                           <input name="brand" value="{{ $getproduct->brand }}" placeholder="Brand" type="text" class="form-control" />
-                           <span style="color:red">{{  $errors->first('brand') }}</span>
                         </div>
                      </div>
                   </div>
@@ -132,36 +132,6 @@
                         <div class="">
                            <input name="sort_desc" value="{{ $getproduct->sort_desc }}" placeholder="Short Description" type="text" class="form-control" />
                            <span style="color:red">{{  $errors->first('sort_desc') }}</span>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Size And Fit</span></label>
-                     <div class="col-md-8 col-xs-12">
-                        <div class="">
-                           <input name="size_and_fit" value="{{ $getproduct->size_and_fit }}" placeholder="Size And Fit" type="text" class="form-control" />
-                           <span style="color:red">{{  $errors->first('size_and_fit') }}</span>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Material And Care</span></label>
-                     <div class="col-md-8 col-xs-12">
-                        <div class="">
-                           <input name="material_and_care" value="{{ $getproduct->material_and_care }}" placeholder="Material And Care" type="text" class="form-control" />
-                           <span style="color:red">{{  $errors->first('material_and_care') }}</span>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Style Note</span></label>
-                     <div class="col-md-8 col-xs-12">
-                        <div class="">
-                           <input name="style_note" value="{{ $getproduct->style_note }}" placeholder="Style Note" type="text" class="form-control" />
-                           <span style="color:red">{{  $errors->first('style_note') }}</span>
                         </div>
                      </div>
                   </div>
@@ -250,6 +220,55 @@
                      </div>
                   </div>
 
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Color </span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           {{-- {{ dd($getcolor[]['color']) }} --}}
+                           {{-- <input class="form-check-input" style="margin: 5px 6px 0px" type="checkbox" value="Red" name="color[]">Red
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Blue" name="color[]">Blue
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Black" name="color[]">Black
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="White" name="color[]">White
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Pink" name="color[]">Pink
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Yellow" name="color[]">Yellow
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Orange" name="color[]">Orange
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Green" name="color[]">Green --}}
+                           @foreach($getcolor as $colordata)
+                           {{-- {{ dd($colordata) }} --}}
+                              {{-- @if($colodata->id) --}}
+                              {{-- <input class="form-check-input" checked="checked" style="margin: 5px 6px 0px"
+                                type="checkbox" value="{{ $colordata->Red }}">Red --}}
+                              <input class="form-check-input" style="margin: 5px 6px 0px" checked="checked" type="checkbox" value="{{ $colordata->color }}" name="color[]">{{ $colordata->color}}
+                              {{-- @endif --}}
+                           @endforeach
+                           <span style="color:red">{{  $errors->first('color') }}</span>
+                        </div>
+                     </div>
+                    </div>
+   
+                    <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Size </span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           @foreach($getsize as $sizedata)
+                              <input class="form-check-input" style="margin: 5px 6px 0px" checked="checked" type="checkbox" value="{{ $sizedata->size }}" name="size[]">{{ $sizedata->size}}
+                           @endforeach
+                           <span style="color:red">{{  $errors->first('size') }}</span>
+                        </div>
+                     </div>
+                    </div>
+   
+                    <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Brand </span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           @foreach($getbrand as $branddata)
+                              <input class="form-check-input" style="margin: 5px 6px 0px" checked="checked" type="checkbox" value="{{ $branddata->brand }}" name="brand[]">{{ $branddata->brand}}
+                           @endforeach
+                           <span style="color:red">{{  $errors->first('color') }}</span>
+                        </div>
+                     </div>
+                    </div>
 
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Images </span></label>
@@ -266,7 +285,7 @@
                   </div>
 
 
-                  <div class="form-group">
+                  {{-- <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Board Sub Option</label>
                      <div class="col-md-8 col-xs-12">
                         <table class="table">
@@ -286,7 +305,7 @@
                         </table>
                      </div>
                   </div>
-                  <span id="getNewMainOption"></span>
+                  <span id="getNewMainOption"></span> --}}
 
 
                </div>

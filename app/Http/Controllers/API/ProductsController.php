@@ -39,6 +39,11 @@ class ProductsController extends BaseController
         
        $filter = Product::with('images','size','color')
        ->where('sub_cat_id',$request->sub_cat_id)->get();
+       
+       $sorting = Product::with('images','size','color')->where('sub_cat_id',$request->sub_cat_id);
+       $sorting_all = $sorting->get();
+       $sorting_data = $request->sorting_data; 
+
        // $product = Product::where('cat_id',$request->input('cat_id'))->get();
         // $product = Product::with('size','color','images')->where('cat_id',$request->input('cat_id'))->get();
         // dd($product);
@@ -62,19 +67,18 @@ class ProductsController extends BaseController
         $rating_count ="";
             foreach($filter as $p){
                 $pid = $p->id;
-                    $rates = DB::table('ratings')
-                    ->where('product_id', $pid)
-                    ->avg('rating_avg');
-                    $num = (double) $rates;
-                        if(!empty($num)){
-                            $p['rating_count']=$num;
-                        }else{
-                            $p['rating_count']=0;
-                        }
+                $rates = DB::table('ratings')
+                ->where('product_id', $pid)
+                ->avg('rating_avg');
+                $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
             }
 
-            // $filter = "";
-            // ->where('sub_cat_id',$request->sub_cat_id)->get();
+           
 
             // if(!empty($request->size)){
                 // foreach($filter as $value){
@@ -89,8 +93,10 @@ class ProductsController extends BaseController
             // }
             // dd($ss);
 
+        
+        // filter start
             if(!empty($request->color)){
-                $filter = $filter->where('color', 'like', '%' . $request->color . '%');
+                $filter = $filter->where('colorrr', $request->color);
                 // return $this->sendResponse_product($product,'Product retrieved successfully.');
             }
             if(!empty($request->size)){
@@ -100,7 +106,7 @@ class ProductsController extends BaseController
             if(!empty($request->brand)){
                 $brand = explode(",", $request->brand);  
                 // $getbrand = Product::whereIn('brand',['naf','jack'])->get();
-                $filter = $filter->whereIn('brand',$brand);
+                $filter = $filter->whereIn('branddd',$brand);
             }
             if(!empty($request->price)){
                 $price = explode(",", $request->price);
@@ -110,6 +116,201 @@ class ProductsController extends BaseController
                 // $getprice = Product::whereBetween('price', [$min_price,$max_price])->get();
                 $filter = $filter->whereBetween('price', [$min_price,$max_price]);
             }
+        //end  filter
+
+        // sorting start
+        
+        elseif($sorting_data == 1){
+            $sorting = $sorting->orderBy('id','desc')->get();
+            $is_fav="";
+            foreach($sorting as $p){
+            $pid = $p->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $p['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $p['is_fav']=0;
+                    }
+            }
+
+            $rating_count ="";
+            foreach($sorting as $p){
+                $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
+
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+            }
+            return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+        }
+        elseif($sorting_data == 2){
+            $sorting = $sorting->orderBy('price')->get();
+           
+            $is_fav="";
+            foreach($sorting as $p){
+            $pid = $p->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $p['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $p['is_fav']=0;
+                    }
+            }
+
+            $rating_count ="";
+            foreach($sorting as $p){
+                $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
+
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+            }
+            return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+        }
+        elseif($sorting_data == 3){
+            $sorting = $sorting->orderBy('price','desc')->get();
+           
+            $is_fav="";
+            foreach($sorting as $p){
+            $pid = $p->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $p['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $p['is_fav']=0;
+                    }
+            }
+
+            $rating_count ="";
+            foreach($sorting as $p){
+                $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
+
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+            }
+            return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+        }
+        elseif($sorting_data == 4){
+            $rates = Rating::orderBy('rating_avg','desc')->get();
+            foreach($rates as $r){
+                $p_id[] = $r->product_id;
+            }
+            // dd($p_id);
+            $sorting = $sorting->whereIn('id',$p_id)->orderBy('id','desc')->get();
+
+            $is_fav="";
+            foreach($sorting as $p){
+            $pid = $p->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $p['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $p['is_fav']=0;
+                    }
+            }
+            $rating_count ="";
+            foreach($sorting as $p){
+                $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
+
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+            }
+            return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+        }
+        elseif($sorting_data == 5){
+            $cart = Cart::get();
+            foreach($cart as $c){
+                $c_p_id[] = $c->product_id;
+            }
+            $fav = Favourites::get();
+            foreach($fav as $f){
+                $f_p_id[] = $f->product_id;
+            }
+            // dd($c_p_id);
+            $i['c'] = $c_p_id;
+            $i['f'] = $f_p_id;
+            
+            $sorting = $sorting->whereIn('id',$c_p_id)
+            ->orwhereIn('id',$f_p_id)->where('sub_cat_id',$request->sub_cat_id)->get();
+            // $sorting = $sorting->get();
+            $is_fav="";
+            foreach($sorting as $p){
+            $pid = $p->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $p['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $p['is_fav']=0;
+                    }
+            }
+            $rating_count ="";
+            foreach($sorting as $p){
+                $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
+
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+            }
+            return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+        }
+        // sorting end 
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors()); 
@@ -118,7 +319,7 @@ class ProductsController extends BaseController
                 return $this->sendResponse_product($filter,'Product Details retrieved successfully.');
             }else{
                     return $this->sendError('Product item not found.'); 
-            }   
+                }   
             }
         else{
             return $this->sendError('Subcategory not found.'); 
@@ -765,7 +966,7 @@ class ProductsController extends BaseController
 
     public function sort_by_product(Request $request)
     {
-        if($request->sub_cat_id && $request->user_id && $request->sorting_data ){
+        if($request->sub_cat_id && $request->user_id ){
             $result = array();
             $sorting = Product::with('images','size','color')->where('sub_cat_id',$request->sub_cat_id);
             $sorting_all = $sorting->get();
@@ -773,7 +974,7 @@ class ProductsController extends BaseController
         // dd($sorting);
 
             $is_fav="";
-            foreach($sorting as $p){
+            foreach($sorting_all as $p){
             $pid = $p->id;
                 $getresult  = Favourites::
                     where('user_id', '=' ,$request->user_id)
@@ -806,8 +1007,37 @@ class ProductsController extends BaseController
             $sorting_data = $request->sorting_data; 
         
             if($sorting_data == 1){
-                $sorting = $sorting->orderBy('id','desc')->get();
-                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+                $sorting_all = $sorting->orderBy('id','desc')->get();
+                $is_fav="";
+                foreach($sorting_all as $p){
+                   $pid = $p->id;
+                    $getresult  = Favourites::
+                        where('user_id', '=' ,$request->user_id)
+                        ->where('product_id', '=' ,$pid)->first();
+                        if(!empty($getresult)){
+                            $is_fav=$getresult->status;
+                            //dd($is_fav);
+                            $p['is_fav']=$is_fav;
+                            //dd($p);
+                        }else{
+                            $p['is_fav']=0;
+                        }
+                }
+                $rating_count ="";
+                foreach($sorting_all as $p){
+                    $pid = $p->id;
+                        $rates = DB::table('ratings')
+                        ->where('product_id', $pid)
+                        ->avg('rating_avg');
+    
+                        $num = (double) $rates;
+                        if(!empty($num)){
+                            $p['rating_count']=$num;
+                        }else{
+                            $p['rating_count']=0;
+                        }
+                }
+                return $this->sendResponse_product($sorting_all,'Product retrieved successfully.'); 
             }
             elseif($sorting_data == 2){
                 $sorting = $sorting->orderBy('price')->get();

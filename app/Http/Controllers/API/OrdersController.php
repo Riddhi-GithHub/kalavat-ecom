@@ -79,10 +79,10 @@ class OrdersController extends Controller
             // $add_data->delivery_date = $delivery_date;
             $add_data->delivery_date = $add_data->created_at->addDays(3);
             $add_data->payment_method = $request->payment_method;
-            $add_data->delivery_method = $request->delivery_method;
-            $add_data->status = $request->status;
+            $add_data->delivery_method = "3 days";
+            $add_data->status = 0;
+            $add_data->delivery_charge = 0;
             $add_data->discount = $request->discount;
-            $add_data->delivery_charge = $request->delivery_charge;
             $add_data->total_quantity = $request->total_quantity;
             // dd($add_data);
             $add_data->save();

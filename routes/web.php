@@ -74,4 +74,8 @@ Route::group(['middleware' => 'admin'], function(){
 	Route::resource('admin/sale','Backend\SaleController');
 	Route::get('admin/sale/delete/{id}', 'Backend\SaleController@sale_delete')->name('sale.delete');
 
+
+	Route::get('test', function () {
+		return view('backend.product.test');
+	});
 });

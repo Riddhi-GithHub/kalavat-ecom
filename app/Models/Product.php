@@ -11,6 +11,7 @@ use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Size;
 use App\Models\ProductDetails;
+use App\Models\Sale;
 
 class Product extends Model
 {
@@ -20,6 +21,10 @@ class Product extends Model
        'offer','colorrr','branddd',
        'sort_desc','size_and_fit','material_and_care','style_note'
    ];
+
+    public function sale(){
+        return $this->belongsTo(Sale::class,'sale_id');
+    }
 
    public function category(){
        return $this->belongsTo(Category::class,'cat_id');

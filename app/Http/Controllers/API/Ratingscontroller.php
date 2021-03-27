@@ -20,67 +20,40 @@ class Ratingscontroller extends Controller
     {
         if (!empty($request->product_id && $request->user_id )) {
           
-            $rates = Rating::with('user')
-            ->where('product_id', '=' ,$request->product_id)
-            ->get();
+            $result  = array();
+            $rating_data = Rating::where('product_id', '=' ,$request->product_id)->get();
+            if($rating_data->count() > 0){
 
-            $getresult  = Rating::with('product')
-                ->where('product_id', '=' ,$request->product_id)
-                ->where('user_id', '=' ,$request->user_id)->get();
+                $result['avg'] = $rating_data->avg('rating_avg');
+                $result['rating_sum'] = $rating_data->sum('rating_avg');
+                $result['total_user'] = $rating_data->count('product_id');
+                $result['five_rate'] = $rating_data->where('rating_avg','=','5')->count('product_id');
+                $result['four_rate'] = $rating_data->where('rating_avg','=','4')->count('product_id');
+                $result['three_rate'] = $rating_data->where('rating_avg','=','3')->count('product_id');
+                $result['two_rate'] = $rating_data->where('rating_avg','=','2')->count('product_id');
+                $result['one_rate'] = $rating_data->where('rating_avg','=','1')->count('product_id');
 
-            $avg = $rates->avg('rating_avg');
-            $rating_sum = $rates->sum('rating_avg');
-            $total_user = $rates->count('product_id');
-            $five_rate = $rates->where('rating_avg','=','5')->count('product_id');
-            $four_rate = $rates->where('rating_avg','=','4')->count('product_id');
-            $three_rate = $rates->where('rating_avg','=','3')->count('product_id');
-            $two_rate = $rates->where('rating_avg','=','2')->count('product_id');
-            $one_rate = $rates->where('rating_avg','=','1')->count('product_id');
-
-            // dd($one_rate);
-
-            $is_fav="";
-                foreach($rates as $p){
-                    $fav  = Favourites::
-                        where('user_id', '=' ,$request->user_id)
-                        ->where('product_id', '=' ,$request->product_id)->first();
-                        if(!empty($fav)){
-                            $is_fav=$fav->status;
-                            //dd($is_fav);
-                            $p['is_fav']=$is_fav;
-                            //dd($p);
-                        }else{
-                            $p['is_fav']=0;
-                        }
+                foreach($rating_data as $data){
+                    $user_id[] = $data->user_id;
+                    $rating_date[] = $data->created_at->format('Y-m-d H:i:s');
+                    $user_rates[] = $data->rating_avg;
+                    $rating_description[] = $data->rating_description;
                 }
-
-                foreach($rates as $r){
-                    $r['raing_average'] = $avg;
-                    $r['raing_sum'] = $rating_sum;
-                    $r['five_rating'] = $five_rate;
-                    $r['four_rating'] = $four_rate;
-                    $r['three_rating'] = $three_rate;
-                    $r['two_rating'] = $two_rate;
-                    $r['one_rating'] = $one_rate;
-                    $rating_date[] = $r->created_at->format('Y-m-d H:i:s');
-                    $rating_add[] = $r->rating_avg;
-                }
-
-                // dd($rating_add);
-                foreach($rates as $key=>$u){
-                    // dd($u->user->username);
-                    $u->user['rating_date'] = $rating_date[$key];
-                    $u->user['rating'] = $rating_add[$key];
+                // $user_data = User::whereIn('id',[8,9])->get();
+                $user_data = User::whereIn('id',$user_id)->get();
+                foreach($user_data as $key=>$user){
+                    $user['rating_date'] = $rating_date[$key];
+                    $user['rating'] = $user_rates[$key];
+                    $user['rating_description'] = $rating_description[$key];
                 } 
-
-            if(!empty($rates->count() > 0)){
+                $result['user_list'] = $user_data;
                 $json['success'] = 1;
                 $json['message'] = 'Rating loaded Successfully.';
-                $json['rating_list'] = $rates;
+                $json['rating_list'] = $result;
             }
             else{
                 $json['success'] = 0;
-                $json['message'] = 'User or  Product not found.';
+                $json['message'] = 'Product not found.';
             }
         }
         else{
@@ -318,6 +291,81 @@ class Ratingscontroller extends Controller
         }
         echo json_encode($json);
     }
+
+    public function app_product_rating_list_backup(Request $request)
+    {
+        if (!empty($request->product_id && $request->user_id )) {
+          
+            $rates = Rating::with('user')
+            ->where('product_id', '=' ,$request->product_id)
+            ->get();
+
+            $getresult  = Rating::with('product')
+                ->where('product_id', '=' ,$request->product_id)
+                ->where('user_id', '=' ,$request->user_id)->get();
+
+            $avg = $rates->avg('rating_avg');
+            $rating_sum = $rates->sum('rating_avg');
+            $total_user = $rates->count('product_id');
+            $five_rate = $rates->where('rating_avg','=','5')->count('product_id');
+            $four_rate = $rates->where('rating_avg','=','4')->count('product_id');
+            $three_rate = $rates->where('rating_avg','=','3')->count('product_id');
+            $two_rate = $rates->where('rating_avg','=','2')->count('product_id');
+            $one_rate = $rates->where('rating_avg','=','1')->count('product_id');
+
+            // dd($one_rate);
+
+            $is_fav="";
+                foreach($rates as $p){
+                    $fav  = Favourites::
+                        where('user_id', '=' ,$request->user_id)
+                        ->where('product_id', '=' ,$request->product_id)->first();
+                        if(!empty($fav)){
+                            $is_fav=$fav->status;
+                            //dd($is_fav);
+                            $p['is_fav']=$is_fav;
+                            //dd($p);
+                        }else{
+                            $p['is_fav']=0;
+                        }
+                }
+
+                foreach($rates as $r){
+                    $r['raing_average'] = $avg;
+                    $r['raing_sum'] = $rating_sum;
+                    $r['five_rating'] = $five_rate;
+                    $r['four_rating'] = $four_rate;
+                    $r['three_rating'] = $three_rate;
+                    $r['two_rating'] = $two_rate;
+                    $r['one_rating'] = $one_rate;
+                    $rating_date[] = $r->created_at->format('Y-m-d H:i:s');
+                    $rating_add[] = $r->rating_avg;
+                }
+
+                // dd($rating_add);
+                foreach($rates as $key=>$u){
+                    // dd($u->user->username);
+                    $u->user['rating_date'] = $rating_date[$key];
+                    $u->user['rating'] = $rating_add[$key];
+                } 
+
+            if(!empty($rates->count() > 0)){
+                $json['success'] = 1;
+                $json['message'] = 'Rating loaded Successfully.';
+                $json['rating_list'] = $rates;
+            }
+            else{
+                $json['success'] = 0;
+                $json['message'] = 'User or  Product not found.';
+            }
+        }
+        else{
+            $json['success'] = 0;
+            $json['message'] = 'Fill user_id and product_id';
+        }
+        echo json_encode($json);
+    }
+
 
     // public function app_product_rating_update(Request $request)
 	// {

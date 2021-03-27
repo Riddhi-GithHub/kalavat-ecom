@@ -35,7 +35,7 @@ class SliderController extends Controller
 
     public function slider_insert(Request $request)
     {
-        $slider_insert = request()->validate([
+        $input = request()->validate([
             'slider_name'      => 'required',
             'slider_image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -45,12 +45,14 @@ class SliderController extends Controller
             $no = rand(1111,9999);
             $image_name = time().$no.'.jpg';
             $i = $slider_image->move(public_path('images/slider'), $image_name);
-            $cat = new Slider([
-                        'slider_name'      =>  $request->get('slider_name'),
-                        'slider_image'            =>  $image_name,
+            $slider_insert = new Slider([
+                        'slider_image'     =>  $image_name,
+                        'offer'            => $request->offer,
+                        'discount'         => $request->discount,
+                        'slider_name'      => $request->slider_name,
                     ]);
-                    $cat->save();
-            } 
+            $slider_insert->save();
+        } 
         return redirect('admin/slider')->with('success', 'Record created Successfully!');
     }
 
@@ -67,8 +69,16 @@ class SliderController extends Controller
         ]);
             $slider_update = Slider::find($id);
             $slider_update->fill($validated);  
+            $slider_update->offer = $request->offer;
+            $slider_update->discount = $request->discount;
 
         if ($request->hasFile('slider_image')) {
+            //    dd(!empty($slider_update->slider_image));
+            if (!empty($slider_update->slider_image) && file_exists(public_path('images/slider/'.$slider_update->image)))
+            {
+                unlink(public_path('images/slider/'.$slider_update->slider_image));
+            }
+
             $slider_image = $request->file('slider_image');
             $no = rand(1111,9999);
             $image_name = time().$no.'.jpg';
@@ -84,8 +94,13 @@ class SliderController extends Controller
     public function slider_delete($id)
     {
         $getrecord = Slider::find($id);
-        $getrecord->delete();
 
+        //    dd(file_exists(public_path('images/slider/'.$getrecord->image)));
+        if (!empty($getrecord->slider_image) && file_exists(public_path('images/slider/'.$getrecord->image)))
+        {
+            unlink(public_path('images/slider/'.$getrecord->slider_image));
+        }
+        // $getrecord->delete();
         return redirect('admin/slider')->with('error', 'Record deleted Successfully!');
     }
 

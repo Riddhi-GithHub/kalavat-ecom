@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $data['category'] = Category::count();
         $data['subcategory'] = Sub_Category::count();
         $data['product'] = Product::count();
-        $data['todayorder'] = Order::whereDate('created_at',Carbon::today())->where('status',0)->count();
+        $data['todayorder'] = Order::whereDate('created_at',Carbon::today())->where('order_status',0)->count();
         $data['totalorder'] = Order::count();
     	$data['meta_title'] = 'Dashboard List';
     	return view('backend.dashboard.list', $data);
