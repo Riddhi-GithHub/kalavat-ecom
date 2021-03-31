@@ -43,6 +43,37 @@ class UsersController extends BaseController
         ]);
 
         $user = User::where('mobile', '=', ($request->mobile))->where('otp', '=', ($request->otp))->first();
+        // dd($user->)
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors()); 
+        }elseif (!empty($user)) {
+            // dd($user->otp_verify == 1 );
+                if (!empty($user->otp_verify == 0 || $user->otp_verify == 1)) {
+                    $user->otp_verify = 1;
+                    $user->update();
+                    return $this->sendResponse($user, 'Login successfully!');
+                }
+                elseif (!empty($user->otp_verify == 2)) {
+                    $user->otp_verify = 2;
+                    $user->update();
+                    return $this->sendResponse($user, 'Login successfully!');
+                }
+                else {
+                    return $this->sendError('Otp not Verified.');  
+                }
+        } else {
+            return $this->sendError('Mobile number and otp not match.'); 
+        }
+    }
+
+    public function verification_otp_backup(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|min:10|max:10',
+            'otp' => 'required|min:4|max:4',
+        ]);
+
+        $user = User::where('mobile', '=', ($request->mobile))->where('otp', '=', ($request->otp))->first();
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors()); 
         }elseif (!empty($user)) {

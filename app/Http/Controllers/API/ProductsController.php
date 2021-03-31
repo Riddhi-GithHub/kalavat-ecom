@@ -412,54 +412,54 @@ class ProductsController extends BaseController
 
         $getalldata = Sale::
         where('sale_end_date','>=',$today)->get();
-            $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
-            
-            // $is_fav="";
-            //     foreach($getalldata as $dataf){
-            //     $productdata = $dataf->product;
-            //         foreach($productdata as $f){
-            //             $p_id = $f->id;
-            //             $getresult  = Favourites::
-            //             where('user_id', '=' ,$request->user_id)
-            //             ->where('product_id', '=' ,$p_id)->first();
-                        
-            //             if(!empty($getresult)){
-            //                 $is_fav=$getresult->status;
-            //                 //dd($is_fav);
-            //                 $f['is_fav']=$is_fav;
-            //                 //dd($p);
-            //             }else{
-            //                 $f['is_fav']=0;
-            //             }
-            //         }    
-            //     }
 
-            // $rating_count ="";
-            // foreach($getalldata as $datap){
-            //     // dd($p->product);
-            //     $productdata = $datap->product;
-            //     foreach($productdata as $p){
-            //         // dd($p->id);
-            //         $pid = $p->id;
-            //         $rates = DB::table('ratings')
-            //         ->where('product_id', $pid)
-            //         ->avg('rating_avg');
-            //         // if(!empty($rates)){
-            //         //     $p['rating_count']=$rates;
-            //         //     // $p->product['rating_count']=$rates;
-            //         // }else{
-            //         //     $p['rating_count']=0;
-            //         //     // $p->product['rating_count']=0;
-            //         // }
-            //         $num = (double) $rates;
-            //             if(!empty($num)){
-            //                 $p['rating_count']=$num;
-            //             }else{
-            //                 $p['rating_count']=0;
-            //             }
-            //     }
-                
-            // }
+        $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
+            
+            $is_fav="";
+            foreach($getalldata as $dataf){
+            $productdata = $dataf->product;
+                foreach($productdata as $f){
+                    $p_id = $f->id;
+                    $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$p_id)->first();
+                    
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $f['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $f['is_fav']=0;
+                    }
+                }    
+            }
+
+            $rating_count ="";
+            foreach($getalldata as $datap){
+                // dd($p->product);
+                $productdata = $datap->product;
+                foreach($productdata as $p){
+                    // dd($p->id);
+                    $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
+                    // if(!empty($rates)){
+                    //     $p['rating_count']=$rates;
+                    //     // $p->product['rating_count']=$rates;
+                    // }else{
+                    //     $p['rating_count']=0;
+                    //     // $p->product['rating_count']=0;
+                    // }
+                    $num = (double) $rates;
+                        if(!empty($num)){
+                            $p['rating_count']=$num;
+                        }else{
+                            $p['rating_count']=0;
+                        }
+                }
+            }
 
             if(!empty($getalldata)){
                         return $this->sendResponse_product($getalldata,'Product retrieved successfully.');

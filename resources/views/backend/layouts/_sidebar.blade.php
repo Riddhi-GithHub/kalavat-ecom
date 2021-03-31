@@ -31,6 +31,10 @@
                 <a href="{{ url('admin/product') }}"><span class="fa fa-table"></span> <span class="xn-text">Product List</span></a>
             </li>
 
+            <li class="@if ( Request::segment(2)== 'catalog') active @endif">
+                <a href="{{ url('admin/catalog') }}"><span class="fa fa-film"></span> <span class="xn-text">Catalog List</span></a>
+            </li>
+
             <li class="@if ( Request::segment(2)== 'favouriteitem') active @endif">
                 <a href="{{ url('admin/favouriteitem') }}"><span class="fa fa-heart"></span> <span class="xn-text">Favourite Product List</span></a>
             </li>

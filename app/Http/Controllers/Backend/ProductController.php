@@ -247,7 +247,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $data['getproduct'] = Product::with('images')->find($id);
+        $data['getproduct'] = Product::with('images','color')->find($id);
         $data['getcolor'] = Color::where('color_product_id',$id)->get();
         $data['getsize'] = Size::where('size_product_id',$id)->get();
         $data['getbrand'] = Brand::where('brand_product_id',$id)->get();
@@ -270,7 +270,7 @@ class ProductController extends Controller
         $data['getsize'] = Size::where('size_product_id',$id)->get();
         $data['getbrand'] = Brand::where('brand_product_id',$id)->get();
         // $data['getproduct'] = Product::with('category','manufacturing','brand','size','color')->find($id);
-        $data['getproduct'] = Product::with('category','subcategory','sale','manufacturing')->find($id);
+        $data['getproduct'] = Product::with('category','color','subcategory','sale','manufacturing')->find($id);
         // dd($data);
         $data['getimages'] = Product_images::where('product_id',$id)->get();
         $data['meta_title'] = "Edit Product";

@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Backend;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Slider;
+use App\Models\Category;
+use App\Models\Sub_Category;
+use App\Models\Product;
 
 class SliderController extends Controller
 {
@@ -29,6 +32,13 @@ class SliderController extends Controller
 
     public function slider_add(Request $request)
     {
+        $category = Category::get();
+        $subcategory = Sub_Category::get();
+        $product = Product::get();
+        // $brand = explode(',', ['naf','adidas1','adidas','diesel','champian']); 
+        $data['category'] = $category;
+        $data['subcategory'] = $subcategory;
+        $data['product'] = $product;
     	$data['meta_title'] = "Add Slider";
     	return view('backend.slider.add', $data);
     }
@@ -36,9 +46,12 @@ class SliderController extends Controller
     public function slider_insert(Request $request)
     {
         $input = request()->validate([
-            'slider_name'      => 'required',
-            'slider_image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // 'slider_name'      => 'required',
+            // 'slider_image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        // dd($request->type);
+        // dd($request->type_id);
 
         if ($request->hasFile('slider_image')) {
             $slider_image = $request->file('slider_image');
@@ -50,13 +63,24 @@ class SliderController extends Controller
                         'offer'            => $request->offer,
                         'discount'         => $request->discount,
                         'slider_name'      => $request->slider_name,
+                        'type'             => $request->type,
+                        'type_id'          => $request->type_id,
                     ]);
             $slider_insert->save();
         } 
         return redirect('admin/slider')->with('success', 'Record created Successfully!');
     }
 
-    public function slider_edit($id){
+    public function slider_edit($id)
+    {
+        $category = Category::get();
+        $subcategory = Sub_Category::get();
+        $product = Product::get();
+        // $brand = explode(',', ['naf','adidas1','adidas','diesel','champian']); 
+        $data['category'] = $category;
+        $data['subcategory'] = $subcategory;
+        $data['product'] = $product;
+
         $data['getslider'] = Slider::find($id);
         $data['meta_title'] = "Edit Slider";
         return view('backend.slider.edit', $data);
@@ -71,6 +95,8 @@ class SliderController extends Controller
             $slider_update->fill($validated);  
             $slider_update->offer = $request->offer;
             $slider_update->discount = $request->discount;
+            $slider_update->type = $request->type;
+            $slider_update->type_id = $request->type_id;
 
         if ($request->hasFile('slider_image')) {
             //    dd(!empty($slider_update->slider_image));
