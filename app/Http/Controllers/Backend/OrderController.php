@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderDetails;
 
 class OrderController extends Controller
 {
@@ -15,16 +16,20 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $getrecord = Order::orderBy('order_id', 'desc')->select('orders.*');
-        $getrecord = $getrecord->join('products', 'orders.product_id', '=', 'products.id');
-        // $getrecord = $getrecord->join('users', 'orders.user_id', '=', 'users.id');
+        $getrecord = OrderDetails::orderBy('order_detail_id', 'desc')->select('order_details.*');;
+        // $getrecord = $getrecord->join('products', 'orders.order_product_id', '=', 'products.id');
+        $getrecord = $getrecord->join('users', 'order_details.user_id', '=', 'users.id');
 
-    	if (!empty($request->order_id)) {
-			$getrecord = $getrecord->where('order_id', '=', $request->order_id);
+    	if (!empty($request->order_detail_id )) {
+			$getrecord = $getrecord->where('order_detail_id', '=', $request->order_detail_id);
 		}
 
-        if (!empty($request->username)) {
-			$getrecord = $getrecord->where('username', 'like', '%' . $request->username . '%');
+        if (!empty($request->tracking_num)) {
+			$getrecord = $getrecord->where('tracking_num', '=', $request->tracking_num);
+		}
+
+        if (!empty($request->fullname)) {
+			$getrecord = $getrecord->where('fullname', 'like', '%' . $request->fullname . '%');
 		}
 
 		if (!empty($request->product_name)) {
@@ -51,69 +56,5 @@ class OrderController extends Controller
         echo json_encode($json);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    
 }

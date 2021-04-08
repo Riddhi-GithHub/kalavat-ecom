@@ -24,36 +24,74 @@
                </div>
                <div class="panel-body">
 
-                  <div class="form-group">
+
+
+
+                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Select Category <span style="color:red">*</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
                            <select id="cat_id" name="cat_id" class="form-control">
                               {{-- <select class="custom-select form-control" id="cat_id" name="cat_id"> --}}
-                              <option selected disabled>Select Category</option>
-                              @foreach($category as $categoryData)
-                              <option value="{{$categoryData->id}}">{{$categoryData->cat_name}}</option>
-                              @endforeach
-                           </select>
-                           <span style="color:red">{{  $errors->first('cat_id') }}</span>
+                                 <option selected disabled>Select Category</option>
+                                 @foreach($category as $categoryData)
+                                 <option value="{{$categoryData->id}}">{{$categoryData->cat_name}}</option>
+                                 @endforeach
+                              </select>
+                              <span style="color:red">{{  $errors->first('cat_id') }}</span>
+                           </div>
                         </div>
                      </div>
-                  </div>
-                  
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Select SubCategory <span style="color:red">*</span></label>
+                     
+                     <div class="form-group">
+                        <label class="col-md-2 col-xs-12 control-label">Select SubCategory <span style="color:red">*</span></label>
+                        <div class="col-md-8 col-xs-12">
+                           <div class="">
+                              <select id="sub_cat_id" name="sub_cat_id" class="form-control">
+                                 <option selected disabled>Select SubCategory</option>
+                                 @foreach($subcategory as $subcategoryData)
+                                 <option value="{{$subcategoryData->id}}">{{$subcategoryData->sub_cat_name}}</option>
+                                 @endforeach
+                              </select>
+                              <span style="color:red">{{  $errors->first('sub_cat_id') }}</span>
+                           </div>
+                        </div>
+                     </div> 
+
+
+
+
+                  {{--  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Select Category <span style="color:red">*</span></label>
                      <div class="col-md-8 col-xs-12">
-                        <div class="">
-                           <select id="sub_cat_id" name="sub_cat_id" class="form-control">
-                              <option selected disabled>Select SubCategory</option>
-                              @foreach($subcategory as $subcategoryData)
-                              <option value="{{$subcategoryData->id}}">{{$subcategoryData->sub_cat_name}}</option>
-                              @endforeach
-                           </select>
-                           <span style="color:red">{{  $errors->first('sub_cat_id') }}</span>
-                        </div>
+                             <div class="">
+                                 <select class="form-control" name="cat_id" required id="getUser">
+                                  <option value="">Select Category Name</option>
+                               @foreach($category as $value)
+                                  <option value="{{ $value->id }}">{{ $value->cat_name }}</option>
+                               @endforeach
+                                </select>
+                             </div>
+                         </div>
                      </div>
-                  </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 col-xs-12 control-label">Board STD Level <span style="color:red"> *</span></label>
+                            <div class="col-md-7 col-xs-12">
+                                <div class="">
+                               <select class="form-control" required name="sub_cat_id" id="getCategory">
+                                  <option value="">Select Board STD Level</option>
+                                </select>
+                                </div>
+                            </div>
+                        </div> --}}
+
+                       
+
+              
+
+
+                 
 
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Select Sale</span></label>
@@ -298,7 +336,31 @@
  
 @endsection
 @section('script')
+
 <script type="text/javascript">
+   $('#getUser').change(function(){
+   // $(document).ready(function() {   
+      // $('getUser').change(function() { 
+      // alert('ssss');
+       var id = $(this).val();
+
+       $.ajax({
+          url: "{{ url('admin/product/get_subcategory_dropdown') }}",
+          type: "POST",
+          data:{
+            "_token": "{{ csrf_token() }}",
+              id:id,
+               alert(id);
+           },
+           dataType:"json",
+           success:function(response){
+             $('#getCategory').html(response.success);
+           },
+       });
+ });
+
+
+
    var item_row = 101;
     $("body").delegate(".add_row","click",function(e) {
        var id = $(this).attr('id');

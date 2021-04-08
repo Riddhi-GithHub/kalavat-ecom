@@ -23,8 +23,8 @@ class UserController extends Controller
 			$getrecord = $getrecord->where('id', '=', $request->id);
 		}
 
-		if (!empty($request->name)) {
-			$getrecord = $getrecord->where('name', 'like', '%' . $request->name . '%');
+		if (!empty($request->fullname)) {
+			$getrecord = $getrecord->where('fullname', 'like', '%' . $request->fullname . '%');
 		}
 
 		if (!empty($request->email)){
@@ -48,11 +48,13 @@ class UserController extends Controller
         $user_insert = request()->validate([
             'email'         => 'required|unique:users',
             'password'      => 'required',
-            'username'      => 'required|unique:users',
+            // 'username'      => 'required|unique:users',
+            'fullname'      => 'required|unique:users',
         ]);
 
         $user_insert = new User;
-        $user_insert->username = strtolower($request->username);
+        // $user_insert->username = strtolower($request->username);
+        $user_insert->fullname = strtolower($request->fullname);
         $user_insert->password = Hash::make($request->password);
         $user_insert->email    = $request->email;
         $user_insert->status   = $request->status;
@@ -73,7 +75,8 @@ class UserController extends Controller
         if(!empty($request->password)){
             $user_update->password = Hash::make($request->password);
         }
-        $user_update->username   = strtolower($request->username);
+        // $user_update->username   = strtolower($request->username);
+        $user_update->fullname   = strtolower($request->fullname);
         $user_update->email      = $request->email;
         $user_update->is_admin   = $request->is_admin;
         $user_update->status     = $request->status;

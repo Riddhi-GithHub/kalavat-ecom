@@ -12,6 +12,20 @@ use Hash;
 
 class UsersController extends BaseController
 {
+    public $token;
+
+    public function __construct(Request $request) {
+        
+        $this->token = !empty($request->header('token'))?$request->header('token'):'';
+    }
+
+    public function updateToken($user_id){
+        $randomStr = str_random(40).$user_id;
+        $save_token = User::find($user_id);
+        $save_token->user_token = $randomStr;
+        $save_token->save();
+    }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -27,10 +41,12 @@ class UsersController extends BaseController
         $otp = rand(1111,9999);
         $user = User::create($input);
         $user['mobile'] =  $user->mobile;
-        $user['otp'] =  9999;
-        $user['token'] =  $user->token;
+        $user['otp']   =  9999;
+        $user['token'] =  !empty($user->token)?$user->token:null;
         // $user['token'] = 'wedfghjklfghjkl456f435f4ds35f4';
         $user->save();
+
+        $this->updateToken($user->id);
 
         return $this->sendResponse($user, 'User register successfully.');
     }
@@ -124,7 +140,9 @@ class UsersController extends BaseController
         }elseif (!empty($user)) {
                 if (!empty($user)) {
                     $user->otp = 9999;
+                    $user->token = $request->token;
                     $user->update();
+                    $this->updateToken($user->id);
                     // return $this->sendResponse($user, 'Login successfully!');
                     return $this->sendResponse($user, 'OTP sent successfully!');
                 } else {
@@ -154,7 +172,7 @@ class UsersController extends BaseController
         // if(!empty($user)){
             if (!empty($user->otp_verify == 2)) {
                 $user->fullname = $input['fullname'];
-                $user->username = $input['fullname'];
+                // $user->username = $input['fullname'];
                 $user->email = $input['email'];
                 $user->mobile = $input['mobile'];
                 $user->password = Hash::make($input['password']);
@@ -219,7 +237,7 @@ class UsersController extends BaseController
         // dd($user); 
             if (!empty($user->otp_verify == 1)) {
                 $user->fullname = $input['fullname'];
-                $user->username = $input['fullname'];
+                // $user->username = $input['fullname'];
                 $user->email = $input['email'];
                 $user->gender = $input['gender'];
                 $user->mobile = $input['mobile'];
@@ -279,7 +297,7 @@ class UsersController extends BaseController
                 if(empty($email)){
                     if (!empty($user->otp_verify != 0)) {
                             $user->fullname = $input['fullname'];
-                            $user->username = $input['fullname'];
+                            // $user->username = $input['fullname'];
                             $user->email = $input['email'];
                             $user->address  = $input['address'];
                             $user->city  = $input['city'];

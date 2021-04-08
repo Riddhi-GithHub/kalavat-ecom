@@ -133,6 +133,8 @@ Route::post('app_home_page_search_list', 'ApiController@app_home_page_search_lis
 
 # App catlog/chat
 Route::post('app_catlog_list', 'ApiController@app_catlog_list');
+//Setting Personal Information
+Route::post('app_setting_update', 'ApiController@app_setting_update');
 
 
 

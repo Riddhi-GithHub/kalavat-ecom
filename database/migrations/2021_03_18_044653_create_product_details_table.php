@@ -13,10 +13,10 @@ class CreateProductDetailsTable extends Migration
      */
     public function up()
     {
-        // Schema::create('product_details', function (Blueprint $table) {
-            // $table->bigIncrements('id');
-            // $table->timestamps();
-        // });
+        Schema::create('product_details', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->timestamps();
+        });
     }
 
     /**

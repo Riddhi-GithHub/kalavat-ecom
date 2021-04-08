@@ -29,19 +29,25 @@
                     <form action="" method="get">
                         <div class="col-md-3">
                             <label>ID</label>
-                            <input type="text" value="{{ Request()->order_id }}" class="form-control" placeholder="ID"
-                                name="order_id">
+                            <input type="text" value="{{ Request()->order_detail_id }}" class="form-control" placeholder="ID"
+                                name="order_detail_id">
+                        </div>
+                        <div class="col-md-3">
+                            <label>User Name</label>
+                            <input type="text" class="form-control" value="{{ Request()->fullname }}" placeholder="User Name"
+                                name="fullname">
                         </div>
                         {{-- <div class="col-md-3">
-                            <label>User Name</label>
-                            <input type="text" class="form-control" value="{{ Request()->username }}" placeholder="User Name"
-                                name="username">
-                        </div> --}}
-                        <div class="col-md-3">
                             <label>Product Name</label>
                             <input type="text" class="form-control" value="{{ Request()->product_name }}"
                                 placeholder="Product Name" name="product_name">
+                        </div> --}}
+                         <div class="col-md-3">
+                            <label>Tracking Number</label>
+                            <input type="text" class="form-control" value="{{ Request()->tracking_num }}"
+                                placeholder="Tracking Number" name="tracking_num">
                         </div>
+
                         <div style="clear: both;"></div>
                         <br>
                         <div class="col-md-12">
@@ -62,7 +68,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>User Name</th>
-                                <th>Product Name</th>
+                                {{-- <th>Product Name</th> --}}
                                 <th>Tracking Number</th>
                                 <th>Quantity</th>
                                 <th>Total Price</th>
@@ -75,15 +81,16 @@
                         <tbody>
                             @forelse($getrecord as $value)
                             <tr>
-                                <td> {{ $value->order_id }}</td>
-                                <td> {{ $value->user->username }}</td>
-                                <td>{{ $value->product->product_name }}</td>
+                                <td> {{ $value->order_detail_id  }}</td>
+                                {{-- <td> {{ $value->user->fullname }}</td> --}}
+                                <td> {{ ($value->user->fullname ?  $value->user->fullname : '' ) }}</td>
+                                {{-- <td>{{ $value->product->product_name }}</td> --}}
                                 <td>{{ $value->tracking_num }}</td>
-                                <td>{{ $value->quantity }}</td>
+                                <td>{{ $value->total_quantity }}</td>
                                 <td>{{ $value->total_price }}</td>
                                 <td>{{ $value->delivery_date }}</td>
                                 <td>
-                                    <select class="form-control change_Status" id="{{ $value->order_id }}">
+                                    <select class="form-control change_Status" id="{{ $value->order_detail_id }}">
                                       <option {{ ($value->status == '0' ? 'selected="selected"' : '' ) }} value="0">Processing</option>
                                       <option {{ ($value->status == '1' ? 'selected="selected"' : '' ) }} value="1">Deleiverd</option>
                                       <option {{ ($value->status == '2' ? 'selected="selected"' : '' ) }} value="2">Cancelled</option>

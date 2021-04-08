@@ -15,6 +15,7 @@ use App\Models\Product;
 use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Catalog;
+
 use Hash;
 use Validator;
 use Auth;
@@ -421,7 +422,8 @@ class ApiController extends Controller
 		echo json_encode($json);
 	}
 
-		public function app_home_page_search_list(Request $request){
+	public function app_home_page_search_list(Request $request)
+	{
 		$result  = array();
 		// $Category_Array = array();
 		$Sub_Categories_Array = array();
@@ -434,6 +436,39 @@ class ApiController extends Controller
 		$get_products       = Product::orderBy('id', 'desc');
 		$get_brands         = Brand::orderBy('id', 'desc');
 		$get_colors         = Color::orderBy('id', 'desc');
+// Riddhi Start
+
+		$is_fav="";
+        $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
+            foreach($get_products as $p){
+            $pid = $p->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $p['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $p['is_fav']=0;
+                    }
+            }
+        $rating_count ="";
+            foreach($get_products as $p){
+                $pid = $p->id;
+                $rates = DB::table('ratings')
+                ->where('product_id', $pid)
+                ->avg('rating_avg');
+                $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+            }
+            // Riddhi End
+
 // Category Start
 		// if(!empty($request->search)){
 		// 	$get_category = $get_category->orwhere('categories.cat_name', 'like', '%' . $request->search . '%');
@@ -459,14 +494,49 @@ class ApiController extends Controller
 		$get_sub_categories = $get_sub_categories->paginate(80);
 
 		foreach ($get_sub_categories as $keys_value) {
-			$data_xy['id']               = !empty($keys_value->id) ? $keys_value->id : '';
-			$data_xy['product_name'] = !empty($keys_value->sub_cat_name) ? $keys_value->sub_cat_name : '';	
+			
+			$pid = $keys_value->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+
+			$pids = $keys_value->id;
+                $rates = DB::table('ratings')
+                ->where('product_id', $pids)
+                ->avg('rating_avg');
+
+			$data_xy['id']          = !empty($keys_value->id) ? $keys_value->id : '';
+			
+			 $data_xy['cat_name']     = !empty($keys_value->category->cat_name) ? $keys_value->category->cat_name : '';	
+			 $data_xy['sub_cat_id'] = !empty($keys_value->product->sub_cat_name) ? $keys_value->product->sub_cat_name : '';	
+			 $data_xy['sale_id']    = !empty($keys_value->brand->brand) ? $keys_value->brand->brand : '';	
+		     $data_xy['updated_at'] = $keys_value->updated_at;
+			 $data_xy['created_at'] = $keys_value->created_at;
+			// $data_xy['is_fav']   = !empty($keys_value->product_s->product_name) ? $keys_value->product_s->product_name : '';
+
+			$is_fav = (double) $getresult;
+			$data_xy['is_fav']           = !empty($is_fav) ? $is_fav : '0';	
+
+			$data_xy['product_name'] = !empty($keys_value->product_s->product_name) ? $keys_value->product_s->product_name : '';	
 			$data_xy['colorrr']      = !empty($keys_value->product_s->colorrr) ? $keys_value->product_s->colorrr : '';	
 			$data_xy['branddd']      = !empty($keys_value->product_s->branddd) ? $keys_value->product_s->branddd : '';	
 			$data_xy['img']          = !empty($keys_value->product_s->img) ? $keys_value->product_s->img : '';	
 			$data_xy['sort_desc']    = !empty($keys_value->product_s->sort_desc) ? $keys_value->product_s->sort_desc : '';	
 			$data_xy['description']  = !empty($keys_value->product_s->description) ? $keys_value->product_s->description : '';	
 			$data_xy['price']        = !empty($keys_value->product_s->price) ? $keys_value->product_s->price : '';	
+			
+			$num = (double) $rates;
+			$data_xy['ratings']           = !empty($num) ? $num : '0';	
+
+			$data_xy['quantity']          = !empty($keys_value->product_s->quantity) ? $keys_value->product_s->quantity : '';	
+			$data_xy['offer']             = !empty($keys_value->product_s->offer) ? $keys_value->product_s->offer : '';	
+			$data_xy['sizess']            = !empty($keys_value->product_s->sizess) ? $keys_value->product_s->sizess : '';	
+			$data_xy['sort_desc']         = !empty($keys_value->product_s->sort_desc) ? $keys_value->product_s->sort_desc : '';	
+			$data_xy['material_and_care'] = !empty($keys_value->product_s->material_and_care) ? $keys_value->product_s->material_and_care : '';	
+			$data_xy['size_and_fit']      = !empty($keys_value->product_s->size_and_fit) ? $keys_value->product_s->size_and_fit : '';	
+			$data_xy['style_note']        = !empty($keys_value->product_s->style_note) ? $keys_value->product_s->style_note : '';
+			$data_xy['item_model_num']    = !empty($keys_value->product_s->item_model_num) ? $keys_value->product_s->item_model_num : '';
+
 
 			// $data_xy['sub_cat_name']     = !empty($keys_value->sub_cat_name) ? $keys_value->sub_cat_name : '';	
 			// $data_xy['cat_image']         = !empty($keys_value->category->image) ? $keys_value->category->image : '';	
@@ -484,7 +554,31 @@ class ApiController extends Controller
 		$get_products = $get_products->paginate(80);
 
 		foreach ($get_products as $keyss_value) {
+
+			$pid = $keyss_value->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+
+
+				$pid = $keyss_value->id;
+                $rates = DB::table('ratings')
+                ->where('product_id', $pid)
+                ->avg('rating_avg');
+
 			$data_xys['id']           = !empty($keyss_value->id) ? $keyss_value->id : '';
+
+			 $data_xys['cat_name']     = !empty($keyss_value->category->cat_name) ? $keyss_value->category->cat_name : '';	
+			 $data_xys['sub_cat_id'] = !empty($keyss_value->product->sub_cat_name) ? $keyss_value->product->sub_cat_name : '';	
+			 $data_xys['sale_id']    = !empty($keyss_value->brand->brand) ? $keyss_value->brand->brand : '';	
+		     $data_xys['updated_at'] = $keyss_value->updated_at;
+			 $data_xys['created_at'] = $keyss_value->created_at;
+
+
+			$is_fav = (double) $getresult;
+			$data_xys['is_fav']           = !empty($is_fav) ? $is_fav : '0';	
+
+
 			$data_xys['product_name'] = !empty($keyss_value->product_name) ? $keyss_value->product_name : '';	
 			$data_xys['colorrr']      = !empty($keyss_value->colorrr) ? $keyss_value->colorrr : '';	
 			$data_xys['branddd']      = !empty($keyss_value->branddd) ? $keyss_value->branddd : '';	
@@ -492,6 +586,19 @@ class ApiController extends Controller
 			$data_xys['sort_desc']    = !empty($keyss_value->sort_desc) ? $keyss_value->sort_desc : '';	
 			$data_xys['description']  = !empty($keyss_value->description) ? $keyss_value->description : '';	
 			$data_xys['price']        = !empty($keyss_value->price) ? $keyss_value->price : '';	
+
+			$num = (double) $rates;
+			$data_xys['ratings']      = !empty($num) ? $num : '0';	
+
+			$data_xys['quantity']          = !empty($keyss_value->quantity) ? $keyss_value->quantity : '';	
+			$data_xys['offer']             = !empty($keyss_value->offer) ? $keyss_value->offer : '';	
+			$data_xys['sizess']            = !empty($keyss_value->sizess) ? $keyss_value->sizess : '';	
+			$data_xys['sort_desc']         = !empty($keyss_value->sort_desc) ? $keyss_value->sort_desc : '';	
+			$data_xys['material_and_care'] = !empty($keyss_value->material_and_care) ? $keyss_value->material_and_care : '';	
+			$data_xys['size_and_fit']      = !empty($keyss_value->size_and_fit) ? $keyss_value->size_and_fit : '';	
+			$data_xys['style_note']        = !empty($keyss_value->style_note) ? $keyss_value->style_note : '';
+			$data_xys['item_model_num']    = !empty($keyss_value->item_model_num) ? $keyss_value->item_model_num : '';
+				
 			// $result[] = $data_xys;
 			$Product_Array[] = $data_xys;
 		}
@@ -506,16 +613,55 @@ class ApiController extends Controller
 		$get_brands = $get_brands->paginate(80);
 
 		foreach ($get_brands as $kyss_value) {
-			$data_xsys['id']        = !empty($kyss_value->id) ? $kyss_value->id : '';
-			$data_xsys['product_name']     = !empty($kyss_value->brand) ? $kyss_value->brand : '';	
-			$data_xsys['colorrr']     = !empty($kyss_value->product->colorrr) ? $kyss_value->product->colorrr : '';
+
+				$pid = $kyss_value->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+
+
+
+			$pid = $kyss_value->id;
+                $rates = DB::table('ratings')
+                ->where('product_id', $pid)
+                ->avg('rating_avg');
+
+
+			$data_xsys['id']           = !empty($kyss_value->id) ? $kyss_value->id : '';
+
+			 $data_xsys['cat_name']     = !empty($kyss_value->category->cat_name) ? $kyss_value->category->cat_name : '';	
+			 $data_xsys['sub_cat_id'] = !empty($kyss_value->product->sub_cat_name) ? $kyss_value->product->sub_cat_name : '';	
+			 $data_xsys['sale_id']    = !empty($kyss_value->brand->brand) ? $kyss_value->brand->brand : '';	
+		     $data_xsys['updated_at'] = $kyss_value->updated_at;
+			 $data_xsys['created_at'] = $kyss_value->created_at;
+
+
+			$is_fav = (double) $getresult;
+			$data_xsys['is_fav']           = !empty($is_fav) ? $is_fav : '0';
+
+
+			$data_xsys['product_name'] = !empty($kyss_value->product->product_name) ? $kyss_value->product->product_name : '';	
+			$data_xsys['colorrr']      = !empty($kyss_value->product->colorrr) ? $kyss_value->product->colorrr : '';
 			$data_xsys['branddd']      = !empty($kyss_value->product->branddd) ? $kyss_value->product->branddd : '';	
 				
-			$data_xsys['img'] = !empty($kyss_value->product->img) ? $kyss_value->product->img : '';	
+			$data_xsys['img']          = !empty($kyss_value->product->img) ? $kyss_value->product->img : '';	
 			
 			$data_xsys['sort_desc']    = !empty($kyss_value->product->sort_desc) ? $kyss_value->product->sort_desc : '';	
 			$data_xsys['description']  = !empty($kyss_value->product->description) ? $kyss_value->product->description : '';
 			$data_xsys['price']        = !empty($kyss_value->product->price) ? $kyss_value->product->price : '';	
+
+				$num = (double) $rates;
+			$data_xsys['ratings']      = !empty($num) ? $num : '0';	
+
+			$data_xsys['quantity']          = !empty($kyss_value->product->quantity) ? $kyss_value->product->quantity : '';	
+			$data_xsys['offer']             = !empty($kyss_value->product->offer) ? $kyss_value->product->offer : '';	
+			$data_xsys['sizess']            = !empty($kyss_value->product->sizess) ? $kyss_value->product->sizess : '';	
+			$data_xsys['sort_desc']         = !empty($kyss_value->product->sort_desc) ? $kyss_value->product->sort_desc : '';	
+			$data_xsys['material_and_care'] = !empty($kyss_value->product->material_and_care) ? $kyss_value->product->material_and_care : '';	
+			$data_xsys['size_and_fit']      = !empty($kyss_value->product->size_and_fit) ? $kyss_value->product->size_and_fit : '';	
+			$data_xsys['style_note']        = !empty($kyss_value->product->style_note) ? $kyss_value->product->style_note : '';
+			$data_xsys['item_model_num']    = !empty($kyss_value->product->item_model_num) ? $kyss_value->product->item_model_num : '';
+
 
 
 			//$data_xsys['brand_category'] = !empty($kyss_value->category->cat_name) ? $kyss_value->category->cat_name : '';
@@ -537,9 +683,34 @@ class ApiController extends Controller
 		$get_colors = $get_colors->paginate(80);
 
 		foreach ($get_colors as $kyss_vaslue) {
+
+			$pid = $kyss_vaslue->id;
+            $getresult  = Favourites::
+                where('user_id', '=' ,$request->user_id)
+                ->where('product_id', '=' ,$pid)->first();
+
+
+			$pid = $kyss_vaslue->id;
+                $rates = DB::table('ratings')
+                ->where('product_id', $pid)
+                ->avg('rating_avg');
+
 			$data_xssys['id']        = !empty($kyss_vaslue->id) ? $kyss_vaslue->id : '';
-			$data_xssys['product_name']     = !empty($kyss_vaslue->brand) ? $kyss_vaslue->brand : '';	
-			$data_xssys['colorrr']     = !empty($kyss_vaslue->color) ? $kyss_vaslue->color : '';
+
+
+			$data_xssys['cat_name']     = !empty($kyss_vaslue->category->cat_name) ? $kyss_vaslue->category->cat_name : '';	
+			 $data_xssys['sub_cat_id'] = !empty($kyss_vaslue->product->sub_cat_name) ? $kyss_vaslue->product->sub_cat_name : '';	
+			 $data_xssys['sale_id']    = !empty($kyss_vaslue->brand->brand) ? $kyss_vaslue->brand->brand : '';	
+		     $data_xssys['updated_at'] = $kyss_vaslue->updated_at;
+			 $data_xssys['created_at'] = $kyss_vaslue->created_at;
+			 
+
+			$is_fav = (double) $getresult;
+			$data_xssys['is_fav']           = !empty($is_fav) ? $is_fav : '0';
+
+
+			$data_xssys['product_name']     = !empty($kyss_vaslue->product->product_name) ? $kyss_vaslue->product->product_name : '';	
+			$data_xssys['colorrr']     = !empty($kyss_vaslue->product->colorrr) ? $kyss_vaslue->product->colorrr : '';
 			$data_xssys['branddd']      = !empty($kyss_vaslue->product->branddd) ? $kyss_vaslue->product->branddd : '';	
 				
 			$data_xssys['img'] = !empty($kyss_vaslue->product->img) ? $kyss_vaslue->product->img : '';	
@@ -547,6 +718,19 @@ class ApiController extends Controller
 			$data_xssys['sort_desc']    = !empty($kyss_vaslue->product->sort_desc) ? $kyss_vaslue->product->sort_desc : '';	
 			$data_xssys['description']  = !empty($kyss_vaslue->product->description) ? $kyss_vaslue->product->description : '';
 			$data_xssys['price']        = !empty($kyss_vaslue->product->price) ? $kyss_vaslue->product->price : '';	
+
+			$num = (double) $rates;
+			$data_xssys['ratings']      = !empty($num) ? $num : '0';	
+
+			$data_xssys['quantity']          = !empty($kyss_vaslue->product->quantity) ? $kyss_vaslue->product->quantity : '';	
+			$data_xssys['offer']             = !empty($kyss_vaslue->product->offer) ? $kyss_vaslue->product->offer : '';	
+			$data_xssys['sizess']            = !empty($kyss_vaslue->product->sizess) ? $kyss_vaslue->product->sizess : '';	
+			$data_xssys['sort_desc']         = !empty($kyss_vaslue->product->sort_desc) ? $kyss_vaslue->product->sort_desc : '';	
+			$data_xssys['material_and_care'] = !empty($kyss_vaslue->product->material_and_care) ? $kyss_vaslue->product->material_and_care : '';	
+			$data_xssys['size_and_fit']      = !empty($kyss_vaslue->product->size_and_fit) ? $kyss_vaslue->product->size_and_fit : '';	
+			$data_xssys['style_note']        = !empty($kyss_vaslue->product->style_note) ? $kyss_vaslue->product->style_note : '';
+			$data_xssys['item_model_num']    = !empty($kyss_vaslue->product->item_model_num) ? $kyss_vaslue->product->item_model_num : '';
+
 
 			// $data_xssys['color']     = !empty($kyss_vaslue->color) ? $kyss_vaslue->color : '';	
 			// $data_xssys['color_img'] = !empty($kyss_vaslue->product->img) ? $kyss_vaslue->product->img : '';	
@@ -566,6 +750,42 @@ class ApiController extends Controller
 
 	}
 
+	public function app_setting_update(Request $request){
+		if(!empty($request->fullname) && !empty($request->user_id)){
+			$update_record = User::find($request->user_id);
+		if(!empty($update_record)){
+			$update_record->fullname             = trim($request->fullname);
+			$update_record->dob                  = trim($request->dob);
+			$update_record->sales_status         = trim($request->sales_status);
+			$update_record->new_arrivals_status  = trim($request->new_arrivals_status);
+			$update_record->delivery_status		 = trim($request->delivery_status);
+			$update_record->save();
+			$json['status'] = 1;
+			$json['message'] = 'Setting update successfully.';
+			$json['user_data']  = $this->getSettingUpdate($update_record->id);
+		}else{
+			$json['status'] = 0;
+			$json['message'] = 'Invalid User.';
+		}
+		}else{
+			$json['status'] = 0;
+			$json['message'] = 'Parameter missing!';
 
+		}
+		echo json_encode($json);
+	
+	}
+
+	public function getSettingUpdate($id){
+		$user = User::find($id);
+		$json['user_id'] 			= $user->id;
+		$json['fullname'] 				= !empty($user->fullname) ? $user->fullname : '';
+		$json['dob'] 				    = !empty($user->dob) ? $user->dob : '';
+		$json['sales_status'] 			= $user->sales_status;
+		$json['new_arrivals_status'] 	= $user->new_arrivals_status;
+		$json['delivery_status'] 		= $user->delivery_status;
+		return $json;
+
+	}
 		
 }

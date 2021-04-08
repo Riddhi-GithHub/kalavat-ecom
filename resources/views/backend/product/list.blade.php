@@ -21,11 +21,12 @@
             {{-- start --}}
             @include('message')
 
-            <a href="{{ route('product.create') }}" class="btn btn-primary" title="Add New Product"><i
-                    class="fa fa-plus"></i>&nbsp;&nbsp;<span class="bold">Add New Product</span></a>
+            <a href="{{ route('product.create') }}" class="btn btn-primary" title="Add New Product"><i class="fa fa-plus"></i>&nbsp;&nbsp;<span class="bold">Add New Product</span></a>
 
-                    <a href="{{ route('product.import_excel') }}" class="btn btn-primary" title="Add New Product"><i
-                        class="fa fa-plus"></i>&nbsp;&nbsp;<span class="bold">Add import Product</span></a>
+                    <a href="{{ route('product.import_excel') }}" class="btn btn-primary" title="Add New Import Excel"><i class="fa fa-upload"></i>&nbsp;&nbsp;<span class="bold">Add New Import Excel </span></a> 
+
+                    
+
 
             <div class="panel panel-default">
                 <div class="panel-heading">

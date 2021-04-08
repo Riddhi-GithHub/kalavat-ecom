@@ -21,7 +21,6 @@
 
                   {{-- start --}}
 
-
          <form class="form-horizontal" method="post" action="{{ url('admin/user/add') }}" enctype="multipart/form-data">
           {{ csrf_field() }}
             <div class="panel panel-default">
@@ -34,8 +33,8 @@
                      <label class="col-md-2 col-xs-12 control-label">Username <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
-                           <input name="username" value="{{ old('username') }}" placeholder="Username" type="text" required class="form-control" />
-                           <span style="color:red">{{  $errors->first('username') }}</span>
+                           <input name="fullname" value="{{ old('fullname') }}" placeholder="Username" type="text" required class="form-control" />
+                           <span style="color:red">{{  $errors->first('fullname') }}</span>
                         </div>
                      </div>
                   </div>
@@ -84,8 +83,6 @@
                      </div>
                   </div>
 
-
-                  
                 </div>
                <div class="panel-footer">
                   <button class="btn btn-primary pull-right">Submit</button>

@@ -42,8 +42,8 @@
                         </div>
                         <div class="col-md-3">
                             <label>Username</label>
-                            <input type="text" class="form-control" value="{{ Request()->name }}" placeholder="Username"
-                                name="name">
+                            <input type="text" class="form-control" value="{{ Request()->fullname }}" placeholder="Username"
+                                name="fullname">
                         </div>
                         <div class="col-md-3">
                             <label>Email</label>
@@ -84,7 +84,7 @@
                             @forelse($getrecord as $value)
                             <tr>
                                 <td> {{ $value->id }}</td>
-                                <td>{{ $value->username }}</td>
+                                <td>{{ $value->fullname }}</td>
                                 <td>{{ $value->email }}</td>
                                 <td>{{ $value->mobile }}</td>
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>

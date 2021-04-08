@@ -67,7 +67,7 @@
                      Username :
                      </label>
                      <div class="col-sm-5" style="margin-top: 8px;">
-                      {{ $getuser->username }}
+                      {{ $getuser->fullname }}
                      </div>
                      </div>
 

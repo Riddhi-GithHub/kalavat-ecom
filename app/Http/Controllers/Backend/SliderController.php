@@ -35,7 +35,6 @@ class SliderController extends Controller
         $category = Category::get();
         $subcategory = Sub_Category::get();
         $product = Product::get();
-        // $brand = explode(',', ['naf','adidas1','adidas','diesel','champian']); 
         $data['category'] = $category;
         $data['subcategory'] = $subcategory;
         $data['product'] = $product;
@@ -71,16 +70,7 @@ class SliderController extends Controller
         return redirect('admin/slider')->with('success', 'Record created Successfully!');
     }
 
-    public function slider_edit($id)
-    {
-        $category = Category::get();
-        $subcategory = Sub_Category::get();
-        $product = Product::get();
-        // $brand = explode(',', ['naf','adidas1','adidas','diesel','champian']); 
-        $data['category'] = $category;
-        $data['subcategory'] = $subcategory;
-        $data['product'] = $product;
-
+    public function slider_edit($id){
         $data['getslider'] = Slider::find($id);
         $data['meta_title'] = "Edit Slider";
         return view('backend.slider.edit', $data);
@@ -95,8 +85,6 @@ class SliderController extends Controller
             $slider_update->fill($validated);  
             $slider_update->offer = $request->offer;
             $slider_update->discount = $request->discount;
-            $slider_update->type = $request->type;
-            $slider_update->type_id = $request->type_id;
 
         if ($request->hasFile('slider_image')) {
             //    dd(!empty($slider_update->slider_image));

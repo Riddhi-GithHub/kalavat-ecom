@@ -34,8 +34,8 @@
                         </div>
                         {{-- <div class="col-md-3">
                             <label>User Name</label>
-                            <input type="text" class="form-control" value="{{ Request()->username }}" placeholder="User Name"
-                                name="username">
+                            <input type="text" class="form-control" value="{{ Request()->fullname }}" placeholder="User Name"
+                                name="fullname">
                         </div> --}}
                         <div class="col-md-3">
                             <label>Product Name</label>
@@ -73,7 +73,7 @@
                             @forelse($getrecord as $value)
                             <tr>
                                 <td> {{ $value->cart_id }}</td>
-                                <td> {{ $value->user->username }}</td>
+                                <td> {{ $value->user->fullname }}</td>
                                 <td>{{ $value->product->product_name }}</td>
                                 <td>{{ $value->quantity }}</td>
                                 <td>{{ $value->total_price }}</td>

@@ -21,6 +21,7 @@
 
                   {{-- start --}}
 
+
          <form class="form-horizontal" method="post" action="{{ url('admin/slider/add') }}" enctype="multipart/form-data">
           {{ csrf_field() }}
             <div class="panel panel-default">
@@ -111,7 +112,7 @@
                            </select>
                         </div> --}}
                      </div>
-                  </div>
+                </div>
                <div class="panel-footer">
                   <button class="btn btn-primary pull-right">Submit</button>
                </div>

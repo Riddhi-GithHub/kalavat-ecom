@@ -29,4 +29,8 @@ class Sub_Category extends Model
    public function brand(){
          return $this->hasMany(Brand::class,'brand_subcat_id');
    }
+
+   public function product_s(){
+       return $this->belongsTo(Category::class,'cat_id');
+   }
 }

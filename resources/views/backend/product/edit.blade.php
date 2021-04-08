@@ -224,33 +224,23 @@
                      <label class="col-md-2 col-xs-12 control-label">Color </span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
-                           {{-- @foreach($getcolor->color as $colordata) --}}
-                           {{-- {{ dd($colordata->color == 'Black'? "1":"0") }} --}}
-                           {{-- <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Red'?'checked':'') }} type="checkbox" value="Red" name="color[]">Red
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Blue'?'checked':'') }} type="checkbox" value="Blue" name="color[]">Blue
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Black'?'checked':'') }} type="checkbox" value="Black" name="color[]">Black
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'White'?'checked':'') }} type="checkbox" value="White" name="color[]">White
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Pink'?'checked':'') }} type="checkbox" value="Pink" name="color[]">Pink
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Yellow'?'checked':'') }} type="checkbox" value="Yellow" name="color[]">Yellow
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Orange'?'checked':'') }} type="checkbox" value="Orange" name="color[]">Orange
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Green'?'checked':'') }} type="checkbox" value="Green" name="color[]">Green --}}
-                           {{-- @endforeach --}}
-
-                           @foreach($getproduct->color as $colordata)
-                           {{-- {{ dd(!empty($colordata->count() > 8)) }} --}}
-                           @if(!empty($colordata->count() > 8))
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Red'?'checked':'') }} type="checkbox" value="Red" name="color[]">Red
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Blue'?'checked':'') }} type="checkbox" value="Blue" name="color[]">Blue
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Black'?'checked':'') }} type="checkbox" value="Black" name="color[]">Black
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'White'?'checked':'') }} type="checkbox" value="White" name="color[]">White
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Pink'?'checked':'') }} type="checkbox" value="Pink" name="color[]">Pink
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Yellow'?'checked':'') }} type="checkbox" value="Yellow" name="color[]">Yellow
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Orange'?'checked':'') }} type="checkbox" value="Orange" name="color[]">Orange
-                           <input class="form-check-input" style="margin: 5px 6px 0px" {{ ($colordata->color == 'Green'?'checked':'') }} type="checkbox" value="Green" name="color[]">Green
-                           @endif
-                           @break
+                           {{-- {{ dd($getcolor[]['color']) }} --}}
+                           {{-- <input class="form-check-input" style="margin: 5px 6px 0px" type="checkbox" value="Red" name="color[]">Red
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Blue" name="color[]">Blue
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Black" name="color[]">Black
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="White" name="color[]">White
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Pink" name="color[]">Pink
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Yellow" name="color[]">Yellow
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Orange" name="color[]">Orange
+                           <input class="form-check-input" style="margin: 5px 6px 0px"  type="checkbox" value="Green" name="color[]">Green --}}
+                           @foreach($getcolor as $colordata)
+                           {{-- {{ dd($colordata) }} --}}
+                              {{-- @if($colodata->id) --}}
+                              {{-- <input class="form-check-input" checked="checked" style="margin: 5px 6px 0px"
+                                type="checkbox" value="{{ $colordata->Red }}">Red --}}
+                              <input class="form-check-input" style="margin: 5px 6px 0px" checked="checked" type="checkbox" value="{{ $colordata->color }}" name="color[]">{{ $colordata->color}}
+                              {{-- @endif --}}
                            @endforeach
-                           
                            <span style="color:red">{{  $errors->first('color') }}</span>
                         </div>
                      </div>

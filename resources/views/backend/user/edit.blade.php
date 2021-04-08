@@ -33,8 +33,8 @@
                      <label class="col-md-2 col-xs-12 control-label">Username <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
-                           <input name="username" readonly value="{{ $getuser->username }}" placeholder="Username" type="text" required class="form-control" />
-                           <span style="color:red">{{  $errors->first('username') }}</span>
+                           <input name="fullname" readonly value="{{ $getuser->fullname }}" placeholder="Username" type="text" required class="form-control" />
+                           <span style="color:red">{{  $errors->first('fullname') }}</span>
                         </div>
                      </div>
                   </div>

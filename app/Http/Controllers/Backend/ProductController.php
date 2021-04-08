@@ -67,6 +67,8 @@ class ProductController extends Controller
     {
         $category = Category::get();
         $subcategory = Sub_Category::get();
+        // $cat_id = $request->cat_id;
+        // $subcategory = Sub_Category::where('cat_id','=',$cat_id);
         $sale = Sale::get();
         $data['category'] = $category;
         $data['subcategory'] = $subcategory;
@@ -75,6 +77,17 @@ class ProductController extends Controller
     	return view('backend.product.add', $data);
     }
     
+    public function get_subcategory_dropdown(Request $request)
+    {
+        dd('ddd');
+        $getCategory = Sub_Category::where('cat_id', '=', $request->id)->get();
+        $html .= '<option value="">Select SubCategory</option>';
+        foreach ($getCategory as $key => $value) {
+            $html .= '<option value="'.$value->id.'">'.$value->sub_cat_name.'</option>';
+        }
+        $json['success'] = $html;
+        echo json_encode($json);
+    }
     
     /**
      * Store a newly created resource in storage.
