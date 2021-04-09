@@ -22,7 +22,8 @@
           </div>
           <div class="widget-data">
             <div class="widget-int num-count">{{ $user }}</div>
-            <div class="widget-title">Total Users</div>
+            <a class="widget-title"  href="{{ url('admin/user') }}">Total Users</a>
+            {{-- <a href="">mm</a> --}}
           </div>
           <div class="widget-controls">
           </div>
@@ -38,7 +39,11 @@
           </div>
           <div class="widget-data">
             <div class="widget-int num-count">{{ $category }}</div>
-            <div class="widget-title">Total Category</div>
+            <a class="widget-title" href="{{ url('admin/category') }}">Total Category</a>
+
+            {{-- <a class="nav-link text-success " href="{{ route('admin.userlist') }}" aria-expanded="false"
+                        data-target="#submenu-10" aria-controls="submenu-10"><i
+                            class="fa fa-fw fa-arrow-up  icon-circle-small bg-success-light"></i>More</a> --}}
             {{-- <div class="widget-subtitle">In your mailbox</div> --}}
           </div>
           <div class="widget-controls">
@@ -57,7 +62,7 @@
           </div>
           <div class="widget-data">
             <div class="widget-int num-count">{{ $subcategory }}</div>
-            <div class="widget-title">Total Subcategory</div>
+            <a class="widget-title" href="{{ url('admin/subcategory') }}">Total Subcategory</a>
           </div>
           <div class="widget-controls">
           </div>
@@ -73,7 +78,7 @@
           </div>
           <div class="widget-data">
             <div class="widget-int num-count">{{ $product }}</div>
-            <div class="widget-title">Total Product</div>
+            <a class="widget-title" href="{{ url('admin/product') }}">Total Product</a>
           </div>
           <div class="widget-controls">
           </div>
@@ -89,7 +94,7 @@
           </div>
           <div class="widget-data">
             <div class="widget-int num-count">{{ $todayorder }}</div>
-            <div class="widget-title">Total Todays Order</div>
+            <a class="widget-title" href="{{ url('admin/order') }}">Total Todays Order</a>
           </div>
           <div class="widget-controls">
           </div>
@@ -105,7 +110,7 @@
           </div>
           <div class="widget-data">
             <div class="widget-int num-count">{{ $totalorder }}</div>
-            <div class="widget-title">Total Order</div>
+            <a class="widget-title" href="{{ url('admin/order') }}">Total Order</a>
           </div>
           <div class="widget-controls">
           </div>

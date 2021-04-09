@@ -114,7 +114,7 @@ class SliderController extends Controller
         {
             unlink(public_path('images/slider/'.$getrecord->slider_image));
         }
-        // $getrecord->delete();
+        $getrecord->delete();   
         return redirect('admin/slider')->with('error', 'Record deleted Successfully!');
     }
 

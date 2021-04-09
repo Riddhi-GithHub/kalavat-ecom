@@ -24,9 +24,6 @@
                </div>
                <div class="panel-body">
 
-
-
-
                    <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Select Category <span style="color:red">*</span></label>
                      <div class="col-md-8 col-xs-12">
@@ -85,13 +82,6 @@
                                 </div>
                             </div>
                         </div> --}}
-
-                       
-
-              
-
-
-                 
 
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Select Sale</span></label>
@@ -180,16 +170,6 @@
                         </div>
                      </div>
                   </div>
-
-                  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Manufacturing City<span style="color:red"> *</span></label>
-                     <div class="col-md-8 col-xs-12">
-                        <div class="">
-                           <input name="city" value="{{ old('city') }}" placeholder="Manufacturing City" type="text" class="form-control" />
-                           <span style="color:red">{{  $errors->first('city') }}</span>
-                        </div>
-                     </div>
-                  </div>
                   
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Manufacturing Contry<span style="color:red"> *</span></label>
@@ -207,6 +187,16 @@
                         <div class="">
                            <input name="state" value="{{ old('state') }}" placeholder="Manufacturing State" type="text" class="form-control" />
                            <span style="color:red">{{  $errors->first('state') }}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">Manufacturing City<span style="color:red"> *</span></label>
+                     <div class="col-md-8 col-xs-12">
+                        <div class="">
+                           <input name="city" value="{{ old('city') }}" placeholder="Manufacturing City" type="text" class="form-control" />
+                           <span style="color:red">{{  $errors->first('city') }}</span>
                         </div>
                      </div>
                   </div>
@@ -338,26 +328,26 @@
 @section('script')
 
 <script type="text/javascript">
-   $('#getUser').change(function(){
-   // $(document).ready(function() {   
-      // $('getUser').change(function() { 
-      // alert('ssss');
-       var id = $(this).val();
+//    $('#getUser').change(function(){
+//    // $(document).ready(function() {   
+//       // $('getUser').change(function() { 
+//       // alert('ssss');
+//        var id = $(this).val();
 
-       $.ajax({
-          url: "{{ url('admin/product/get_subcategory_dropdown') }}",
-          type: "POST",
-          data:{
-            "_token": "{{ csrf_token() }}",
-              id:id,
-               alert(id);
-           },
-           dataType:"json",
-           success:function(response){
-             $('#getCategory').html(response.success);
-           },
-       });
- });
+//        $.ajax({
+//           url: "{{ url('admin/product/get_subcategory_dropdown') }}",
+//           type: "POST",
+//           data:{
+//             "_token": "{{ csrf_token() }}",
+//               id:id,
+//                alert(id);
+//            },
+//            dataType:"json",
+//            success:function(response){
+//              $('#getCategory').html(response.success);
+//            },
+//        });
+//  });
 
 
 
@@ -366,8 +356,8 @@
        var id = $(this).attr('id');
        e.preventDefault();
        // var html = '';
-       html    ='<tr><td><input  class="form-control" required name="option['+item_row+'][title]" type="text"></td>\n\
-       <td><input  class="form-control" name="option['+item_row+'][title_description]" type="text"></td>\n\
+       html    ='<tr><td><input  class="form-control" required name="option['+item_row+'][title]" placeholder="Title" type="text"></td>\n\
+       <td><input  class="form-control" name="option['+item_row+'][title_description]"placeholder="Description" type="text"></td>\n\
                <td><a href="#" class="item_remove btn btn-danger">Remove</a></td>\n\
                </tr>';
        $("#item_below_row"+id).before(html);

@@ -73,6 +73,8 @@
 
     <!-- START SCRIPTS -->
         <!-- START PLUGINS -->
+
+        @yield('scripts-all')
         <script type="text/javascript" src="{{ url('public/files/js/plugins/jquery/jquery.min.js') }}"></script>
         <script type="text/javascript" src="{{ url('public/files/js/plugins/jquery/jquery-ui.min.js') }}"></script>
         <script type="text/javascript" src="{{ url('public/files/js/plugins/bootstrap/bootstrap.min.js') }}"></script>        
@@ -90,6 +92,8 @@
         <script type="text/javascript" src="{{ url('public/files/js/plugins.js') }}"></script>        
         <script type="text/javascript" src="{{ url('public/files/js/actions.js') }}"></script>        
         <!-- END TEMPLATE -->
+     @stack('extra-js')
+
         @yield('script')
         <script type="text/javascript">
             

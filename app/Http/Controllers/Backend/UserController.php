@@ -46,7 +46,7 @@ class UserController extends Controller
     public function user_insert(Request $request)
     {
         $user_insert = request()->validate([
-            'email'         => 'required|unique:users',
+            'email'         => 'required|email|unique:users',
             'password'      => 'required',
             // 'username'      => 'required|unique:users',
             'fullname'      => 'required|unique:users',

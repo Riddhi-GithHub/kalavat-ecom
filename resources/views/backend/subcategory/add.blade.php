@@ -37,6 +37,7 @@
                               <option value="{{$categoryData->id}}">{{$categoryData->cat_name}}</option>
                               @endforeach
                            </select>
+                           <span style="color:red">{{  $errors->first('cat_id') }}</span>
                         </div>
                      </div>
                   </div>

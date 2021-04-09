@@ -279,6 +279,28 @@ class ProductController extends Controller
         $data['getcategory'] = Category::get();
         $data['getsubcategory'] = Sub_Category::get();
         $data['getsale'] = Sale::get();
+
+        $mycolor = 'Red,Blue,Black,White,Pink,Yellow,Orange,Green';
+        $data['getallcolor'] = explode(',', $mycolor);
+
+        $mysize = 'S,M,L,XL,XXL,XXXL';
+        $data['getallsize'] = explode(',', $mysize);
+
+        $mybrand = 'adidas,adidas1,diesel,naf naf,champian';
+        $data['getallbrand'] = explode(',', $mybrand);
+      
+        // $data['getallcolor'] = collect([
+        //     [ 'id' => 1, 'color' => 'red' ],
+        //     [ 'id' => 2, 'color' => 'blue' ],
+        //     [ 'id' => 3, 'color' => 'Black' ],
+        //     [ 'id' => 4, 'color' => 'White' ],
+        //     [ 'id' => 5, 'color' => 'Pink' ],
+        //     [ 'id' => 6, 'color' => 'Yellow' ],
+        //     [ 'id' => 7, 'color' => 'Orange' ],
+        //     [ 'id' => 8, 'color' => 'Green' ],
+        //   ]);
+        // dd($collection);
+
         $data['getcolor'] = Color::where('color_product_id',$id)->get();
         $data['getsize'] = Size::where('size_product_id',$id)->get();
         $data['getbrand'] = Brand::where('brand_product_id',$id)->get();

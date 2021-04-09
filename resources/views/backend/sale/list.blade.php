@@ -79,7 +79,7 @@
                                 <td> {{ $value->id }}</td>
                                 <td>{{ $value->sale_title }}</td>
                                 <td>{{ $value->sale_description }}</td>
-                                <td>{{ date('Y-m-d', strtotime($value->sale_end_date) ) }}</td>
+                                <td>{{ date('d-m-Y', strtotime($value->sale_end_date) ) }}</td>
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
                                 <td>
                                     <form method="get" action="{{ route('sale.delete', $value->id) }}">

@@ -3,9 +3,12 @@
     <style type="text/css">
       
     </style>
-  @endsection 
+  @endsection
+ 
+  
+  
 @section('content')
-
+  
         <ul class="breadcrumb">
             <li><a href="">Sale</a></li>
             <li><a href="">Add Sale</a></li>
@@ -52,28 +55,44 @@
                      <label class="col-md-2 col-xs-12 control-label">Sale End Date <span style="color:red"> *</span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
-                           <input name="sale_end_date" value="{{ old('sale_end_date') }}" placeholder="Sale End Date" type="text" required class="form-control" />
+                           <input name="sale_end_date" id="end-date" placeholder="Sale End Date" type="text" required class="form-control" />
                            <span style="color:red">{{  $errors->first('sale_end_date') }}</span>
                         </div>
                      </div>
                   </div>
-                  
+
+                  {{-- <input  class="form-control" type="text" placeholder="click to show datepicker"  id="example1"> --}}
+       
                 </div>
                <div class="panel-footer">
                   <button class="btn btn-primary pull-right">Submit</button>
                </div>
             </div>
          </form>
-
                   {{-- End --}}
                     
                 </div>
             </div>
         </div>
+  
+  
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script> </head>
  
-@endsection
-  @section('script')
+@section('scripts-all')
   <script type="text/javascript">
-   
+     $(document).ready(function () {
+              $('#end-date').datepicker({
+               //   format: "dd/mm/yyyy"
+                 format: "yyyy-mm-dd"
+              });  
+        });
+     $('#end-date').datepicker({
+     autoclose: true,  
+     format: "yyyy-mm-dd"
+  }); 
   </script>
+@endsection
+
 @endsection
