@@ -351,6 +351,70 @@
                   </div>
                   <span id="getNewMainOption"></span> --}}
 
+                  @if(!empty($getproduct))
+       
+                  <div class="form-group">
+                     <label class="col-md-2 col-xs-12 control-label">More Description</label>
+                     <div class="col-md-8 col-xs-12">
+                        <table class="table">
+                           <tr>
+                              <th>Title</th>
+                              <th>Description</th>
+                              <th>Action</th>
+                           </tr>
+                             @php
+                    $i = 0;
+                    @endphp
+                   @forelse($getproduct->productdetails as $option)
+                   {{-- {{ dd($option) }} --}}
+                            <tr>
+                                 <input type="hidden" value="{{ $option->id }}" name="option[{{ $i }}][id]" class="form-control">
+                               <td><input  class="form-control"  value="{{ $option->title }}" name="option[{{ $i }}][title]" type="text"></td>
+                               <td><input  class="form-control"  value="{{ $option->title_description }}" name="option[{{ $i }}][title_description]" type="text">
+                                  {{-- @if(!empty($option->board_std_level_image))
+                             {{--    <img src="{{ url('upload/book/'.$option->board_std_level_image) }}" style="height:100px;"> --}}
+                               {{-- <img src="{{ url($option->board_std_level_image) }}" style="height:100px;">  --}}
+                                  {{-- @endif --}}
+                               </td>
+                               <td>
+                                <a onclick="return confirm('Are you sure you want to delete this detail item?');" href="{{url('admin/product/product_detail_destroy/'.$option->id) }}" class="btn btn-danger">Remove</a>
+                              </td>
+                            </tr>
+                           @php
+                         $i++;
+                         @endphp
+                         @empty
+                         @endforelse
+                         </table>
+                      </div>
+                   </div>
+                   @endif
+          ​
+          <div class="form-group">
+            <label class="col-md-2 col-xs-12 control-label">More Description</label>
+            <div class="col-md-8 col-xs-12">
+               <table class="table">
+                  <tr>
+                     <th>Title</th>
+                     <th>Description</th>
+                     <th>Action</th>
+                  </tr>
+                  <tr>
+                     {{-- <td><input  class="form-control"  placeholder="Title" name="option[100][main_option][1][title]" type="text"></td> 
+                     <td><input  class="form-control" placeholder="Description" name="option[100][main_option][1][title_description]" type="text"></td> --}}
+                     <td><input  class="form-control"  placeholder="Title" name="option[100][title]" type="text"></td>
+                     <td><input  class="form-control number" placeholder="Description" name="option[100][title_description]" type="text"></td>
+                     <td><a href="#" class="item_remove btn btn-danger">Remove</a></td>
+                  </tr>
+                  <tr id="item_below_row100">
+                     <td colspan="100%">
+                        <button type="button" id="100" class="btn btn-primary add_row">Add</button>
+                     </td>
+                  </tr>
+               </table>
+            </div>
+         </div>
+
 
                </div>
                <div class="panel-footer">
@@ -366,7 +430,7 @@
 
 @endsection
 @section('script')
-<script type="text/javascript">
+{{-- <script type="text/javascript">
    var item_row = 101;
    $("body").delegate(".add_row", "click", function (e) {
       var id = $(this).attr('id');
@@ -382,7 +446,26 @@
       e.preventDefault();
       $(this).parent().parent().remove();
    });
-</script>
+</script> --}}
 
+
+<script type="text/javascript">
+   var item_row = 101;
+    $("body").delegate(".add_row","click",function(e) {
+       var id = $(this).attr('id');
+       e.preventDefault();
+       // var html = '';
+       html    ='<tr><td><input  class="form-control" required name="option['+item_row+'][title]" placeholder="Title" type="text"></td>\n\
+       <td><input  class="form-control" name="option['+item_row+'][title_description]"placeholder="Description" type="text"></td>\n\
+               <td><a href="#" class="item_remove btn btn-danger">Remove</a></td>\n\
+               </tr>';
+       $("#item_below_row"+id).before(html);
+       item_row++;
+    });
+    $('body').delegate(".item_remove", "click", function(e){
+     e.preventDefault();
+     $(this).parent().parent().remove();
+    });
+   </script>
 
 @endsection

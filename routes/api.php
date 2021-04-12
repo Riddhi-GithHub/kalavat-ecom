@@ -128,13 +128,21 @@ Route::post('app_rating_helpful', 'API\Ratingscontroller@app_rating_helpful');
 # count cart and favourite
 Route::post('count_list', 'ApiController@count_list');
 
-# search 
-Route::post('app_home_page_search_list', 'ApiController@app_home_page_search_list');
-
 # App catlog/chat
 Route::post('app_catlog_list', 'ApiController@app_catlog_list');
-//Setting Personal Information
+
+# setting list riddhi
+Route::post('app_setting_list', 'API\UsersController@app_setting_list');
+
+# search vipul
+Route::post('app_home_page_search_list', 'ApiController@app_home_page_search_list');
+
 Route::post('app_setting_update', 'ApiController@app_setting_update');
+Route::post('app_my_bank_details_update', 'ApiController@app_my_bank_details_update');
+Route::post('app_my_bank_details_list', 'ApiController@app_my_bank_details_list');
+
+
+
 
 
 

@@ -100,7 +100,8 @@ class OrdersController extends Controller
 
     public function order_list(Request $request)
 	{
-        $getresult  = OrderDetails::where('status',1)->where('user_id', '=' ,$request->user_id)->get();
+        $getresult  = OrderDetails::where('user_id', '=' ,$request->user_id)->get();
+        // $getresult  = OrderDetails::where('status',1)->where('user_id', '=' ,$request->user_id)->get();
         // dd($getresult);
 
         // $is_fav="";
@@ -134,28 +135,31 @@ class OrdersController extends Controller
 
     public function order_details(Request $request)
 	{
-        if($request->user_id && $request->order_num){
+    if($request->user_id && $request->order_num){
+            
+        $user = User::find($request->user_id);
+        // dd($user);    
+        if($user){       
             $getresult  = OrderDetails::with('user')
                 ->where('order_num', '=' ,$request->order_num)->first();
 
-            if(!empty($getresult)){
-                $order_id = $getresult->order_id;
-                $order = Order::find($order_id);
-                $cart_id = $order->cart_id;
-                $array_cart_id = explode(',', $cart_id);
-                $cart = Cart::whereIn('cart_id',$array_cart_id)->get();
-                foreach($cart as $c){
-                    $array_product_id[] = $c->product_id; 
-                }
-
-                // dd($array_product_id);
-                // $p_id = [3,6];
-                $product = Product::with('images','size','color')->whereIn('id',$array_product_id)->get();
-            
-                $getresult['product_list'] = $product;
-                $json['status'] = 1;
-                $json['message'] = 'Order Details Loaded Successfully.';
-                $json['order_list'] = $getresult;
+                if(!empty($getresult)){
+                    $order_id = $getresult->order_id;
+                    $order = Order::find($order_id);
+                    $cart_id = $order->cart_id;
+                    $array_cart_id = explode(',', $cart_id);
+                    $cart = Cart::whereIn('cart_id',$array_cart_id)->get();
+                    foreach($cart as $c){
+                        $array_product_id[] = $c->product_id; 
+                    }
+                    // dd($array_product_id);
+                    // $p_id = [3,6];
+                    $product = Product::with('images','size','color')->whereIn('id',$array_product_id)->get();
+                
+                    $getresult['product_list'] = $product;
+                    $json['status'] = 1;
+                    $json['message'] = 'Order Details Loaded Successfully.';
+                    $json['order_list'] = $getresult;
             }
             else{
                 $json['status'] = 0;
@@ -164,9 +168,14 @@ class OrdersController extends Controller
         }
         else{
             $json['status'] = 0;
-            $json['message'] = 'Fill Required Data.';
+            $json['message'] = 'User not Found..';
         }
-        echo json_encode($json);
+    }
+    else{
+        $json['status'] = 0;
+        $json['message'] = 'Fill Required Data.';
+    }
+    echo json_encode($json);
 	}
 
 

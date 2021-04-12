@@ -427,4 +427,25 @@ class UsersController extends BaseController
         }
     }
 
+
+    # Notification setting change
+    public function app_setting_list(Request $request)
+    {
+		if(!empty($request->user_id)){
+			$update_record = User::find($request->user_id);
+			if(!empty($update_record)){
+                    $json['status'] = 1;
+                    $json['message'] = 'Setting data get successfully!';
+                    $json['user_data']  = $update_record;
+			}else{
+				$json['status'] = 0;
+				$json['message'] = 'User not found.';
+			}
+		}else{
+			$json['status'] = 0;
+			$json['message'] = 'Parameter missing!';
+		}
+		echo json_encode($json);
+	
+	}
 }

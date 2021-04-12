@@ -1,9 +1,13 @@
   <div class="page-sidebar">
 
         <ul class="x-navigation">
-            <li class="" style="background: #EC0E71; text-align: center;">
+            {{-- <li class="" style="background: #EC0E71; text-align: center;">
                 <a style="font-size: 22px;" href="{{ url('admin/dashboard') }}"><b>Kalavat</b></a>
                 <a href="#" class="x-navigation-control"></a>
+            </li> --}}
+
+            <li class="" style="background: #EC0E71; text-align: center;">
+                <a href="{{ url('admin/dashboard') }}" style="font-size: 22px;"><span class="xn-text">Kalavat</span></a>
             </li>
 
             <li class="@if ( Request::segment(2)== 'dashboard') active @endif">

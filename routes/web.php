@@ -39,12 +39,12 @@ Route::group(['middleware' => 'admin'], function(){
 
 	Route::resource('admin/category','Backend\CategoryController');
 	Route::get('admin/category/delete/{id}', 'Backend\CategoryController@category_delete')->name('category.delete');
-
 	
 	Route::get('admin/product/importexcel', 'Backend\ProductController@import_excel_list')->name('product.import_excel');
 	Route::post('admin/product/importexcel', 'Backend\ProductController@import_store')->name('product.import_store');
 
-	Route::post('admin/product/get_subcategory_dropdown', 'Backend\BookController@get_subcategory_dropdown');
+	Route::post('admin/product/get_subcategory_dropdown', 'Backend\ProductController@get_subcategory_dropdown');
+	Route::get('admin/product/product_detail_destroy/{id}', 'Backend\ProductController@product_detail_destroy');
 
 	Route::resource('admin/product','Backend\ProductController');
 	Route::get('admin/product/delete/{id}', 'Backend\ProductController@product_delete')->name('product.delete');

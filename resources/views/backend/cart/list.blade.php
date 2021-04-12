@@ -76,7 +76,7 @@
                                 <td> {{ $value->user->fullname }}</td>
                                 <td>{{ $value->product->product_name }}</td>
                                 <td>{{ $value->quantity }}</td>
-                                <td>{{ $value->total_price }}</td>
+                                <td>{{ $value->sub_total_price }}</td>
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
                                 {{-- <td>
                                      <form method="get" action="{{ route('cart.delete', $value->cart_id) }}"> 

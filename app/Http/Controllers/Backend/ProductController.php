@@ -304,8 +304,10 @@ class ProductController extends Controller
         $data['getcolor'] = Color::where('color_product_id',$id)->get();
         $data['getsize'] = Size::where('size_product_id',$id)->get();
         $data['getbrand'] = Brand::where('brand_product_id',$id)->get();
+
+        $data['getproductdetail'] = ProductDetails::where('product_id',$id)->get();
         // $data['getproduct'] = Product::with('category','manufacturing','brand','size','color')->find($id);
-        $data['getproduct'] = Product::with('category','color','subcategory','sale','manufacturing')->find($id);
+        $data['getproduct'] = Product::with('category','color','subcategory','sale','manufacturing','productdetails')->find($id);
         // dd($data);
         $data['getimages'] = Product_images::where('product_id',$id)->get();
         $data['meta_title'] = "Edit Product";
@@ -315,13 +317,14 @@ class ProductController extends Controller
         // return view('ProductItem.edit',compact('item','category'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // delete product details edit time
+    public function product_detail_destroy($id){
+        $delete_record = ProductDetails::find($id);
+        $delete_record->delete();
+        return redirect()->back()->with('error', 'Record successfully deleted!');
+    }
+
+
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -425,7 +428,38 @@ class ProductController extends Controller
                     // dd($insert_brand);
                 }
             }
-        
+            if(!empty($request->option)) {
+                $update_details = ProductDetails::where('product_id',$id)->delete();
+                foreach ($request->option as $value) {
+                    // dd($value['id']);
+                    if(!empty($value['title'])) {
+
+                        // $detail_id = $value['id'];
+                        // // dd($detail_id);
+                        // if(!empty($detail_id)){
+                        //     // dd('dd');
+                        // $update_details = ProductDetails::find($detail_id);
+                        // $update_details->title     = !empty($value['title']) ? $value['title'] : '';
+                        // $update_details->title_description     = !empty($value['title_description']) ? $value['title_description'] : '';
+                        // $update_details->save();
+                        // }
+                        // else{
+                        $option = new ProductDetails;
+                        $option->product_id = $id;
+                         $option->title     = !empty($value['title']) ? $value['title'] : '';
+                         $option->title_description     = !empty($value['title_description']) ? $value['title_description'] : '';
+                         $option->save();
+                        // }
+                    }
+                }
+            }
+
+            $product = Product::find($id);
+            $product->colorrr = $color[0];
+            $product->sizess = $size[0];
+            $product->branddd = $brand[0];
+            $product->save();
+
         $product->fill($validated);  
         $product->offer = $request->offer;      
         $product->save();

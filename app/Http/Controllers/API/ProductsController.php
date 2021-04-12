@@ -36,8 +36,10 @@ class ProductsController extends BaseController
        $cat = category::find($request->input('cat_id'));
        $subcat = Sub_Category::find($request->input('sub_cat_id'));
        $product = Product::with('size','color','images')->where('sub_cat_id',$request->input('sub_cat_id'))->get();
+      //$product = Product::with('size','color','images')->where('sub_cat_id',$request->input('sub_cat_id'))->orderBy('id', 'desc')->paginate(40);
         
        $filter = Product::with('images','size','color')
+        //->where('sub_cat_id',$request->sub_cat_id)->orderBy('id', 'desc')->paginate(40);
        ->where('sub_cat_id',$request->sub_cat_id)->get();
        
        $sorting = Product::with('images','size','color')->where('sub_cat_id',$request->sub_cat_id);
@@ -405,34 +407,43 @@ class ProductsController extends BaseController
     public function sale_product_list(Request $request)
     {
         if($request->user_id){
-            $today =\Carbon\Carbon::now()->format('Y-m-d H:i:s');
+            // $today =\Carbon\Carbon::now()->format('Y-m-d H:i:s');
+            $today =\Carbon\Carbon::now()->format('Y-m-d');
+            // dd("2021-04-09" >= $today);
             // $sale = Sale::where('sale_end_date','>=',$today)->get();
             // $getalldata = Sale::with('product','product.images','product.size','product.color')
             //                 ->where('sale_end_date','>=',$today)->get();
 
-        $getalldata = Sale::
+        $getall_product = Product::with('images','size','color')->orderBy('id', 'desc')->paginate(40);
+        
+        $getalldata = Sale::  
         where('sale_end_date','>=',$today)->get();
-            $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
+
+        $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
             
+        // dd(!empty($getalldata->count() >0));
+
+            if(!empty($getalldata->count() >0)){
+                
             $is_fav="";
-                foreach($getalldata as $dataf){
+            foreach($getalldata as $dataf){
                 $productdata = $dataf->product;
-                    foreach($productdata as $f){
-                        $p_id = $f->id;
-                        $getresult  = Favourites::
-                        where('user_id', '=' ,$request->user_id)
-                        ->where('product_id', '=' ,$p_id)->first();
-                        
-                        if(!empty($getresult)){
-                            $is_fav=$getresult->status;
-                            //dd($is_fav);
-                            $f['is_fav']=$is_fav;
-                            //dd($p);
-                        }else{
-                            $f['is_fav']=0;
-                        }
-                    }    
-                }
+                foreach($productdata as $f){
+                    $p_id = $f->id;
+                    $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$p_id)->first();
+                    
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $f['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $f['is_fav']=0;
+                    }
+                }    
+            }
 
             $rating_count ="";
             foreach($getalldata as $datap){
@@ -459,11 +470,39 @@ class ProductsController extends BaseController
                         }
                 }
             }
-
-            if(!empty($getalldata)){
-                        return $this->sendResponse_product($getalldata,'Product retrieved successfully.');
+                return $this->sendResponse_product($getalldata,'Product retrieved successfully.');
             }else{
-                return $this->sendError('Product not found.'); 
+                $is_fav="";
+                foreach($getall_product as $p){
+                 $pid = $p->id;
+                    $getresult  = Favourites::
+                        where('user_id', '=' ,$request->user_id)
+                        ->where('product_id', '=' ,$pid)->first();
+                        if(!empty($getresult)){
+                            $is_fav=$getresult->status;
+                            //dd($is_fav);
+                            $p['is_fav']=$is_fav;
+                            //dd($p);
+                        }else{
+                            $p['is_fav']=0;
+                        }
+                }
+
+            $rating_count ="";
+            foreach($getall_product as $p){
+                $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
+
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+            }
+                return $this->sendResponse_product($getall_product,'Product retrieved successfully.');
             }
         }
         else{
@@ -477,7 +516,8 @@ class ProductsController extends BaseController
         if($request->user_id && $request->sale_id){
             // $data = 
             $product = Product::with('images','size','color')
-                            ->where('sale_id',$request->sale_id)->get();
+                            ->where('sale_id',$request->sale_id)->orderBy('id','desc')->paginate(40);
+                            // ->where('sale_id',$request->sale_id)->get();
 
             $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
             
@@ -527,7 +567,8 @@ class ProductsController extends BaseController
     public function product_list(Request $request)
     {
         if($request->user_id){
-            $product = Product::with('images','size','color')->get();
+            $product = Product::with('images','size','color')->orderBy('id', 'desc')->paginate(40);
+            // $product = Product::with('images','size','color')->get();
             $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
             
             $is_fav="";
@@ -561,6 +602,7 @@ class ProductsController extends BaseController
                     }
             }
 
+        	// $product = $product->paginate(2);
             if(!empty($product)){
                         return $this->sendResponse_product($product,'Product retrieved successfully.');
             }else{
@@ -853,7 +895,7 @@ class ProductsController extends BaseController
             $color = Color::where('color_subcat_id',$request->sub_cat_id)->get();
             $brand = Brand::where('brand_subcat_id',$request->sub_cat_id)->get();
             // dd($color);
-
+            
             $min = $filter->min('price');
             $max = $filter->max('price');
 

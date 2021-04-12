@@ -46,7 +46,8 @@ class OrderController extends Controller
     {
         // echo "string";
         // die();
-        $changeStatus = Order::find($request->status_change_id);
+        // $changeStatus = Order::find($request->status_change_id);
+        $changeStatus = OrderDetails::find($request->status_change_id);
 
         $changeStatus->status = $request->status_id;
          //dd($changeStatus->status);
