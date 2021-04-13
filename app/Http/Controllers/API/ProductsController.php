@@ -39,8 +39,8 @@ class ProductsController extends BaseController
       //$product = Product::with('size','color','images')->where('sub_cat_id',$request->input('sub_cat_id'))->orderBy('id', 'desc')->paginate(40);
         
        $filter = Product::with('images','size','color')
-        //->where('sub_cat_id',$request->sub_cat_id)->orderBy('id', 'desc')->paginate(40);
-       ->where('sub_cat_id',$request->sub_cat_id)->get();
+        ->where('sub_cat_id',$request->sub_cat_id)->orderBy('id', 'desc')->paginate(2);
+    //    ->where('sub_cat_id',$request->sub_cat_id)->get();
        
        $sorting = Product::with('images','size','color')->where('sub_cat_id',$request->sub_cat_id);
        $sorting_all = $sorting->get();
@@ -414,10 +414,11 @@ class ProductsController extends BaseController
             // $getalldata = Sale::with('product','product.images','product.size','product.color')
             //                 ->where('sale_end_date','>=',$today)->get();
 
-        $getall_product = Product::with('images','size','color')->orderBy('id', 'desc')->paginate(40);
+        $getall_product = Product::with('images','size','color')->orderBy('id', 'desc')->paginate(10);
         
         $getalldata = Sale::  
-        where('sale_end_date','>=',$today)->get();
+        where('sale_end_date','>=',$today)->orderBy('id', 'desc')->paginate(10);
+        // where('sale_end_date','>=',$today)->get();
 
         $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
             
@@ -516,7 +517,7 @@ class ProductsController extends BaseController
         if($request->user_id && $request->sale_id){
             // $data = 
             $product = Product::with('images','size','color')
-                            ->where('sale_id',$request->sale_id)->orderBy('id','desc')->paginate(40);
+                            ->where('sale_id',$request->sale_id)->orderBy('id','desc')->paginate(10);
                             // ->where('sale_id',$request->sale_id)->get();
 
             $user = Favourites::where('user_id', '=' ,$request->user_id)->get();

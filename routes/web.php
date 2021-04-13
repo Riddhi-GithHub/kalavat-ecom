@@ -29,6 +29,15 @@ Route::group(['middleware' => 'admin'], function(){
 
 	Route::get('admin/dashboard', 'Backend\DashboardController@dashboard_list');
 
+	# chnage admin data 
+	Route::get('admin/setting/change_password/{id}', 'AuthController@change_password')->name('change-password');
+	Route::post('admin/setting/change_password', 'AuthController@store_password')->name('change_password');
+
+	
+// Route::get('change-password/{id}','ApiController@change_password')->name('change-password');
+// Route::post('change_password', 'ApiController@store_password')->name('change_password');   
+
+
 	Route::get('admin/user', 'Backend\UserController@user_list');
 	Route::get('admin/user/add', 'Backend\UserController@user_add');
 	Route::post('admin/user/add', 'Backend\UserController@user_insert');
@@ -62,6 +71,8 @@ Route::group(['middleware' => 'admin'], function(){
 	Route::get('admin/changeStatus', 'Backend\OrderController@OderschangeStatus');
 	Route::get('admin/order/delete/{id}', 'Backend\OrderController@order_delete')->name('order.delete');
 
+	Route::get('admin/order/productdetail/{id}', 'Backend\OrderController@get_product');
+
 	Route::resource('admin/subcategory','Backend\SubCategoryController');
 	Route::get('admin/subcategory/delete/{id}', 'Backend\SubCategoryController@subcategory_delete')->name('subcategory.delete');
 
@@ -85,5 +96,12 @@ Route::group(['middleware' => 'admin'], function(){
 	Route::get('test', function () {
 		return view('backend.product.test');
 	});
+
+
+	// Notification Start
+	Route::get('admin/notification', 'Backend\NotificationController@notification');
+	Route::post('admin/notification', 'Backend\NotificationController@updateNotification');
+	// Notification End
+
 	
 });

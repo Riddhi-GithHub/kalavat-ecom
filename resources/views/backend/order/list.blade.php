@@ -70,11 +70,16 @@
                                 <th>User Name</th>
                                 {{-- <th>Product Name</th> --}}
                                 <th>Tracking Number</th>
+                                <th>Order Number</th>
                                 <th>Quantity</th>
                                 <th>Total Price</th>
+                                <th>Payment Method</th>
+                                <th>Delivery Method</th>
+                                <th>Discount</th>
+                                <th>Delivery Charge</th>
                                 <th>Delivery Date</th>
                                 <th>Status</th>
-                                <th>Created Date</th>
+                                <th>Details</th>
                                 {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
@@ -86,9 +91,17 @@
                                 <td> {{ ($value->user->fullname ?  $value->user->fullname : '' ) }}</td>
                                 {{-- <td>{{ $value->product->product_name }}</td> --}}
                                 <td>{{ $value->tracking_num }}</td>
+                                <td>{{ $value->order_num }}</td>
                                 <td>{{ $value->total_quantity }}</td>
                                 <td>{{ $value->total_price }}</td>
-                                <td>{{ $value->delivery_date }}</td>
+                                <td>{{ $value->payment_method }}</td>
+                                {{-- <td>************{{ substr($value->payment_method,-4) }}</td> --}}
+
+                                <td>{{ $value->delivery_method }}</td>
+                                <td>{{ $value->discount }}</td>
+                                <td>{{ $value->delivery_charge }}</td>
+
+                                <td>{{  date('d-m-Y', strtotime($value->delivery_date) ) }}</td>
                                 <td>
                                     <select class="form-control change_Status" id="{{ $value->order_detail_id }}">
                                       <option {{ ($value->status == '0' ? 'selected="selected"' : '' ) }} value="0">Processing</option>
@@ -96,7 +109,10 @@
                                       <option {{ ($value->status == '2' ? 'selected="selected"' : '' ) }} value="2">Cancelled</option>
                                     </select>
                                 </td>
-                                <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
+                                {{-- <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td> --}}
+                                <td> <a href="{{ url('admin/order/productdetail/'.$value->order_detail_id) }}"
+                                    class="btn btn-primary btn-rounded btn-sm"><span
+                                        class="fa fa-eye"></span></a></td>
                           
                             </tr>
                             @empty

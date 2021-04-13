@@ -140,7 +140,7 @@ class UsersController extends BaseController
         }elseif (!empty($user)) {
                 if (!empty($user)) {
                     $user->otp = 9999;
-                    $user->token = $request->token;
+                    // $user->token = $request->token;
                     $user->update();
                     $this->updateToken($user->id);
                     // return $this->sendResponse($user, 'Login successfully!');

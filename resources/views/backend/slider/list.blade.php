@@ -65,6 +65,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Slider Name</th>
+                                <th>Slider Type</th>
                                 <th>Slider Offer</th>
                                 <th>Slider Discount</th>
                                 <th>Slider Image</th>
@@ -77,6 +78,17 @@
                             <tr>
                                 <td> {{ $value->id }}</td>
                                 <td>{{ $value->slider_name }}</td>
+                                {{-- <td>{{ $value->type == '1' ? 'category' : $value->type == '2' ? 'sub' : 'none'}} --}}
+                                    {{-- $value->type == '3' ? 'product' : $value->type == '4' ? 'brand' : 'no'}}</td> --}}
+                               
+                                    <td> @if($value->type == 1) <?php echo "category"; ?>
+                                        @elseif($value->type == 2) <?php echo "subcategory"; ?>
+                                        @elseif($value->type == 3) <?php echo "product"; ?>
+                                        @elseif($value->type == 4) <?php echo "brand"; ?>
+                                        @endif
+                                </td>
+                                
+
                                 <td>{{ $value->offer }}</td>
                                 <td>{{ $value->discount }}</td>
                                 <td><img alt="image name" src="{{ url('public/images/slider/'.$value->slider_image) }}"

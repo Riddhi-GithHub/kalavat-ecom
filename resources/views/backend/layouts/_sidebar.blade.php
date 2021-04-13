@@ -14,6 +14,10 @@
                 <a href="{{ url('admin/dashboard') }}"><span class="fa fa-desktop"></span> <span class="xn-text">Dashboard</span></a>
            </li>
 
+           <li class="@if ( Request::segment(2)== 'change_password') active @endif">
+            <a href="{{ url('admin/setting/change_password/'.Auth::user()->id) }}"><span class="fa fa-gear"></span> <span class="xn-text">Account Setting</span></a>
+           </li>
+
             @if(Auth::user()->is_admin == '1')
             <li class="@if ( Request::segment(2)== 'user') active @endif">
                 <a href="{{ url('admin/user') }}"><span class="fa fa-user"></span> <span class="xn-text">User List</span></a>
@@ -61,6 +65,10 @@
 
             <li class="@if ( Request::segment(2)== 'contact_us') active @endif">
                 <a href="{{ url('admin/contact_us') }}"><span class="fa fa-book"></span> <span class="xn-text">Contact Us List</span></a>
+            </li>
+
+            <li class="@if ( Request::segment(2)== 'notification') active @endif">
+                <a href="{{ url('admin/notification') }}"><span class="fa fa-bell"></span> <span class="xn-text">Notification</span></a>
             </li>
 
             @endif

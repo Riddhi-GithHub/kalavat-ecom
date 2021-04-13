@@ -24,6 +24,9 @@
                </div>
                <div class="panel-body">
 
+
+
+                  
                    <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Select Category <span style="color:red">*</span></label>
                      <div class="col-md-8 col-xs-12">
@@ -56,32 +59,35 @@
                      </div> 
 
 
-
-
-                  {{--  <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Select Category <span style="color:red">*</span></label>
-                     <div class="col-md-8 col-xs-12">
-                             <div class="">
-                                 <select class="form-control" name="cat_id" required id="getUser">
-                                  <option value="">Select Category Name</option>
-                               @foreach($category as $value)
-                                  <option value="{{ $value->id }}">{{ $value->cat_name }}</option>
-                               @endforeach
-                                </select>
-                             </div>
-                         </div>
-                     </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3 col-xs-12 control-label">Board STD Level <span style="color:red"> *</span></label>
-                            <div class="col-md-7 col-xs-12">
+                        {{-- <div class="form-group">
+                        <label class="col-md-2 col-xs-12 control-label">Select Category <span style="color:red">*</span></label>
+                        <div class="col-md-8 col-xs-12">
                                 <div class="">
-                               <select class="form-control" required name="sub_cat_id" id="getCategory">
-                                  <option value="">Select Board STD Level</option>
-                                </select>
+                                    <select class="form-control newcat" name="cat_id" required>
+                                     <option value=""> Select Category</option>
+                                  @foreach($category as $value)
+                                     <option value="{{ $value->id }}">{{ $value->cat_name }}</option>
+                                  @endforeach
+                                   </select>
+                                 <span style="color:red">{{  $errors->first('cat_id') }}</span>
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
+                        
+                          <div class="form-group">
+                          <label class="col-md-3 col-xs-12 control-label">Select SubCategory <span style="color:red"> *</span></label>
+                              <div class="col-md-7 col-xs-12">
+                                  <div class="">
+                                 <select class="form-control" required name="sub_cat_id" id="getCategory">
+                                    <option value=""> Select SubCategory</option>
+                                  </select>
+                                 <span style="color:red">{{  $errors->first('sub_cat_id') }}</span>
+                                 </div>
+                              </div>
+                          </div> --}}
+
+
+
 
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Select Sale</span></label>
@@ -328,26 +334,27 @@
 @section('script')
 
 <script type="text/javascript">
-//    $('#getUser').change(function(){
-//    // $(document).ready(function() {   
-//       // $('getUser').change(function() { 
-//       // alert('ssss');
-//        var id = $(this).val();
+   $(document).ready(function() {
+    $('.newcat').change(function(){
+    var new_id = $(this).val();
+alert(new_id);
+die();
 
-//        $.ajax({
-//           url: "{{ url('admin/product/get_subcategory_dropdown') }}",
-//           type: "POST",
-//           data:{
-//             "_token": "{{ csrf_token() }}",
-//               id:id,
-//                alert(id);
-//            },
-//            dataType:"json",
-//            success:function(response){
-//              $('#getCategory').html(response.success);
-//            },
-//        });
-//  });
+     $('#getUser').change(function(){
+      var id = $(this).val();
+      $.ajax({
+         url: "{{ url('admin/product/get_subcategory_dropdown') }}",
+         type: "POST",
+         data:{
+           "_token": "{{ csrf_token() }}",
+             id:id,
+          },
+          dataType:"json",
+          success:function(response){
+            $('#getCategory').html(response.success);
+          },
+      });
+});
 
 
 

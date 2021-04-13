@@ -79,7 +79,6 @@ class ProductController extends Controller
     
     public function get_subcategory_dropdown(Request $request)
     {
-        dd('ddd');
         $getCategory = Sub_Category::where('cat_id', '=', $request->id)->get();
         $html .= '<option value="">Select SubCategory</option>';
         foreach ($getCategory as $key => $value) {

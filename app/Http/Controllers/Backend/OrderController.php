@@ -6,14 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderDetails;
+use App\Models\Cart;
+use App\Models\Product;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+  
     public function index(Request $request)
     {
         $getrecord = OrderDetails::orderBy('order_detail_id', 'desc')->select('order_details.*');;
@@ -55,6 +53,23 @@ class OrderController extends Controller
         
         $json['success'] = true;
         echo json_encode($json);
+    }
+
+    public function get_product($id)
+    {
+        $order_detail = OrderDetails::find($id);
+        $order        = Order::find($order_detail->order_id);
+        // $cart_id = $order->cart_id;
+        $array_cart_id = explode(',', $order->cart_id);
+        $cart = Cart::whereIn('cart_id',$array_cart_id)->get();
+            foreach($cart as $c){
+                $array_product_id[] = $c->product_id; 
+            }
+        $product_list = Product::whereIn('id',$array_product_id)->get();
+        $data['product_list'] = $product_list;
+        $data['order_detail'] = $order_detail;
+        $data['meta_title'] = "View Order";
+        return view('backend.order.view', $data);
     }
 
     

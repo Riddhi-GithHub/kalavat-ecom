@@ -301,3 +301,349 @@ function setDropDownForDisplay(x) {
     });
 });
 </script>
+
+
+
+
+------------------------------------------------
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+===============================================
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>GFG User Details</title>
+		<!-- CSS FOR STYLING THE PAGE -->
+		<style>
+			table {
+				margin: 0 auto;
+				font-size: large;
+				border: 1px solid black;
+			}
+
+			h1 {
+				text-align: center;
+				color: #006600;
+				font-size: xx-large;
+				font-family: "Gill Sans",
+				"Gill Sans MT",
+				" Calibri",
+				"Trebuchet MS",
+				"sans-serif";
+			}
+
+			td {
+				background-color: #e4f5d4;
+				border: 1px solid black;
+			}
+
+			th,
+			td {
+				font-weight: bold;
+				border: 1px solid black;
+				padding: 10px;
+				text-align: center;
+			}
+
+			td {
+				font-weight: lighter;
+			}
+		</style>
+		<!-- BOOTSTRAP CSS AND PLUGINS-->
+		<link rel="stylesheet"
+			href=
+"https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+			integrity=
+"sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+			crossorigin="anonymous" />
+		<script src=
+"https://code.jquery.com/jquery-3.2.1.slim.min.js"
+				integrity=
+"sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+				crossorigin="anonymous">
+	</script>
+		<script src=
+"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+				integrity=
+"sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+				crossorigin="anonymous">
+	</script>
+		<script src=
+"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+				integrity=
+"sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+				crossorigin="anonymous">
+	</script>
+		<script src=
+"https://code.jquery.com/jquery-3.5.1.js"
+				integrity=
+"sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+				crossorigin="anonymous">
+	</script>
+	</head>
+
+	<body>
+		<section>
+			<h1>GeeksForGeeks</h1>
+			<!-- TABLE CONSTRUCTION-->
+			<table id="GFGtable">
+				<tr>
+					<!-- TABLE HEADING -->
+					<th>GFG UserHandle</th>
+					<th>Practice Problems</th>
+					<th>Coding Score</th>
+					<th>GFG Articles</th>
+					<th>SELECT</th>
+				</tr>
+				<!-- TABLE DATA -->
+				<tr>
+					<td class="gfgusername">User-1</td>
+					<td class="gfgpp">150</td>
+					<td class="gfgscores">100</td>
+					<td class="gfgarticles">30</td>
+					<td><button class="gfgselect bg-secondary"
+								data-toggle="modal"
+								data-target="#gfgmodal">
+					SELECT</button></td>
+				</tr>
+				<tr>
+					<td class="gfgusername">User-2</td>
+					<td class="gfgpp">100</td>
+					<td class="gfgscores">75</td>
+					<td class="gfgarticles">30</td>
+					<td><button class="gfgselect bg-secondary"
+								data-toggle="modal"
+								data-target="#gfgmodal">
+					SELECT</button></td>
+				</tr>
+				<tr>
+					<td class="gfgusername">User-3</td>
+					<td class="gfgpp">200</td>
+					<td class="gfgscores">50</td>
+					<td class="gfgarticles">10</td>
+					<td><button class="gfgselect bg-secondary"
+								data-toggle="modal"
+								data-target="#gfgmodal">
+					SELECT</button></td>
+				</tr>
+				<tr>
+					<td class="gfgusername">User-4</td>
+					<td class="gfgpp">50</td>
+					<td class="gfgscores">5</td>
+					<td class="gfgarticles">2</td>
+					<td>
+					<button class="gfgselect bg-secondary"
+								data-toggle="modal"
+								data-target="#gfgmodal">
+					SELECT</button></td>
+				</tr>
+				<tr>
+					<td class="gfgusername">User-5</td>
+					<td class="gfgpp">0</td>
+					<td class="gfgscores">0</td>
+					<td class="gfgarticles">0</td>
+					<td><button class="gfgselect bg-secondary"
+								data-toggle="modal"
+								data-target="#gfgmodal">
+					SELECT</button></td>
+				</tr>
+			</table>
+		</section>
+		<script>
+			$(function () {
+				// ON SELECTING ROW
+				$(".gfgselect").click(function () {
+  			//FINDING ELEMENTS OF ROWS AND STORING THEM IN VARIABLES
+					var a =
+			$(this).parents("tr").find(".gfgusername").text();
+					var c =
+			$(this).parents("tr").find(".gfgpp").text();
+					var d =
+			$(this).parents("tr").find(".gfgscores").text();
+					var e =
+			$(this).parents("tr").find(".gfgarticles").text();
+					var p = "";
+					// CREATING DATA TO SHOW ON MODEL
+					p +=
+			"<p id='a' name='GFGusername' >GFG UserHandle: "
+					+ a + " </p>";
+					
+					p +=
+			"<p id='c' name='GFGpp'>Practice Problems: "
+					+ c + "</p>";
+					p +=
+			"<p id='d' name='GFGscores' >Coding Score: "
+					+ d + " </p>";
+					p +=
+			"<p id='e' name='GFGcoding' >GFG Article: "
+					+ e + " </p>";
+					//CLEARING THE PREFILLED DATA
+					$("#divGFG").empty();
+					//WRITING THE DATA ON MODEL
+					$("#divGFG").append(p);
+				});
+			});
+		</script>
+		<!-- CREATING BOOTSTRAP MODEL -->
+		<div class="modal fade"
+			id="gfgmodal"
+			tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<!-- MODEL TITLE -->
+						<h2 class="modal-title"
+							id="gfgmodallabel">
+						Selected row</h2>
+						<button type="button"
+								class="close"
+								data-dismiss="modal"
+								aria-label="Close">
+							<span aria-hidden="true">
+							×</span>
+						</button>
+					</div>
+					<!-- MODEL BODY -->
+					<div class="modal-body">
+						<div class="GFGclass"
+							id="divGFG"></div>
+						<div class="modal-footer">
+		<!-- The close button in the bottom of the modal -->
+							<button type="button"
+									class="btn btn-secondary"
+									data-dismiss="modal">
+							Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    View Product
+  </button>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Order Items</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            {{-- <span aria-hidden="true">×</span> --}}
+          </button>
+        </div>
+        <div class="modal-body">
+                <div>Product Name :test 1</div>
+                <div>Color</div>
+                <div>Quantity</div>
+                <div>Price</div>
+        </div>
+        <div class="modal-body">
+            <div>Product Name :test 2</div>
+            <div>Color</div>
+            <div>Quantity</div>
+            <div>Price</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+        </div>
+      </div>
+    </div>
+  </div>
+</td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<td>
+    {{-- <form method="get" action="{{ route('order.product', $value->order_detail_id) }}"> --}}
+        <a href=""
+            class="btn btn-primary btn-rounded btn-sm"><span
+                class="fa fa-eye"></span></a>
+       
+        {{-- <button class="btn btn-danger btn-rounded btn-sm"><span
+                class="fa fa-trash-o"></span></button> --}}
+        {{-- <div class="field is-grouped py-1"> --}}
+            <button type="submit" class="btn btn-danger btn-rounded btn-sm"
+                onclick="return confirm('Sure Want Delete?')"><span
+                    class="fa fa-trash-o"></span></button>
+            <div class="modal" id="mdelete" role="dialog" aria-labelledby="moddelete">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="moddelete">Confirm Delete</h5>
+                            <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="txtid" id="txtid" />
+                            <input type="text" name="uid" id="uid" />
+                            <button type="button" class="btn btn-danger "
+                                data-dismiss="modal">No</button>
+                            <span class="text-right">
+                                <button type="button"
+                                    class="btn btn-primary btndelete">Yes</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</td>

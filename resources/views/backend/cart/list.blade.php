@@ -64,6 +64,8 @@
                                 <th>Username</th>
                                 <th>Product Name</th>
                                 <th>Quantity</th>
+                                <th>Size</th>
+                                <th>Color</th>
                                 <th>Total Price</th>
                                 <th>Created Date</th>
                                 {{-- <th>Action</th> --}}
@@ -76,6 +78,8 @@
                                 <td> {{ $value->user->fullname }}</td>
                                 <td>{{ $value->product->product_name }}</td>
                                 <td>{{ $value->quantity }}</td>
+                                <td>{{ $value->size }}</td>
+                                <td>{{ $value->color }}</td>
                                 <td>{{ $value->sub_total_price }}</td>
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
                                 {{-- <td>

@@ -41,7 +41,7 @@ class OrdersController extends Controller
                 $order->save();
                 // $order->total_price = $request->total_price;
                 $json['status'] = 1;
-                $json['message'] = 'Favourite Product add Successfully.';
+                $json['message'] = 'Order in Processing.';
                 $json['order_list'] = $order;
             }
             else{
