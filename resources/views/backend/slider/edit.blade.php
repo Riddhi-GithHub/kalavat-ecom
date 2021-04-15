@@ -69,11 +69,63 @@
                      </div>
                   </div>
                   
+                  <div id="myRadioGroup">
+    
+                     <div class="form-group">
+                        <label class="col-md-2 col-xs-12 control-label">Type</span></label>
+                        <div class="col-md-8 col-xs-12">
+
+                           {{-- {{ dd($getslider->type) }} --}}
+                           <input type="radio" name="type" value="1" {{ $getslider->type == '1' ? 'checked' : ''}}/>Category
+                           <input type="radio" name="type" value="2" {{ $getslider->type == '2' ? 'checked' : ''}}/>SubCategory
+                           <input type="radio" name="type" value="3" {{ $getslider->type == '3' ? 'checked' : ''}}/>Product
+
+                            {{-- <input type="radio" name="type" value="4"/>Brand  --}}
+                            <div id="Type1" class="desc">
+                              <select  name="type_id"  class="form-control">
+                                 <option selected disabled>Select Category</option>
+                                 @foreach($category as $categoryData)
+                                 <option value="{{$categoryData->id}}">{{$categoryData->cat_name}}</option>
+                                 @endforeach
+                              </select>
+                           <span style="color:red">{{  $errors->first('type_id') }}</span>
+                           </div>
+
+                           <div id="Type2" class="desc" style="display: none;">
+                              <select  name="type_id" class="form-control">
+                                 <option selected disabled>Select SubCategory</option>
+                                 @foreach($subcategory as $subcategoryData)
+                                 <option value="{{$subcategoryData->id}}">{{$subcategoryData->sub_cat_name}}</option>
+                                 @endforeach
+                              </select>
+                           <span style="color:red">{{  $errors->first('type_id') }}</span>
+                           </div>
+
+                           <div id="Type3" class="desc" style="display: none;">
+                              <select id="product_id" name="type_id" class="form-control">
+                                 <option selected disabled>Select Product</option>
+                                 @foreach($product as $productData)
+                                 <option value="{{$productData->id}}">{{$productData->product_name}}</option>
+                                 @endforeach
+                              </select>
+                           <span style="color:red">{{  $errors->first('type_id') }}</span>
+                           </div>
+                           {{-- <div id="Type4" class="desc" style="display: none;">
+                              <select id="product_id" name="type_id" class="form-control">
+                                 <option selected disabled>Select Product</option>
+                                 @foreach($brand as $brandData)
+                                 <option value="{{$brandData->id}}">{{$brandData}}</option>
+                                 @endforeach
+                              </select>
+                           </div> --}}
+                        </div>
+                   </div>
+
                 </div>
                <div class="panel-footer">
                   <button class="btn btn-primary pull-right">Update</button>
                </div>
-            </div>
+            </div> 
          </form>
 
                   {{-- End --}}
@@ -84,7 +136,14 @@
  
 @endsection
   @section('script')
-  <script type="text/javascript">
-   
+   <script>
+   $(document).ready(function() {
+     $("input[name$='type']").click(function() {
+         var test = $(this).val();
+ 
+         $("div.desc").hide();
+         $("#Type" + test).show();
+     });
+ });
   </script>
 @endsection

@@ -27,22 +27,20 @@ class NotificationController extends Controller
     	if(!empty($getUser))
 		{
 			foreach ($getUser as $value) {
-				
+				// dd($value);
 				if (!empty($value->token)) {
 
 					$token = $value->token;
 					// dd($token);
 					$body['title'] = $request->title;
 					$body['message'] = $request->message;
-					//	dd($body['title']);
+						// dd($body['title']);
 					//dd($body['message']);
 
 					$url = "https://fcm.googleapis.com/fcm/send";
-
 					$notification = array('title' => $request->title, 'text' => $request->message);
-
+					
 					$arrayToSend = array('to' => $token, 'notification' => $notification, 'data' => $body, 'priority' => 'high');
-					// dd($arrayToSend);
 					$json1 = json_encode($arrayToSend);
 					$headers = array();
 					$headers[] = 'Content-Type: application/json';

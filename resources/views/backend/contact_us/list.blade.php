@@ -78,7 +78,7 @@
                             @forelse($getrecord as $value)
                             <tr>
                                 <td> {{ $value->id }}</td>
-                                <td> {{ $value->users->username }}</td>
+                                <td> {{ $value->users->fullname }}</td>
                                 <td>{{ $value->title }}</td>
                                 <td>{{ $value->description }}</td>
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>

@@ -37,6 +37,7 @@ class UsersController extends BaseController
             return $this->sendErrors('Mobile allready taken');       
         }
 
+        // $token = str_random(20);
         $input = $request->all();
         $otp = rand(1111,9999);
         $user = User::create($input);
@@ -130,6 +131,7 @@ class UsersController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'mobile' => 'required|min:10|max:10',
+            // 'token' => 'required',
         ]);
 
         $user = User::where('mobile', '=', ($request->mobile))->first();
@@ -140,7 +142,7 @@ class UsersController extends BaseController
         }elseif (!empty($user)) {
                 if (!empty($user)) {
                     $user->otp = 9999;
-                    // $user->token = $request->token;
+                    $user->token = $request->token;
                     $user->update();
                     $this->updateToken($user->id);
                     // return $this->sendResponse($user, 'Login successfully!');

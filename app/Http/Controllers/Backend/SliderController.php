@@ -45,8 +45,10 @@ class SliderController extends Controller
     public function slider_insert(Request $request)
     {
         $input = request()->validate([
-            // 'slider_name'      => 'required',
-            // 'slider_image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'slider_name'      => 'required',
+            'type'      => 'required',
+            'type_id'      => 'required',
+            'slider_image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         // dd($request->type);
@@ -71,6 +73,13 @@ class SliderController extends Controller
     }
 
     public function slider_edit($id){
+        $category = Category::get();
+        $subcategory = Sub_Category::get();
+        $product = Product::get();
+        $data['category'] = $category;
+        $data['subcategory'] = $subcategory;
+        $data['product'] = $product;
+
         $data['getslider'] = Slider::find($id);
         $data['meta_title'] = "Edit Slider";
         return view('backend.slider.edit', $data);
@@ -80,6 +89,8 @@ class SliderController extends Controller
     {
         $validated = $request->validate([
             'slider_name'         => 'required',
+            'type'      => 'required',
+            'type_id'      => 'required',
         ]);
             $slider_update = Slider::find($id);
             $slider_update->fill($validated);  

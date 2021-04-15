@@ -86,6 +86,7 @@
                               <option value="{{$categoryData->id}}">{{$categoryData->cat_name}}</option>
                               @endforeach
                            </select>
+                           <span style="color:red">{{  $errors->first('type_id') }}</span>
                         </div>
                         <div id="Type2" class="desc" style="display: none;">
                            <select  name="type_id" class="form-control">
@@ -94,6 +95,7 @@
                               <option value="{{$subcategoryData->id}}">{{$subcategoryData->sub_cat_name}}</option>
                               @endforeach
                            </select>
+                           <span style="color:red">{{  $errors->first('type_id') }}</span>
                         </div>
                         <div id="Type3" class="desc" style="display: none;">
                            <select id="product_id" name="type_id" class="form-control">
@@ -102,6 +104,7 @@
                               <option value="{{$productData->id}}">{{$productData->product_name}}</option>
                               @endforeach
                            </select>
+                           <span style="color:red">{{  $errors->first('type_id') }}</span>
                         </div>
                         {{-- <div id="Type4" class="desc" style="display: none;">
                            <select id="product_id" name="type_id" class="form-control">
