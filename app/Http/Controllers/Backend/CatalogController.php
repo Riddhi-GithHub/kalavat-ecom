@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Catalog;
 use App\Models\Product;
+use App\Models\Category;
+use App\Models\Sub_Category;
 
 class CatalogController extends Controller
 {
@@ -39,6 +41,9 @@ class CatalogController extends Controller
      */
     public function create()
     {
+        $category = Category::get();
+        $data['category'] = $category;
+        $data['subcategory'] = Sub_Category::get();
         $product = Product::get();
         $data['getproduct'] = $product;
         $data['meta_title'] = "Add Catalog";
@@ -54,27 +59,53 @@ class CatalogController extends Controller
     public function store(Request $request)
     {
         $input = request()->validate([
+            'sub_category_id'         => 'required',
             'catalog_title'         => 'required',
             'catalog_description'         => 'required',
+            'catalog_amount'         => 'required',
+            'catalog_size'         => 'required',
+            'catalog_brand'         => 'required',
             'product_id'         => 'required',
             'catalog_image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
+        // dd($input);
         $p_id = implode(',', $request->product_id); 
-
+        $model_num = rand(1111111111,9999999999);
+        $num = 'CL'.$model_num;
+        // dd($p_id);
+        
+        // $catalog_add = Catalog::create($input);
+        // $catalog_add->catalog_unique_id = $num;
+        
         if ($request->hasFile('catalog_image')) {
             $image = $request->file('catalog_image');
             $no = rand(1111,9999);
             $image_name = time().$no.'.jpg';
             $i = $image->move(public_path('images/catalog'), $image_name);
+    
+            // $catalog_add->catalog_image = $image_name;
+
             $catalog = new Catalog([
+                        'sub_category_id'      =>  $request->get('sub_category_id'),
                         'catalog_title'      =>  $request->get('catalog_title'),
                         'catalog_description'      =>  $request->get('catalog_description'),
+                        'catalog_amount'      =>  $request->get('catalog_amount'),
+                        'catalog_size'      =>  $request->get('catalog_size'),
+                        'catalog_brand'      =>  $request->get('catalog_brand'),
+                        'catalog_unique_id'            =>  $num,
                         'catalog_image'            =>  $image_name,
                         'product_id'               =>  $p_id,
                     ]);
                     $catalog->save();
-        } 
+            } 
+        // if($request->product_id)
+        // {
+        //     $p_id = implode(',', $request->product_id); 
+        //     $catalog_add->product_id = $p_id;
+        // }
+        // $catalog_add->save();
+
         return redirect('admin/catalog')->with('success', 'catalog added Successfully!');
     }
 
@@ -99,6 +130,9 @@ class CatalogController extends Controller
      */
     public function edit($id)
     {
+        $data['getcategory'] = Category::get();
+        $data['getsubcategory'] = Sub_Category::get();
+
         $cat = Catalog::find($id);
         $product_id = $cat->product_id;
         $array_product_id = explode(',', $product_id);
@@ -119,9 +153,15 @@ class CatalogController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
+            'sub_category_id'         => 'required',
             'catalog_title'         => 'required',
             'catalog_description'         => 'required',
+            'catalog_amount'         => 'required',
+            'catalog_size'         => 'required',
+            'catalog_brand'         => 'required',
+            'product_id'         => 'required',
         ]);
+
         $p_id = implode(',', $request->product_id); 
 
             $catalog_update = Catalog::find($id);

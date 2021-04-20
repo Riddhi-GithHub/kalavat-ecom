@@ -11,6 +11,8 @@
 |
 */
 
+// admin 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -25,7 +27,7 @@ Route::group(['middleware' => 'superadmin'], function () {
 
 });
 
-Route::group(['middleware' => 'admin'], function(){
+// Route::group(['middleware' => 'admin'], function(){
 
 	Route::get('admin/dashboard', 'Backend\DashboardController@dashboard_list');
 
@@ -104,4 +106,4 @@ Route::group(['middleware' => 'admin'], function(){
 	// Notification End
 
 	
-});
+// });

@@ -367,9 +367,10 @@ class ApiController extends Controller
 				]);
 			
 			$user = User::find($request->get('id'));
-			$user->password=$request->input('password');
-			// $user->password = Hash::make($request->get('new_password'));
-			$user->password=$request->input('new_confirm_password');
+			// $user->password=$request->input('password');
+			$user->password = Hash::make($request->get('new_password'));
+			// $user->password = Hash::make($request->get('new_confirm_password'));
+			// $user->password=$request->input('new_confirm_password');
 			$user->save();
 	
 			return redirect('admin/login')->with('success', 'Password Change Successfully!');  

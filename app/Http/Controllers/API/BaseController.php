@@ -52,6 +52,16 @@ class BaseController extends Controller
         return response()->json($response, 200);
     }
 
+    public function sendResponse_catalog($result, $message)
+    {
+    	$response = [
+            'success' => 1,
+            'message' => $message,
+            'catalog_list'    => $result,
+        ];
+        return response()->json($response, 200);
+    }
+
     public function sendResponse_test($message ,$result = [])
     {
     	$response = [

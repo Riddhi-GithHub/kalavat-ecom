@@ -23,9 +23,9 @@
                 <a href="{{ url('admin/user') }}"><span class="fa fa-user"></span> <span class="xn-text">User List</span></a>
             </li>
 
-            <li class="@if ( Request::segment(2)== 'sale') active @endif">
+            {{-- <li class="@if ( Request::segment(2)== 'sale') active @endif">
                 <a href="{{ url('admin/sale') }}"><span class="fa fa-gift"></span> <span class="xn-text">Sale List</span></a>
-            </li>
+            </li> --}}
 
             <li class="@if ( Request::segment(2)== 'category') active @endif">
                 <a href="{{ url('admin/category') }}"><span class="fa fa-list"></span> <span class="xn-text">Category List</span></a>
@@ -38,7 +38,7 @@
             <li class="@if ( Request::segment(2)== 'product') active @endif">
                 <a href="{{ url('admin/product') }}"><span class="fa fa-table"></span> <span class="xn-text">Product List</span></a>
             </li>
-
+            
             <li class="@if ( Request::segment(2)== 'catalog') active @endif">
                 <a href="{{ url('admin/catalog') }}"><span class="fa fa-film"></span> <span class="xn-text">Catalog List</span></a>
             </li>

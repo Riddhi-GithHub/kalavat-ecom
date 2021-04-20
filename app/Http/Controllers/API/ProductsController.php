@@ -16,6 +16,8 @@ use App\Models\Cart;
 use App\Models\Favourites;
 use App\Models\ProductDetails;
 use App\Models\Sale;
+use App\Models\Catalog;
+use App\User;
 use Validator;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -23,8 +25,276 @@ use Carbon\Carbon;
 
 class ProductsController extends BaseController
 {
-    // retrive product by category
+
+    public function filter_product_get(Request $request)
+    {
+        if (!empty($request->sub_category_id)) {
+            $sorting  = Catalog::where('sub_category_id',$request->sub_category_id);
+            $getalldata = $sorting->get();
+
+            $min = $getalldata->min('catalog_amount');
+            $max = $getalldata->max('catalog_amount');
+            $size = "s";
+            $brand = "new";
+            // if($size && $color && $brand && $min && $max){
+            if($size && $brand && $min && $max){
+                $json['success'] = 1;
+                $json['message'] = 'All loaded successfully.';
+                $json['min_price'] = $min;
+                $json['max_price'] = $max;
+                $json['get_size'] = $size;
+                $json['get_brand'] = $brand;
+                $json['catalog_list'] = $getalldata;
+            }
+            else{
+                $json['success'] = 0;
+                $json['message'] = 'Data not found';
+            }
+        }
+        else{
+            $json['success'] = 0;
+            $json['message'] = 'Fill sub_cat_id';
+        }
+        echo json_encode($json);
+    }
+
     public function product_details(Request $request)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input,[
+            // 'cat_id' => 'required',
+            'sub_category_id' => 'required',
+            'user_id' => 'required',
+        ]);
+            $subcat = Sub_Category::find($request->input('sub_category_id'));
+            $sorting  = Catalog::where('sub_category_id',$request->sub_category_id);
+            // $getalldata = $sorting->get();
+            $getalldata = $sorting->orderBy('id','desc')->paginate(10);
+            $sorting_data = $request->sorting_data; 
+            
+            foreach($getalldata as $result){
+                $product_id = $result->product_id;
+                $array_product_id = explode(',', $product_id);
+                $product = Product::with('images')->whereIn('id',$array_product_id)->get();
+
+                $is_fav="";
+                foreach($product as $p){
+                    $pid = $p->id;
+                        $getresult  = Favourites::
+                            where('user_id', '=' ,$request->user_id)
+                            ->where('product_id', '=' ,$pid)->first();
+                            if(!empty($getresult)){
+                                $is_fav=$getresult->status;
+                                //dd($is_fav);
+                                $p['is_fav']=$is_fav;
+                                //dd($p);
+                            }else{
+                                $p['is_fav']=0;
+                            }
+                }
+
+                $rating_count ="";
+                foreach($product as $p){
+                    $pid = $p->id;
+                        $rates = DB::table('ratings')
+                        ->where('product_id', $pid)
+                        ->avg('rating_avg');
+    
+                        $num = (double) $rates;
+                        if(!empty($num)){
+                            $p['rating_count']=$num;
+                        }else{
+                            $p['rating_count']=0;
+                        }
+                }
+                
+                $result['product_list'] = $product;
+            }
+        
+        // start filter
+            if(!empty($request->size)){
+                $size = explode(",", $request->size);  
+                $getalldata = $getalldata->whereIn('catalog_size',$size);
+            }
+            if(!empty($request->brand)){
+                $brand = explode(",", $request->brand);  
+                // $getbrand = Product::whereIn('brand',['naf','jack'])->get();
+                $getalldata = $getalldata->whereIn('catalog_brand',$brand);
+            }
+            if(!empty($request->price)){
+                $price = explode(",", $request->price);
+                $min_price = implode(",", $price);
+                $max_price = array_pop($price);
+                // $pp = Product::whereBetween('price', [100,300])->get();
+                // $getprice = Product::whereBetween('price', [$min_price,$max_price])->get();
+                $getalldata = $getalldata->whereBetween('catalog_amount', [$min_price,$max_price]);
+            }
+        // end filter
+
+        // sorting start
+            elseif($sorting_data == 1){
+                // $sorting = $sorting->orderBy('id','desc')->get();
+                return $this->sendResponse_catalog($getalldata,'Product retrieved successfully.'); 
+            }
+            elseif($sorting_data == 2){
+                // $sorting = $sorting->orderBy('catalog_amount')->get();
+                $sorting = $sorting->orderBy('catalog_amount')->orderBy('id','desc')->paginate(10);
+                foreach($sorting as $result){
+                    $product_id = $result->product_id;
+                    $array_product_id = explode(',', $product_id);
+                    $product = Product::with('images')->whereIn('id',$array_product_id)->get();
+    
+                    $is_fav="";
+                    foreach($product as $p){
+                        $pid = $p->id;
+                            $getresult  = Favourites::
+                                where('user_id', '=' ,$request->user_id)
+                                ->where('product_id', '=' ,$pid)->first();
+                                if(!empty($getresult)){
+                                    $is_fav=$getresult->status;
+                                    //dd($is_fav);
+                                    $p['is_fav']=$is_fav;
+                                    //dd($p);
+                                }else{
+                                    $p['is_fav']=0;
+                                }
+                    }
+    
+                    $rating_count ="";
+                    foreach($product as $p){
+                        $pid = $p->id;
+                            $rates = DB::table('ratings')
+                            ->where('product_id', $pid)
+                            ->avg('rating_avg');
+        
+                            $num = (double) $rates;
+                            if(!empty($num)){
+                                $p['rating_count']=$num;
+                            }else{
+                                $p['rating_count']=0;
+                            }
+                    }
+                    
+                    $result['product_list'] = $product;
+                }
+                
+                return $this->sendResponse_catalog($sorting,'Product retrieved successfully.'); 
+            }
+            elseif($sorting_data == 3){
+                // $sorting = $sorting->orderBy('catalog_amount','desc')->get();
+                $sorting = $sorting->orderBy('catalog_amount','desc')->orderBy('id','desc')->paginate(10);
+
+                foreach($sorting as $result){
+                    $product_id = $result->product_id;
+                    $array_product_id = explode(',', $product_id);
+                    $product = Product::with('images')->whereIn('id',$array_product_id)->get();
+    
+                    $is_fav="";
+                    foreach($product as $p){
+                        $pid = $p->id;
+                            $getresult  = Favourites::
+                                where('user_id', '=' ,$request->user_id)
+                                ->where('product_id', '=' ,$pid)->first();
+                                if(!empty($getresult)){
+                                    $is_fav=$getresult->status;
+                                    //dd($is_fav);
+                                    $p['is_fav']=$is_fav;
+                                    //dd($p);
+                                }else{
+                                    $p['is_fav']=0;
+                                }
+                    }
+    
+                    $rating_count ="";
+                    foreach($product as $p){
+                        $pid = $p->id;
+                            $rates = DB::table('ratings')
+                            ->where('product_id', $pid)
+                            ->avg('rating_avg');
+        
+                            $num = (double) $rates;
+                            if(!empty($num)){
+                                $p['rating_count']=$num;
+                            }else{
+                                $p['rating_count']=0;
+                            }
+                    }
+                    
+                    $result['product_list'] = $product;
+                }
+                return $this->sendResponse_catalog($sorting,'Product retrieved successfully.'); 
+            }
+            elseif($sorting_data == 4){
+                //$rates = Rating::orderBy('rating_avg','desc')->get();
+                
+                return $this->sendResponse_catalog($getalldata,'No Rating.'); 
+            }
+            elseif($sorting_data == 5){
+                $cart = Cart::get();
+                foreach($cart as $c){
+                    $c_p_id[] = $c->product_id;
+                }
+                $fav = Favourites::get();
+                foreach($fav as $f){
+                    $f_p_id[] = $f->product_id;
+                }
+                // dd($c_p_id);
+                $i['c'] = $c_p_id;
+                $i['f'] = $f_p_id;
+                
+                // $sorting = $sorting->whereIn('id',$c_p_id)
+                // ->orwhereIn('id',$f_p_id)->where('sub_cat_id',$request->sub_cat_id)->get();
+                // $sorting = $sorting->get();
+                $is_fav="";
+                foreach($sorting as $p){
+                $pid = $p->id;
+                    $getresult  = Favourites::
+                        where('user_id', '=' ,$request->user_id)
+                        ->where('product_id', '=' ,$pid)->first();
+                        if(!empty($getresult)){
+                            $is_fav=$getresult->status;
+                            //dd($is_fav);
+                            $p['is_fav']=$is_fav;
+                            //dd($p);
+                        }else{
+                            $p['is_fav']=0;
+                        }
+                }
+                $rating_count ="";
+                foreach($sorting as $p){
+                    $pid = $p->id;
+                        $rates = DB::table('ratings')
+                        ->where('product_id', $pid)
+                        ->avg('rating_avg');
+
+                        $num = (double) $rates;
+                        if(!empty($num)){
+                            $p['rating_count']=$num;
+                        }else{
+                            $p['rating_count']=0;
+                        }
+                }
+                return $this->sendResponse_catalog($getalldata,'No cart,No favourite.'); 
+            }
+        // sorting end 
+
+        $getalldata = $sorting->orderBy('id','desc')->paginate(10);
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors()); 
+        }elseif(!empty($subcat)){
+            if(!empty($getalldata->count() > 0)){
+                return $this->sendResponse_catalog($getalldata,'Product Details retrieved successfully.');
+            }else{
+                    return $this->sendError('Product item not found.'); 
+                }   
+            }
+        else{
+            return $this->sendError('Subcategory not found.'); 
+        }
+    }
+
+    // retrive product by subcategory
+    public function product_details__(Request $request)
     {
         $input = $request->all();
         $validator = Validator::make($input,[
@@ -40,7 +310,7 @@ class ProductsController extends BaseController
         
        $filter = Product::with('images','size','color')
         ->where('sub_cat_id',$request->sub_cat_id)->orderBy('id', 'desc')->paginate(2);
-    //    ->where('sub_cat_id',$request->sub_cat_id)->get();
+        //    ->where('sub_cat_id',$request->sub_cat_id)->get();
        
        $sorting = Product::with('images','size','color')->where('sub_cat_id',$request->sub_cat_id);
        $sorting_all = $sorting->get();
@@ -403,8 +673,129 @@ class ProductsController extends BaseController
         }
     }
 
-    // retrive all product with sale
+    // retrive catalog wise product
     public function sale_product_list(Request $request)
+    {
+        if($request->user_id){
+        // $getresult  = Catalog::get();
+        $user = User::find($request->user_id);
+        if(!empty($user)){
+            $getalldata  = Catalog::orderBy('id','desc')->paginate(10);
+            if(!empty($getalldata)){
+                foreach($getalldata as $result){
+                    $product_id = $result->product_id;
+                    $array_product_id = explode(',', $product_id);
+                    $product = Product::with('images')->whereIn('id',$array_product_id)->get();
+
+                    $is_fav="";
+                    foreach($product as $p){
+                        $pid = $p->id;
+                            $getresult  = Favourites::
+                                where('user_id', '=' ,$request->user_id)
+                                ->where('product_id', '=' ,$pid)->first();
+                                if(!empty($getresult)){
+                                    $is_fav=$getresult->status;
+                                    //dd($is_fav);
+                                    $p['is_fav']=$is_fav;
+                                    //dd($p);
+                                }else{
+                                    $p['is_fav']=0;
+                                }
+                    }
+
+                    $rating_count ="";
+                    foreach($product as $p){
+                        $pid = $p->id;
+                            $rates = DB::table('ratings')
+                            ->where('product_id', $pid)
+                            ->avg('rating_avg');
+        
+                            $num = (double) $rates;
+                            if(!empty($num)){
+                                $p['rating_count']=$num;
+                            }else{
+                                $p['rating_count']=0;
+                            }
+                    }
+                    
+                    $result['product_list'] = $product;
+                }
+            $json['status'] = 1;
+            $json['message'] = 'Catalog list Loaded Successfully.';
+            $json['catalog_list'] = $getalldata;
+            }
+            else{
+                $json['status'] = 0;
+                $json['message'] = 'Data not Found.';
+            }
+        }
+        else{
+			$json['status'] = 0;
+			$json['message'] = 'User not Found.';
+		}
+        }
+        else{
+			$json['status'] = 0;
+			$json['message'] = 'Fill required Data.';
+		}
+        echo json_encode($json);
+    }
+
+    // retrive prodcut catalog wise 
+    public function sale_product_details(Request $request)
+    {
+        if($request->user_id && $request->sale_id){
+            $getresult  = Catalog::with('product')->where('id',$request->sale_id)->first();
+            // dd($getresult->product_id);
+
+            $array_product_id = explode(',', $getresult->product_id);
+            // dd($array_product_id);
+            $product = Product::with('images')->whereIn('id',$array_product_id)->get();
+
+            $is_fav="";
+            foreach($product as $p){
+            $pid = $p->id;
+                $getresult  = Favourites::
+                    where('user_id', '=' ,$request->user_id)
+                    ->where('product_id', '=' ,$pid)->first();
+                    if(!empty($getresult)){
+                        $is_fav=$getresult->status;
+                        //dd($is_fav);
+                        $p['is_fav']=$is_fav;
+                        //dd($p);
+                    }else{
+                        $p['is_fav']=0;
+                    }
+            }
+
+            $rating_count ="";
+            foreach($product as $p){
+                $pid = $p->id;
+                    $rates = DB::table('ratings')
+                    ->where('product_id', $pid)
+                    ->avg('rating_avg');
+
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $p['rating_count']=$num;
+                    }else{
+                        $p['rating_count']=0;
+                    }
+            }
+
+            if(!empty($product->count() > 0)){
+                        return $this->sendResponse_product($product,'Product retrieved successfully.');
+            }else{
+                return $this->sendError('Product not found.'); 
+            }
+        }
+        else{
+            return $this->sendError('Fill Required data!'); 
+        }
+    }
+
+    // retrive all product with sale
+    public function sale_product_list_old(Request $request)
     {
         if($request->user_id){
             // $today =\Carbon\Carbon::now()->format('Y-m-d H:i:s');
@@ -420,7 +811,7 @@ class ProductsController extends BaseController
         where('sale_end_date','>=',$today)->orderBy('id', 'desc')->paginate(10);
         // where('sale_end_date','>=',$today)->get();
 
-        $user = Favourites::where('user_id', '=' ,$request->user_id)->get();
+        $Favorite = Favourites::where('user_id', '=' ,$request->user_id)->get();
             
         // dd(!empty($getalldata->count() >0));
 
@@ -512,7 +903,7 @@ class ProductsController extends BaseController
     }
 
     // retrive all product details sale wise
-    public function sale_product_details(Request $request)
+    public function sale_product_details_old(Request $request)
     {
         if($request->user_id && $request->sale_id){
             // $data = 
@@ -886,7 +1277,7 @@ class ProductsController extends BaseController
         
     }
 
-    public function filter_product_get(Request $request)
+    public function filter_product_get_product(Request $request)
     {
         if (!empty($request->sub_cat_id)) {
             $filter = Product::with('size','color','brand')

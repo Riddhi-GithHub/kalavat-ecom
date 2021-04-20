@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Brand;
+use App\Models\Catalog;
 
 class Sub_Category extends Model
 {
@@ -20,6 +21,10 @@ class Sub_Category extends Model
 
    public function product(){
     return $this->hasMany(Product::class,'sub_cat_id');
+   }
+
+   public function catalog(){
+    return $this->hasMany(Catalog::class,'sub_category_id');
    }
 
    public function cate()

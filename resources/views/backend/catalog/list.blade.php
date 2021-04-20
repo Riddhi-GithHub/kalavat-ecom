@@ -60,10 +60,15 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>SubCategory</th>
                                 <th>Catalog Title</th>
                                 <th>Catalog Description</th>
+                                <th>Catalog Amount</th>
+                                <th>Catalog Size</th>
+                                <th>Catalog Brand</th>
+                                <th>Catalog Unique Id</th>
                                 <th>Catalog Image</th>
-                                <th>Created Date</th>
+                                {{-- <th>Created Date</th> --}}
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -71,11 +76,17 @@
                             @forelse($getrecord as $value)
                             <tr>
                                 <td> {{ $value->id }}</td>
+                                {{-- <td>{{ $value->category->cat_name }}</td> --}}
+                                <td>{{ ($value->subcategory ?  $value->subcategory->sub_cat_name : '' ) }}</td>
                                 <td>{{ $value->catalog_title }}</td>
                                 <td>{{ $value->catalog_description }}</td>
+                                <td>{{ $value->catalog_amount }}</td>
+                                <td>{{ $value->catalog_size }}</td>
+                                <td>{{ $value->catalog_brand }}</td>
+                                <td>{{ $value->catalog_unique_id }}</td>
                                 <td><img alt="image name" src="{{ url('public/images/catalog/'.$value->catalog_image) }}"
                                         style="width:70px; height:70px;" /></td>
-                                <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
+                                {{-- <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td> --}}
                                 <td>
                                     <form method="get" action="{{ route('catalog.delete', $value->id) }}">
                                         {{-- <a href="{{ route('catalog.show',$value->id) }}"

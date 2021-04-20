@@ -8,6 +8,7 @@ use App\Models\Sub_Category;
 use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Size;
+use App\Models\Catalog;
 
 class Category extends Model
 {
@@ -35,5 +36,9 @@ class Category extends Model
 
     public function size(){
         return $this->hasMany(Size::class,'size_cat_id');
+    }
+
+    public function catalog(){
+        return $this->hasMany(Catalog::class,'category_id');
     }
 }

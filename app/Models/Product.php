@@ -77,6 +77,9 @@ class Product extends Model
 
    public function catalog()
    {
-       return $this->hasMany('App\Models\Catalog',"product_id");
+    //    return $this->hasMany('App\Models\Catalog',"product_id");
+       return $this->hasMany(Catalog::class,"product_id");
    }  
+   
 }
+
