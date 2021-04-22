@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Sub_Category;
+use App\Models\Favourites;
 
 class Catalog extends Model
 {
@@ -26,5 +27,10 @@ class Catalog extends Model
     public function subcategory(){
         return $this->belongsTo(Sub_Category::class,'sub_category_id');
     }
+
+    public function favourite()
+    {
+        return $this->hasMany('App\Models\Favourites',"catalog_id");
+    }  
     
 }

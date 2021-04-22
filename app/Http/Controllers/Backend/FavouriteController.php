@@ -24,7 +24,8 @@ class FavouriteController extends Controller
 
         $getrecord = Favourites::orderBy('fav_id', 'desc')->select('favourites.*');
         $getrecord = $getrecord->join('users', 'favourites.user_id', '=', 'users.id');
-        $getrecord = $getrecord->join('products', 'favourites.product_id', '=', 'products.id');
+        $getrecord = $getrecord->join('catalogs', 'favourites.catalog_id', '=', 'catalogs.id');
+        // $getrecord = $getrecord->join('products', 'favourites.product_id', '=', 'products.id');
 
         // $getrecord = Product::orderBy('id', 'desc')->select('products.*');
         // $getrecord = $getrecord->join('categories', 'products.cat_id', '=', 'categories.id');
@@ -33,87 +34,24 @@ class FavouriteController extends Controller
 			$getrecord = $getrecord->where('fav_id', '=', $request->fav_id);
 		}
 
-        if (!empty($request->username)) {
-			$getrecord = $getrecord->where('username', 'like', '%' . $request->username . '%');
+        if (!empty($request->fullname)) {
+			$getrecord = $getrecord->where('fullname', 'like', '%' . $request->fullname . '%');
 		}
 
 		if (!empty($request->product_name)) {
 			$getrecord = $getrecord->where('product_name', 'like', '%' . $request->product_name . '%');
 		}
 	
+        if (!empty($request->catalog_title)) {
+			$getrecord = $getrecord->where('catalog_title', 'like', '%' . $request->catalog_title . '%');
+		}
+
     	// Search Box End
     	$getrecord = $getrecord->paginate(40);
     	$data['getrecord'] = $getrecord;
     	$data['meta_title'] = 'Favourite Product List';
     	return view('backend.favourite.list', $data);  
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
 
     public function favouriteitem_delete($id)
     {

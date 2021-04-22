@@ -36,11 +36,17 @@
                             <label>User Name</label>
                             <input type="text" class="form-control" value="{{ Request()->username }}" placeholder="User Name"
                                 name="username">
-                        </div> --}}
+                        </div> 
                         <div class="col-md-3">
                             <label>Product Name</label>
                             <input type="text" class="form-control" value="{{ Request()->product_name }}"
                                 placeholder="Product Name" name="product_name">
+                        </div>--}}
+                        
+                        <div class="col-md-3">
+                            <label>Catalog Title</label>
+                            <input type="text" class="form-control" value="{{ Request()->catalog_title }}"
+                                placeholder="Catalog Title" name="catalog_title">
                         </div>
                         <div style="clear: both;"></div>
                         <br>
@@ -62,7 +68,8 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Username</th>
-                                <th>Product Name</th>
+                                <th>Catalog Title</th>
+                                {{-- <th>Product Name</th> --}}
                                 <th>Created Date</th>
                                 {{-- <th>Action</th> --}}
                             </tr>
@@ -72,7 +79,8 @@
                             <tr>
                                 <td> {{ $value->fav_id }}</td>
                                 <td> {{ $value->user->fullname }}</td>
-                                <td>{{ $value->product->product_name }}</td>
+                                <td>{{ $value->catalog->catalog_title }}</td>
+                                {{-- <td>{{ $value->product->product_name }}</td> --}}
                                 <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
                                 {{-- <td>
                                     <form method="get" action="{{ route('favouriteitem.delete', $value->fav_id) }}">

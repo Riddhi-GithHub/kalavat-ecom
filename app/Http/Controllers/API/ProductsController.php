@@ -26,37 +26,7 @@ use Carbon\Carbon;
 class ProductsController extends BaseController
 {
 
-    public function filter_product_get(Request $request)
-    {
-        if (!empty($request->sub_category_id)) {
-            $sorting  = Catalog::where('sub_category_id',$request->sub_category_id);
-            $getalldata = $sorting->get();
-
-            $min = $getalldata->min('catalog_amount');
-            $max = $getalldata->max('catalog_amount');
-            $size = "s";
-            $brand = "new";
-            // if($size && $color && $brand && $min && $max){
-            if($size && $brand && $min && $max){
-                $json['success'] = 1;
-                $json['message'] = 'All loaded successfully.';
-                $json['min_price'] = $min;
-                $json['max_price'] = $max;
-                $json['get_size'] = $size;
-                $json['get_brand'] = $brand;
-                $json['catalog_list'] = $getalldata;
-            }
-            else{
-                $json['success'] = 0;
-                $json['message'] = 'Data not found';
-            }
-        }
-        else{
-            $json['success'] = 0;
-            $json['message'] = 'Fill sub_cat_id';
-        }
-        echo json_encode($json);
-    }
+  
 
     public function product_details(Request $request)
     {
@@ -71,46 +41,7 @@ class ProductsController extends BaseController
             // $getalldata = $sorting->get();
             $getalldata = $sorting->orderBy('id','desc')->paginate(10);
             $sorting_data = $request->sorting_data; 
-            
-            foreach($getalldata as $result){
-                $product_id = $result->product_id;
-                $array_product_id = explode(',', $product_id);
-                $product = Product::with('images')->whereIn('id',$array_product_id)->get();
 
-                $is_fav="";
-                foreach($product as $p){
-                    $pid = $p->id;
-                        $getresult  = Favourites::
-                            where('user_id', '=' ,$request->user_id)
-                            ->where('product_id', '=' ,$pid)->first();
-                            if(!empty($getresult)){
-                                $is_fav=$getresult->status;
-                                //dd($is_fav);
-                                $p['is_fav']=$is_fav;
-                                //dd($p);
-                            }else{
-                                $p['is_fav']=0;
-                            }
-                }
-
-                $rating_count ="";
-                foreach($product as $p){
-                    $pid = $p->id;
-                        $rates = DB::table('ratings')
-                        ->where('product_id', $pid)
-                        ->avg('rating_avg');
-    
-                        $num = (double) $rates;
-                        if(!empty($num)){
-                            $p['rating_count']=$num;
-                        }else{
-                            $p['rating_count']=0;
-                        }
-                }
-                
-                $result['product_list'] = $product;
-            }
-        
         // start filter
             if(!empty($request->size)){
                 $size = explode(",", $request->size);  
@@ -134,11 +65,51 @@ class ProductsController extends BaseController
         // sorting start
             elseif($sorting_data == 1){
                 // $sorting = $sorting->orderBy('id','desc')->get();
-                return $this->sendResponse_catalog($getalldata,'Product retrieved successfully.'); 
+                $sorting = $sorting->orderBy('id','desc')->paginate(10);
+                foreach($sorting as $result){
+                    $product_id = $result->product_id;
+                    $array_product_id = explode(',', $product_id);
+                    $product = Product::with('images')->whereIn('id',$array_product_id)->get();
+    
+                    $is_fav="";
+                    foreach($product as $p){
+                        $pid = $p->id;
+                            $getresult  = Favourites::
+                                where('user_id', '=' ,$request->user_id)
+                                ->where('product_id', '=' ,$pid)->first();
+                                if(!empty($getresult)){
+                                    $is_fav=$getresult->status;
+                                    //dd($is_fav);
+                                    $p['is_fav']=$is_fav;
+                                    //dd($p);
+                                }else{
+                                    $p['is_fav']=0;
+                                }
+                    }
+    
+                    $rating_count ="";
+                    foreach($product as $p){
+                        $pid = $p->id;
+                            $rates = DB::table('ratings')
+                            ->where('product_id', $pid)
+                            ->avg('rating_avg');
+        
+                            $num = (double) $rates;
+                            if(!empty($num)){
+                                $p['rating_count']=$num;
+                            }else{
+                                $p['rating_count']=0;
+                            }
+                    }
+                    
+                    $result['product_list'] = $product;
+                }
+                return $this->sendResponse_catalog($sorting,'Newest Product retrieved successfully.'); 
             }
             elseif($sorting_data == 2){
                 // $sorting = $sorting->orderBy('catalog_amount')->get();
-                $sorting = $sorting->orderBy('catalog_amount')->orderBy('id','desc')->paginate(10);
+                $sorting = $sorting->orderBy('catalog_amount')->paginate(10);
+                // $sorting = $sorting->orderBy('catalog_amount')->orderBy('id','desc')->paginate(10);
                 foreach($sorting as $result){
                     $product_id = $result->product_id;
                     $array_product_id = explode(',', $product_id);
@@ -178,11 +149,12 @@ class ProductsController extends BaseController
                     $result['product_list'] = $product;
                 }
                 
-                return $this->sendResponse_catalog($sorting,'Product retrieved successfully.'); 
+                return $this->sendResponse_catalog($sorting,'Lowest Price wise Product retrieved successfully.'); 
             }
             elseif($sorting_data == 3){
                 // $sorting = $sorting->orderBy('catalog_amount','desc')->get();
-                $sorting = $sorting->orderBy('catalog_amount','desc')->orderBy('id','desc')->paginate(10);
+                $sorting = $sorting->orderBy('catalog_amount','desc')->paginate(10);
+                // $sorting = $sorting->orderBy('catalog_amount','desc')->orderBy('id','desc')->paginate(10);
 
                 foreach($sorting as $result){
                     $product_id = $result->product_id;
@@ -222,7 +194,7 @@ class ProductsController extends BaseController
                     
                     $result['product_list'] = $product;
                 }
-                return $this->sendResponse_catalog($sorting,'Product retrieved successfully.'); 
+                return $this->sendResponse_catalog($sorting,'Highest Price wise Product retrieved successfully.'); 
             }
             elseif($sorting_data == 4){
                 //$rates = Rating::orderBy('rating_avg','desc')->get();
@@ -276,18 +248,60 @@ class ProductsController extends BaseController
                 }
                 return $this->sendResponse_catalog($getalldata,'No cart,No favourite.'); 
             }
-        // sorting end 
 
-        $getalldata = $sorting->orderBy('id','desc')->paginate(10);
+        // sorting end 
+        // dd($getalldata);
+        // dd(!empty($getalldata->count() > 0));
+
+        // $getalldata = $sorting->orderBy('id','desc')->paginate(10);
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors()); 
         }elseif(!empty($subcat)){
             if(!empty($getalldata->count() > 0)){
+                $getalldata = $sorting->orderBy('id','desc')->paginate(10);
+                foreach($getalldata as $result){
+                    $product_id = $result->product_id;
+                    $array_product_id = explode(',', $product_id);
+                    $product = Product::with('images')->whereIn('id',$array_product_id)->get();
+    
+                    $is_fav="";
+                    foreach($product as $p){
+                        $pid = $p->id;
+                            $getresult  = Favourites::
+                                where('user_id', '=' ,$request->user_id)
+                                ->where('product_id', '=' ,$pid)->first();
+                                if(!empty($getresult)){
+                                    $is_fav=$getresult->status;
+                                    //dd($is_fav);
+                                    $p['is_fav']=$is_fav;
+                                    //dd($p);
+                                }else{
+                                    $p['is_fav']=0;
+                                }
+                    }
+    
+                    $rating_count ="";
+                    foreach($product as $p){
+                        $pid = $p->id;
+                            $rates = DB::table('ratings')
+                            ->where('product_id', $pid)
+                            ->avg('rating_avg');
+        
+                            $num = (double) $rates;
+                            if(!empty($num)){
+                                $p['rating_count']=$num;
+                            }else{
+                                $p['rating_count']=0;
+                            }
+                    }
+                    
+                    $result['product_list'] = $product;
+                }
                 return $this->sendResponse_catalog($getalldata,'Product Details retrieved successfully.');
             }else{
                     return $this->sendError('Product item not found.'); 
                 }   
-            }
+            } 
         else{
             return $this->sendError('Subcategory not found.'); 
         }
@@ -1275,6 +1289,56 @@ class ProductsController extends BaseController
         
         echo json_encode($json);
         
+    }
+
+    public function filter_product_get(Request $request)
+    {
+        if (!empty($request->sub_category_id)) {
+            $sorting  = Catalog::where('sub_category_id',$request->sub_category_id);
+            $getalldata = $sorting->get();
+
+            $min = $getalldata->min('catalog_amount');
+            $max = $getalldata->max('catalog_amount');
+
+            if($getalldata->count()>0){
+            foreach($getalldata as $key=>$singledata)
+            {
+                $size[] = array('size'=>$singledata->catalog_size);
+                $brand[] = array('brand'=>$singledata->catalog_brand);
+                // $size[] = $singledata->catalog_size;
+                // $brand[] = $singledata->catalog_brand;
+            }
+
+            // $result = array();
+            // $result['new'] = $size;
+            // dd($size);
+            // $size = "s";
+            // $brand = "new";
+            // if($size && $color && $brand && $min && $max){
+            if($size && $brand && $min && $max){
+                $json['success'] = 1;
+                $json['message'] = 'All loaded successfully.';
+                $json['min_price'] = $min;
+                $json['max_price'] = $max;
+                $json['get_size'] = $size;
+                $json['get_brand'] = $brand;
+                // $json['catalog_list'] = $getalldata;
+            }
+            else{
+                $json['success'] = 0;
+                $json['message'] = 'Data not found';
+            }
+        }
+        else{
+            $json['success'] = 0;
+            $json['message'] = 'subcategory  not found';
+        }
+        }
+        else{
+            $json['success'] = 0;
+            $json['message'] = 'Fill sub_cat_id';
+        }
+        echo json_encode($json);
     }
 
     public function filter_product_get_product(Request $request)
