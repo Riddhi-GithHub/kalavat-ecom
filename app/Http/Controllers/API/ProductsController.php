@@ -17,6 +17,7 @@ use App\Models\Favourites;
 use App\Models\ProductDetails;
 use App\Models\Sale;
 use App\Models\Catalog;
+use App\Models\Catalog_rating;
 use App\User;
 use Validator;
 use DB;
@@ -25,8 +26,89 @@ use Carbon\Carbon;
 
 class ProductsController extends BaseController
 {
+    # share product or catalog
+    public function app_share_item(Request $request)
+    {
+        if($request->product_id || $request->catalog_id)
+        {
+            $product_data = Product::with('images')->find($request->product_id);
+            $catalog_data = Catalog::find($request->catalog_id);
 
-  
+            if(!empty($product_data))
+            {
+                $pid = $product_data->id;
+                $rates = DB::table('ratings')
+                ->where('product_id', $pid)
+                ->avg('rating_avg');
+
+                $num = (double) $rates;
+                if(!empty($num)){
+                    $product_data['rating_count']=$num;
+                }else{
+                    $product_data['rating_count']=0;
+                }
+                return $this->sendResponse_product($product_data,'Product share successfully.');
+            }elseif(!empty($catalog_data)){
+
+                        # catalog rating
+                        $cid = $catalog_data->id;
+                        $rates = DB::table('catalog_rating')
+                        ->where('rating_catalog_id', $cid)
+                        ->avg('catalog_rating_avg');
+
+                        $num = (double) $rates;
+                        if(!empty($num)){
+                            $catalog_data['catalog_rating_count']=$num;
+                        }else{
+                            $catalog_data['catalog_rating_count']=0;
+                        }
+                        # catalog favourite
+                        $fid = $catalog_data->id;
+                        $getresult  = Favourites::
+                            where('user_id', '=' ,$request->user_id)
+                            ->where('catalog_id', '=' ,$fid)->first();
+
+                            if(!empty($getresult)){
+                                $is_fav=$getresult->status;
+                                $catalog_data['catalog_is_fav']=$is_fav;
+                            }else{
+                                $catalog_data['catalog_is_fav']=0;
+                            }
+
+                        $product_id = $catalog_data->product_id;
+                        $array_product_id = explode(',', $product_id);
+                        $product = Product::with('images')->whereIn('id',$array_product_id)->get();
+                        
+                        $rating_count ="";
+                        foreach($product as $p){
+                            $pid = $p->id;
+                                $rates = DB::table('ratings')
+                                ->where('product_id', $pid)
+                                ->avg('rating_avg');
+            
+                                $num = (double) $rates;
+                                if(!empty($num)){
+                                    $p['rating_count']=$num;
+                                }else{
+                                    $p['rating_count']=0;
+                                }
+                        }
+
+                        $catalog_data['product_list'] = $product;
+                // return $this->sendResponse_product($catalog_data,'Catalog share successfully.');
+                $json['status'] = 1;
+                $json['message'] = 'Catalog share successfully.';
+                $json['catalog_list'] = $catalog_data;
+            }
+            else{
+                return $this->sendError('Data not found.'); 
+            }
+        }
+        else{
+            return $this->sendError('Fill Required data!'); 
+        }
+        echo json_encode($json);
+    }
 
     public function product_details(Request $request)
     {
@@ -39,7 +121,7 @@ class ProductsController extends BaseController
             $subcat = Sub_Category::find($request->input('sub_category_id'));
             $sorting  = Catalog::where('sub_category_id',$request->sub_category_id);
             // $getalldata = $sorting->get();
-            $getalldata = $sorting->orderBy('id','desc')->paginate(10);
+            $getalldata = $sorting->orderBy('id','desc')->paginate(20);
             $sorting_data = $request->sorting_data; 
 
         // start filter
@@ -65,8 +147,34 @@ class ProductsController extends BaseController
         // sorting start
             elseif($sorting_data == 1){
                 // $sorting = $sorting->orderBy('id','desc')->get();
-                $sorting = $sorting->orderBy('id','desc')->paginate(10);
+                $sorting = $sorting->orderBy('id','desc')->paginate(20);
                 foreach($sorting as $result){
+                      # catalog rating
+                      $cid = $result->id;
+                      $rates = DB::table('catalog_rating')
+                      ->where('rating_catalog_id', $cid)
+                      ->avg('catalog_rating_avg');
+          
+                        $num = (double) $rates;
+                        if(!empty($num)){
+                            $result['catalog_rating_count']=$num;
+                        }else{
+                            $result['catalog_rating_count']=0;
+                        }
+                      # catalog favourite
+                      $fid = $result->id;
+                      $getresult  = Favourites::
+                          where('user_id', '=' ,$request->user_id)
+                          ->where('catalog_id', '=' ,$fid)->first();
+  
+                        if(!empty($getresult)){
+                            $is_fav=$getresult->status;
+                            $result['catalog_is_fav']=$is_fav;
+                        }else{
+                            $result['catalog_is_fav']=0;
+                        }
+
+                    #product data 
                     $product_id = $result->product_id;
                     $array_product_id = explode(',', $product_id);
                     $product = Product::with('images')->whereIn('id',$array_product_id)->get();
@@ -108,9 +216,35 @@ class ProductsController extends BaseController
             }
             elseif($sorting_data == 2){
                 // $sorting = $sorting->orderBy('catalog_amount')->get();
-                $sorting = $sorting->orderBy('catalog_amount')->paginate(10);
-                // $sorting = $sorting->orderBy('catalog_amount')->orderBy('id','desc')->paginate(10);
+                $sorting = $sorting->orderBy('catalog_amount')->paginate(20);
+                // $sorting = $sorting->orderBy('catalog_amount')->orderBy('id','desc')->paginate(20);
                 foreach($sorting as $result){
+
+                      # catalog rating
+                      $cid = $result->id;
+                      $rates = DB::table('catalog_rating')
+                      ->where('rating_catalog_id', $cid)
+                      ->avg('catalog_rating_avg');
+          
+                        $num = (double) $rates;
+                        if(!empty($num)){
+                            $result['catalog_rating_count']=$num;
+                        }else{
+                            $result['catalog_rating_count']=0;
+                        }
+                      # catalog favourite
+                      $fid = $result->id;
+                      $getresult  = Favourites::
+                          where('user_id', '=' ,$request->user_id)
+                          ->where('catalog_id', '=' ,$fid)->first();
+  
+                        if(!empty($getresult)){
+                            $is_fav=$getresult->status;
+                            $result['catalog_is_fav']=$is_fav;
+                        }else{
+                            $result['catalog_is_fav']=0;
+                        }   
+                    # product data 
                     $product_id = $result->product_id;
                     $array_product_id = explode(',', $product_id);
                     $product = Product::with('images')->whereIn('id',$array_product_id)->get();
@@ -153,29 +287,38 @@ class ProductsController extends BaseController
             }
             elseif($sorting_data == 3){
                 // $sorting = $sorting->orderBy('catalog_amount','desc')->get();
-                $sorting = $sorting->orderBy('catalog_amount','desc')->paginate(10);
-                // $sorting = $sorting->orderBy('catalog_amount','desc')->orderBy('id','desc')->paginate(10);
-
+                $sorting = $sorting->orderBy('catalog_amount','desc')->paginate(20);
+                // $sorting = $sorting->orderBy('catalog_amount','desc')->orderBy('id','desc')->paginate(20);
                 foreach($sorting as $result){
+                     # catalog rating
+                     $cid = $result->id;
+                     $rates = DB::table('catalog_rating')
+                     ->where('rating_catalog_id', $cid)
+                     ->avg('catalog_rating_avg');
+         
+                       $num = (double) $rates;
+                       if(!empty($num)){
+                           $result['catalog_rating_count']=$num;
+                       }else{
+                           $result['catalog_rating_count']=0;
+                       }
+                   # catalog favourite
+                     $fid = $result->id;
+                     $getresult  = Favourites::
+                         where('user_id', '=' ,$request->user_id)
+                         ->where('catalog_id', '=' ,$fid)->first();
+ 
+                       if(!empty($getresult)){
+                           $is_fav=$getresult->status;
+                           $result['catalog_is_fav']=$is_fav;
+                       }else{
+                           $result['catalog_is_fav']=0;
+                       }  
+
+                    # product data 
                     $product_id = $result->product_id;
                     $array_product_id = explode(',', $product_id);
                     $product = Product::with('images')->whereIn('id',$array_product_id)->get();
-    
-                    $is_fav="";
-                    foreach($product as $p){
-                        $pid = $p->id;
-                            $getresult  = Favourites::
-                                where('user_id', '=' ,$request->user_id)
-                                ->where('product_id', '=' ,$pid)->first();
-                                if(!empty($getresult)){
-                                    $is_fav=$getresult->status;
-                                    //dd($is_fav);
-                                    $p['is_fav']=$is_fav;
-                                    //dd($p);
-                                }else{
-                                    $p['is_fav']=0;
-                                }
-                    }
     
                     $rating_count ="";
                     foreach($product as $p){
@@ -198,6 +341,50 @@ class ProductsController extends BaseController
             }
             elseif($sorting_data == 4){
                 //$rates = Rating::orderBy('rating_avg','desc')->get();
+                $rates = Catalog_rating::orderBy('catalog_rating_avg','desc')->get();
+                foreach($rates as $r){
+                    $p_id = $r->rating_catalog_id ;
+                // dd($p_id);
+                $sorting = $sorting->whereIn('id',$p_id)->orderBy('id','desc')->paginate(20);
+                 # product data 
+                 $product_id = $result->product_id;
+                 $array_product_id = explode(',', $product_id);
+                 $product = Product::with('images')->whereIn('id',$array_product_id)->get();
+
+                $rating_count ="";
+                foreach($sorting as $p){
+                    $pid = $p->id;
+                        $rates = DB::table('catalog_rating')
+                        ->where('rating_catalog_id', $pid)
+                        ->avg('catalog_rating_avg');
+    
+                        $num = (double) $rates;
+                        if(!empty($num)){
+                            $p['rating_count']=$num;
+                        }else{
+                            $p['rating_count']=0;
+                        }
+                }
+                $is_fav="";
+                foreach($sorting as $p){
+                    $pid = $p->id;
+                        $getresult  = Favourites::
+                            where('user_id', '=' ,$request->user_id)
+                            ->where('catalog_id', '=' ,$pid)->first();
+                            if(!empty($getresult)){
+                                $is_fav=$getresult->status;
+                                //dd($is_fav);
+                                $p['is_fav']=$is_fav;
+                                //dd($p);
+                            }else{
+                                $p['is_fav']=0;
+                            }
+                }
+                $r['product_list'] = $product;
+            }
+
+                return $this->sendResponse_product($sorting,'Product retrieved successfully.'); 
+    
                 
                 return $this->sendResponse_catalog($getalldata,'No Rating.'); 
             }
@@ -253,13 +440,40 @@ class ProductsController extends BaseController
         // dd($getalldata);
         // dd(!empty($getalldata->count() > 0));
 
-        // $getalldata = $sorting->orderBy('id','desc')->paginate(10);
+        // $getalldata = $sorting->orderBy('id','desc')->paginate(20);
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors()); 
         }elseif(!empty($subcat)){
             if(!empty($getalldata->count() > 0)){
-                $getalldata = $sorting->orderBy('id','desc')->paginate(10);
+                $getalldata = $sorting->orderBy('id','desc')->paginate(20);
                 foreach($getalldata as $result){
+                      # catalog rating
+                      $cid = $result->id;
+                      $rates = DB::table('catalog_rating')
+                      ->where('rating_catalog_id', $cid)
+                      ->avg('catalog_rating_avg');
+          
+                        $num = (double) $rates;
+                        if(!empty($num)){
+                            $result['catalog_rating_count']=$num;
+                        }else{
+                            $result['catalog_rating_count']=0;
+                        }
+                    # catalog favourite
+                      $fid = $result->id;
+                      $getresult  = Favourites::
+                          where('user_id', '=' ,$request->user_id)
+                          ->where('catalog_id', '=' ,$fid)->first();
+  
+                        if(!empty($getresult)){
+                            $is_fav=$getresult->status;
+                            $result['catalog_is_fav']=$is_fav;
+                        }else{
+                            $result['catalog_is_fav']=0;
+                        }  
+ 
+                     # product data 
+
                     $product_id = $result->product_id;
                     $array_product_id = explode(',', $product_id);
                     $product = Product::with('images')->whereIn('id',$array_product_id)->get();
@@ -694,28 +908,55 @@ class ProductsController extends BaseController
         // $getresult  = Catalog::get();
         $user = User::find($request->user_id);
         if(!empty($user)){
-            $getalldata  = Catalog::orderBy('id','desc')->paginate(10);
+            $getalldata  = Catalog::orderBy('id','desc')->paginate(20);
+        
             if(!empty($getalldata)){
                 foreach($getalldata as $result){
+                    # catalog rating
+                    $cid = $result->id;
+                    $rates = DB::table('catalog_rating')
+                    ->where('rating_catalog_id', $cid)
+                    ->avg('catalog_rating_avg');
+        
+                    $num = (double) $rates;
+                    if(!empty($num)){
+                        $result['catalog_rating_count']=$num;
+                    }else{
+                        $result['catalog_rating_count']=0;
+                    }
+                    # catalog favourite
+                    $fid = $result->id;
+                    $getresult  = Favourites::
+                        where('user_id', '=' ,$request->user_id)
+                        ->where('catalog_id', '=' ,$fid)->first();
+
+                        if(!empty($getresult)){
+                            $is_fav=$getresult->status;
+                            $result['catalog_is_fav']=$is_fav;
+                        }else{
+                            $result['catalog_is_fav']=0;
+                        }
+
+                    # product data 
                     $product_id = $result->product_id;
                     $array_product_id = explode(',', $product_id);
                     $product = Product::with('images')->whereIn('id',$array_product_id)->get();
 
-                    $is_fav="";
-                    foreach($product as $p){
-                        $pid = $p->id;
-                            $getresult  = Favourites::
-                                where('user_id', '=' ,$request->user_id)
-                                ->where('product_id', '=' ,$pid)->first();
-                                if(!empty($getresult)){
-                                    $is_fav=$getresult->status;
-                                    //dd($is_fav);
-                                    $p['is_fav']=$is_fav;
-                                    //dd($p);
-                                }else{
-                                    $p['is_fav']=0;
-                                }
-                    }
+                    // $is_fav="";
+                    // foreach($product as $p){
+                    //     $pid = $p->id;
+                    //         $getresult  = Favourites::
+                    //             where('user_id', '=' ,$request->user_id)
+                    //             ->where('product_id', '=' ,$pid)->first();
+                    //             if(!empty($getresult)){
+                    //                 $is_fav=$getresult->status;
+                    //                 //dd($is_fav);
+                    //                 $p['is_fav']=$is_fav;
+                    //                 //dd($p);
+                    //             }else{
+                    //                 $p['is_fav']=0;
+                    //             }
+                    // }
 
                     $rating_count ="";
                     foreach($product as $p){

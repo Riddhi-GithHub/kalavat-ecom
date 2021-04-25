@@ -25,9 +25,6 @@
 
                     <a href="{{ route('product.import_excel') }}" class="btn btn-primary" title="Add New Import Excel"><i class="fa fa-upload"></i>&nbsp;&nbsp;<span class="bold">Add New Import Excel </span></a> 
 
-                    
-
-
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Product Search</h3>
@@ -90,7 +87,7 @@
                                 <th>Total Price</th>
                                 <th>Image</th>
                                 {{-- <th>Rating</th> --}}
-                                <th>Created Date</th>
+                                {{-- <th>Created Date</th> --}}
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -105,10 +102,21 @@
                                 <td>{{ $value->offer }}</td>
                                 <td>{{ $value['price'] * $value['quantity'] -
                                     ($value['price']*  $value->offer/100) }}</td>
-                                <td><img alt="image name" src="{{ url('public/images/product/'.$value->img) }}" style="width:70px; height:70px;" /></td>
+                                <td>
+                                    {{-- {{ dd($item) }} --}}
+                                    {{-- {{ dd($extension[1] == $imageExtensions) }} --}}
+                                    @if(($extension[$key] == 'jpg'))
+                                        <img alt="image name" src="{{ url('public/images/product/'.$value->img) }}" 
+                                        style="width:70px; height:70px;" />
+                                    @else 
+                                      <video src="{{ url('public/images/product/'.$value->img) }}" style="width:70px; height:70px;"> 
+                                         {{-- <source src="{{ url('public/images/product/'.$value->img) }}" type="video/ogg">  --}}
+                                    @endif
+                                
+                                </td>
                                 {{-- <td>{{ $rating[$key] }}</td> --}}
  
-                                <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td>
+                                {{-- <td> {{ $value->created_at->format('d-m-Y h:i A') }}</td> --}}
                                 <td>
                                     <form method="get" action="{{ route('product.delete', $value->id) }}">
                                         <a href="{{ route('product.show',$value->id) }}"

@@ -24,9 +24,7 @@
                </div>
                <div class="panel-body">
 
-
-
-                  
+                
                    <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Select Category <span style="color:red">*</span></label>
                      <div class="col-md-8 col-xs-12">

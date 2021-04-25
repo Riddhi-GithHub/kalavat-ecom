@@ -39,23 +39,30 @@ class ProductController extends Controller
     	if (!empty($request->id)) {
 			$getrecord = $getrecord->where('products.id', '=', $request->id);
 		}
-		
         if (!empty($request->cat_name)) {
 			$getrecord = $getrecord->where('cat_name', 'like', '%' . $request->cat_name . '%');
 		}
-
 		if (!empty($request->product_name)) {
 			$getrecord = $getrecord->where('product_name', 'like', '%' . $request->product_name . '%');
 		}
         if (!empty($request->price)) {
 			$getrecord = $getrecord->where('price', '=', $request->price);
 		}
-	
     	// Search Box End
     	$getrecord = $getrecord->paginate(40);
-    	$data['getrecord'] = $getrecord;
-    	$data['meta_title'] = 'Product List';
-    	return view('backend.product.list', $data);
+        $imageExtensions = ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'svg', 'svgz', 'cgm', 'djv', 'djvu', 'ico', 'ief','jpe', 'pbm', 'pgm', 'pnm', 'ppm', 'ras', 'rgb', 'tif', 'tiff', 'wbmp', 'xbm', 'xpm', 'xwd'];
+
+        foreach($getrecord  as $record){
+            $i =$record->img;
+            $explodeImage = explode('.', $i);
+            $extension[] = end($explodeImage);
+        } 
+        //   dd($extension[1] == 'jpg');
+        $data['imageExtensions'] = $imageExtensions;
+        $data['extension'] = $extension;
+        $data['getrecord'] = $getrecord;
+        $data['meta_title'] = 'Product List';
+        return view('backend.product.list', $data);
     }
 
     /**
@@ -106,7 +113,9 @@ class ProductController extends Controller
             'color' => 'required|max:30',
             'size' => 'required|max:30',
             'brand' => 'required|max:30',
-            'images' => 'required|max:15000',
+            'images' => 'required',
+                    // 'images' => 'required|mimes:jpeg,png,bmp,gif,svg|mimetypes:video/mp4|max:200000',
+                    // 'images' => 'required|mimes:jpeg,png,bmp,gif,svg,mp4,|max:200000',
             'sort_desc'      => 'required',
             // 'title'      => 'required',
             'address'      => 'required',
@@ -152,6 +161,7 @@ class ProductController extends Controller
         $product_insert->material_and_care    = $request->material_and_care;
         $product_insert->item_model_num    = $num;
         $product_insert->offer    = $request->offer;
+
         $product_insert->save();
 
         if($request->color) {
@@ -213,18 +223,39 @@ class ProductController extends Controller
 
         if($request->hasfile('images')) {
             foreach($request->file('images') as $file){
-                    // $image_name = time().'-'.$file->getClientOriginalName();
                     $no = rand(1111,9999);
-                    $image_name = time().$no.'.jpg';
+                // $image_name = $no.'-'.$file->getClientOriginalName();
+                $image_ext = $file->getClientOriginalName();
+
+                    $explodeImage = explode('.', $image_ext);
+                    $extension = end($explodeImage);
+                // dd($extension);
+                // $image_name = time().$no.'.jpg';
+                if($extension == 'mp4' || $extension == 'mov' || $extension == 'flv' 
+                || $extension == 'm3u8' || $extension == 'ts' || $extension == '3gp' 
+                || $extension == 'avi' || $extension == 'wmv' ){
+                    $image_name = time().$no.'.mp4';
                     $file->move(public_path('images/product'), $image_name);
-                    // $input['images']=json_encode($data);
                     $data[] = $image_name;
                     $image =  product_images::create([
                         'product_id'        => $product_insert->id,
                         'images'             => $image_name,
                         ]);
+                }else{
+                    $image_name = time().$no.'.jpg';
+                    $file->move(public_path('images/product'), $image_name);
+                    $data[] = $image_name;
+                    $image =  product_images::create([
+                        'product_id'        => $product_insert->id,
+                        'images'             => $image_name,
+                        ]);
+                }
+                // dd($image_name);
+                 // $input['images']=json_encode($data);
             }
         }
+
+        // dd($data[0]);
 
         if(!empty($request->option)) {
             foreach ($request->option as $value) {
