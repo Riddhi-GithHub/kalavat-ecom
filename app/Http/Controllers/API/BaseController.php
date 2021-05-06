@@ -25,8 +25,8 @@ class BaseController extends Controller
     public function sendResponse_category($result, $message)
     {
     	$response = [
-            'success' => 1,
-            'message' => $message,
+        'success' => 1,
+        'message' => $message,
             'category_list'    => $result,
         ];
         return response()->json($response, 200);

@@ -290,10 +290,18 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $data['getproduct'] = Product::with('images','color')->find($id);
+        $getproduct = Product::with('images','color')->find($id);
+        $data['getproduct'] = $getproduct;
         $data['getcolor'] = Color::where('color_product_id',$id)->get();
         $data['getsize'] = Size::where('size_product_id',$id)->get();
         $data['getbrand'] = Brand::where('brand_product_id',$id)->get();
+
+        $imageExtensions = ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'svg', 'svgz', 'cgm', 'djv', 'djvu', 'ico', 'ief','jpe', 'pbm', 'pgm', 'pnm', 'ppm', 'ras', 'rgb', 'tif', 'tiff', 'wbmp', 'xbm', 'xpm', 'xwd'];
+        $i = $getproduct->img;
+        $explodeImage = explode('.', $i);
+        $extension = end($explodeImage);
+      
+        $data['extension'] = $extension;
         $data['meta_title'] = "View product";
         return view('backend.product.view', $data);
     }
@@ -309,6 +317,7 @@ class ProductController extends Controller
         $data['getcategory'] = Category::get();
         $data['getsubcategory'] = Sub_Category::get();
         $data['getsale'] = Sale::get();
+        $getimages = Product_images::where('product_id',$id)->get();
 
         $mycolor = 'Red,Blue,Black,White,Pink,Yellow,Orange,Green';
         $data['getallcolor'] = explode(',', $mycolor);
@@ -338,13 +347,18 @@ class ProductController extends Controller
         $data['getproductdetail'] = ProductDetails::where('product_id',$id)->get();
         // $data['getproduct'] = Product::with('category','manufacturing','brand','size','color')->find($id);
         $data['getproduct'] = Product::with('category','color','subcategory','sale','manufacturing','productdetails')->find($id);
-        // dd($data);
-        $data['getimages'] = Product_images::where('product_id',$id)->get();
+        $data['getimages'] = $getimages;
+
+        foreach($getimages as $result){
+            $i = $result->images;
+            $explodeImage = explode('.', $i);
+            $extension[] = end($explodeImage);
+        }   
+
+        // dd($extension);
+        $data['extension'] = $extension;
         $data['meta_title'] = "Edit Product";
         return view('backend.product.edit', $data);
-        // $category = Category::get();
-        // $item = Product::with('category')->find($id);  
-        // return view('ProductItem.edit',compact('item','category'));
     }
 
     // delete product details edit time
@@ -353,7 +367,6 @@ class ProductController extends Controller
         $delete_record->delete();
         return redirect()->back()->with('error', 'Record successfully deleted!');
     }
-
 
     public function update(Request $request, $id)
     {
@@ -401,20 +414,47 @@ class ProductController extends Controller
                 foreach($request->file('images') as $file){
                     // $image_name = time().'-'.$file->getClientOriginalName();
                     $no = rand(1111,9999);
-                    $image_name = time().$no.'.jpg';
-                    $file->move(public_path('images/product'), $image_name);
-                    // $input['images']=json_encode($data);
-                    $data[] = $image_name;
-                        $images_new =  product_images::create([
+                    // $image_name = time().$no.'.jpg';
+                    // $file->move(public_path('images/product'), $image_name);
+                    // // $input['images']=json_encode($data);
+                    // $data[] = $image_name;
+                    //     $images_new =  product_images::create([
+                    //         'product_id'        => $id,
+                    //         'images'             => $image_name,
+                    //         ]);
+                    // }
+                    // $images_new->save();
+
+                    $image_ext = $file->getClientOriginalName();
+
+                    $explodeImage = explode('.', $image_ext);
+                    $extension = end($explodeImage);
+                //  dd($extension);
+                 // $image_name = time().$no.'.jpg';
+                    if($extension == 'mp4' || $extension == 'mov' || $extension == 'flv' 
+                    || $extension == 'm3u8' || $extension == 'ts' || $extension == '3gp' 
+                    || $extension == 'avi' || $extension == 'wmv' ){
+                        $image_name = time().$no.'.mp4';
+                        $file->move(public_path('images/product'), $image_name);
+                        $data[] = $image_name;
+                        $image =  product_images::create([
+                            'product_id'        => $id,
+                            'images'             => $image_name,
+                            ]);
+                    }else{
+                        $image_name = time().$no.'.jpg';
+                        $file->move(public_path('images/product'), $image_name);
+                        $data[] = $image_name;
+                        $image =  product_images::create([
                             'product_id'        => $id,
                             'images'             => $image_name,
                             ]);
                     }
-                    $images_new->save();
-                    // store single image
-                    $product = Product::find($id);
-                    $product->img = $data[0];
-                    $product->save();
+                        // store single image
+                        $product = Product::find($id);
+                        $product->img = $data[0];
+                        $product->save();
+                }
             }
             if($request->color) {
                 $color_update = Color::where('color_product_id',$id)->delete();

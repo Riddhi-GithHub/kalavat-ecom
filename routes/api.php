@@ -138,6 +138,7 @@ Route::post('app_setting_list', 'API\UsersController@app_setting_list');
 Route::post('app_share_item', 'API\ProductsController@app_share_item');
 # catalog rating 
 Route::post('app_catalog_rating_add', 'API\Ratingscontroller@app_catalog_rating_add');
+Route::post('app_catalog_rating_list', 'API\Ratingscontroller@app_catalog_rating_list');
 
 # search vipul
 Route::post('app_home_page_search_list', 'ApiController@app_home_page_search_list');

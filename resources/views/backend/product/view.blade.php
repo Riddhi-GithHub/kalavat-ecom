@@ -112,12 +112,20 @@
 
             <div class="form-group">
               <label class="col-md-3 control-label">
-                Images :
+                Image / Video :
               </label>
               <div class="col-sm-5" style="margin-top: 8px;">
                 @foreach ($getproduct->images as $item)
-                  <img alt="image name" src="{{ url('public/images/product/'.$item->images) }}"
+                  {{-- <img alt="image name" src="{{ url('public/images/product/'.$item->images) }}"
+                  style="width:70px; height:70px;" /> --}}
+
+                  @if(($extension == 'jpg'))
+                  <img alt="image name" src="{{ url('public/images/product/'.$getproduct->img) }}" 
                   style="width:70px; height:70px;" />
+                 @else 
+                    <video src="{{ url('public/images/product/'.$getproduct->img) }}" style="width:70px; height:70px;"> 
+                    {{-- <source src="{{ url('public/images/product/'.$getproduct->img) }}" type="video/ogg">  --}}
+                @endif
                 @endforeach
                 {{-- <img alt="image name" src="{{ url('public/images/product/'.$getproduct->img) }}"
                   style="width:70px; height:70px;" /> --}}

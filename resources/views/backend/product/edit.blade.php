@@ -234,7 +234,6 @@
                      </div>
                   </div>
 
-
                   <div class="form-group">
                      <label class="col-md-2 col-xs-12 control-label">Color </span></label>
                      <div class="col-md-8 col-xs-12">
@@ -314,13 +313,23 @@
                   </div>
 
                   <div class="form-group">
-                     <label class="col-md-2 col-xs-12 control-label">Images </span></label>
+                     <label class="col-md-2 col-xs-12 control-label">Images\Video </span></label>
                      <div class="col-md-8 col-xs-12">
                         <div class="">
-                           <input type="file" class="form-control" name="images[]" multiple />(You can change image)
-                           @foreach ($getimages as $item)
-                           <img alt="image name" src="{{ url('public/images/product/'.$item->images) }}"
+                           <input type="file" class="form-control" name="images[]" multiple />(You can change image\video)
+                           
+                           @foreach ($getimages as $key=>$item)
+                           {{-- <img alt="image name" src="{{ url('public/images/product/'.$item->images) }}"
+                              style="width:70px; height:70px;" /> --}}
+                        
+                           @if(($extension[$key] == 'jpg'))
+                              <img alt="image name" src="{{ url('public/images/product/'.$item->images) }}" 
                               style="width:70px; height:70px;" />
+                           @else 
+                              <video src="{{ url('public/images/product/'.$item->images) }}" style="width:70px; height:70px;"> 
+                                 {{-- <source src="{{ url('public/images/product/'.$item->img) }}" type="video/ogg">  --}}
+                           @endif
+
                            @endforeach
                            {{-- <img alt="image name" src="{{ url('public/images/product/'.$getproduct->img) }}"
                               style="width:70px; height:70px;" /> --}}
@@ -430,24 +439,6 @@
 
 @endsection
 @section('script')
-{{-- <script type="text/javascript">
-   var item_row = 101;
-   $("body").delegate(".add_row", "click", function (e) {
-      var id = $(this).attr('id');
-      e.preventDefault();
-      // var html = '';
-      html = '<tr><td><input  class="form-control" required name="option[' + item_row + '][board_std_level_name]" type="text"></td>\n\
-              <td><a href="#" class="item_remove btn btn-danger">Remove</a></td>\n\
-              </tr>';
-      $("#item_below_row" + id).before(html);
-      item_row++;
-   });
-   $('body').delegate(".item_remove", "click", function (e) {
-      e.preventDefault();
-      $(this).parent().parent().remove();
-   });
-</script> --}}
-
 
 <script type="text/javascript">
    var item_row = 101;

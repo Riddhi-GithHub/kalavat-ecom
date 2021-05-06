@@ -19,6 +19,55 @@ use DB;
 
 class Ratingscontroller extends Controller
 {
+    # catalog rating list
+    public function app_catalog_rating_list(Request $request)
+    {
+        if (!empty($request->catalog_id && $request->user_id )) {
+            $result  = array();
+            $user_data = User::where('id', '=' ,$request->user_id)->first();
+            $rating_data = Catalog_rating::where('rating_catalog_id', '=' ,$request->catalog_id)->get();
+            if($rating_data->count() > 0 && $user_data){
+
+                $result['avg'] = $rating_data->avg('catalog_rating_avg');
+                $result['rating_sum'] = $rating_data->sum('catalog_rating_avg');
+                $result['total_user'] = $rating_data->count('rating_catalog_id');
+                $result['five_rate'] = $rating_data->where('catalog_rating_avg','=','5')->count('rating_catalog_id');
+                $result['four_rate'] = $rating_data->where('catalog_rating_avg','=','4')->count('rating_catalog_id');
+                $result['three_rate'] = $rating_data->where('catalog_rating_avg','=','3')->count('rating_catalog_id');
+                $result['two_rate'] = $rating_data->where('catalog_rating_avg','=','2')->count('rating_catalog_id');
+                $result['one_rate'] = $rating_data->where('catalog_rating_avg','=','1')->count('rating_catalog_id');
+
+                foreach($rating_data as $data){
+                    $user_id[] = $data->rating_user_id;
+                    $rating_date[] = $data->created_at->format('Y-m-d H:i:s');
+                    $user_rates[] = $data->catalog_rating_avg;
+                    $rating_description[] = $data->catalog_rating_description;
+                }
+                // $user_data = User::whereIn('id',[3,4])->get();
+                $user_data = User::whereIn('id',$user_id)->get();
+                foreach($user_data as $key=>$user){
+                    $user['rating_date'] = $rating_date[$key];
+                    $user['rating'] = $user_rates[$key];
+                    $user['rating_description'] = $rating_description[$key];
+                } 
+                $result['user_list'] = $user_data;
+                $json['success'] = 1;
+                $json['message'] = 'Rating loaded Successfully.';
+                $json['rating_list'] = $result;
+            }
+            else{
+                $json['success'] = 0;
+                $json['message'] = 'User or Catalog not found.';
+            }
+        }
+        else{
+            $json['success'] = 0;
+            $json['message'] = 'Fill user_id and catalog_id';
+        }
+        echo json_encode($json);
+    }
+
+    # product rating list
     public function app_product_rating_list(Request $request)
     {
         if (!empty($request->product_id && $request->user_id )) {
@@ -67,7 +116,7 @@ class Ratingscontroller extends Controller
     }
 
     # single image add rating on product
-    public function app_product_rating_add_single_images(Request $request)
+    public function app_product_rating_add_single_image(Request $request)
 	{
         if (!empty($request->product_id && $request->user_id)) {
             $product = Product::find($request->input('product_id'));
@@ -137,8 +186,235 @@ class Ratingscontroller extends Controller
         echo json_encode($json);
     }
 
+     # multiple images and video add rating on product
+     public function app_product_rating_add(Request $request)
+     {
+         if (!empty($request->product_id && $request->user_id)) {
+             $product = Product::with('size','color','images')->find($request->input('product_id'));
+             $user = User::find($request->input('user_id'));
+             // dd(!empty($product && $user));
+             if(!empty($product && $user)){
+                 $data = Rating::with('ratingimages')->where('product_id', '=', trim($request->product_id))
+                 ->where('user_id', '=', trim($request->user_id))
+                 ->first();
+               
+                 if (!empty($data)) {
+                     $data->status  = 1;
+                     $data->product_id = $request->product_id;
+                     $data->user_id = $request->user_id;
+                     $data->rating_avg = $request->rating_avg;
+                     $data->rating_description = $request->rating_description;
+                     $data->save();
+ 
+                     // dd($request->hasfile('images'));
+                    if($request->hasfile('images')) {
+                         $images_remove = Rating_images::where('rating_id','=',$data->id)->delete();
+                        foreach($request->file('images') as $file){
+                             // $image_name = time().'-'.$file->getClientOriginalName();
+                             $no = rand(1111,9999);
+                             $image_ext = $file->getClientOriginalName();
+                                $explodeImage = explode('.', $image_ext);
+                                $extension = end($explodeImage);
+                            // dd($extension);
+                            // $image_name = time().$no.'.jpg';
+                            if($extension == 'mp4' || $extension == 'mov' || $extension == 'flv' 
+                             || $extension == 'm3u8' || $extension == 'ts' || $extension == '3gp' 
+                             || $extension == 'avi' || $extension == 'wmv' ){
+                                $image_name = time().$no.'.mp4';
+                                $file->move(public_path('images/rating'), $image_name);
+                                $new[] = $image_name;
+                                 $image =  Rating_images::create([
+                                     'rating_id'        => $data->id,
+                                     'images'           => $image_name,
+                                 ]);
+                            }else{
+                                $image_name = time().$no.'.jpg';
+                                $file->move(public_path('images/rating'), $image_name);
+                                $new[] = $image_name;
+                                $image =  Rating_images::create([
+                                    'rating_id'        => $data->id,
+                                    'images'           => $image_name,
+                                ]);
+                            }
+                        }
+                        if(!empty($new[0])){
+                            // store single image on product table
+                               $rat_img = Rating::find($data->id);
+                               $rat_img->rating_images = $new[0];
+                               $rat_img->save();
+                           }
+                    }
+                     $rates = DB::table('ratings')
+                     ->where('product_id', $data->product_id)
+                     ->avg('rating_avg');
+ 
+                     $json['success'] = 1;
+                     $json['message'] = 'Thanks for the rating!';
+                     $json['rating_list'] = $data;
+                 }else{
+                     $input = $request->all();
+                     $rating = new Rating;
+                     $rating->product_id = $request->product_id;
+                     $rating->user_id = $request->user_id;
+                     $rating->rating_avg = $request->rating_avg;
+                     $rating->rating_description    = $request->rating_description;
+                     $rating->status    = '1';
+                     $rating->save();
+ 
+                     if($request->hasfile('images')) {
+                        $images_remove = Rating_images::where('rating_id','=',$rating->id)->delete();
+                       foreach($request->file('images') as $file){
+                            // $image_name = time().'-'.$file->getClientOriginalName();
+                            $no = rand(1111,9999);
+                            $image_ext = $file->getClientOriginalName();
+                               $explodeImage = explode('.', $image_ext);
+                               $extension = end($explodeImage);
+                           // dd($extension);
+                           if($extension == 'mp4' || $extension == 'mov' || $extension == 'flv' 
+                            || $extension == 'm3u8' || $extension == 'ts' || $extension == '3gp' 
+                            || $extension == 'avi' || $extension == 'wmv' ){
+                               $image_name = time().$no.'.mp4';
+                               $file->move(public_path('images/rating'), $image_name);
+                               $new[] = $image_name;
+                                $image =  Rating_images::create([
+                                    'rating_id'        => $rating->id,
+                                    'images'           => $image_name,
+                                ]);
+                           }else{
+                               $image_name = time().$no.'.jpg';
+                               $file->move(public_path('images/rating'), $image_name);
+                               $new[] = $image_name;
+                               $image =  Rating_images::create([
+                                   'rating_id'        => $rating->id,
+                                   'images'           => $image_name,
+                               ]);
+                           }
+                       }
+                       if(!empty($new[0])){
+                        // store single image on product table
+                           $rat_img = Rating::find($rating->id);
+                           $rat_img->rating_images = $new[0];
+                           $rat_img->save();
+                       }
+                   }
+ 
+                     $rat_data = $data = Rating::with('ratingimages')->where('product_id', '=', trim($request->product_id))
+                     ->where('user_id', '=', trim($request->user_id))
+                     ->first();
+ 
+                     $json['success'] = 1;
+                     $json['message'] = 'Thanks for the rating!';
+                     $json['rating_list'] = $rat_data;
+                 }
+             }
+             else{
+             $json['success'] = 0;
+             $json['message'] = 'User Or Product Not Found!';
+             }
+         }
+         else{
+         $json['success'] = 0;
+         $json['message'] = 'Fill user_id and product_id';
+         }
+         echo json_encode($json);
+     }
+
+     # multiple images add rating on catalog
+    public function app_catalog_rating_add(Request $request)
+	{
+        if (!empty($request->rating_catalog_id && $request->rating_user_id)) {
+            $catalog = Catalog::find($request->input('rating_catalog_id'));
+            $user = User::find($request->input('rating_user_id'));
+            // dd($user);
+            // dd(!empty($catalog && $user));
+            if(!empty($catalog && $user)){
+                $data = Catalog_rating::with('ratingimages')->where('rating_catalog_id', '=', trim($request->rating_catalog_id))
+                ->where('rating_user_id', '=', trim($request->rating_user_id))
+                ->first();
+              
+                if (!empty($data)) {
+                    $data->catalog_rating_status  = "1";
+                    $data->rating_catalog_id = $request->rating_catalog_id;
+                    $data->rating_user_id = $request->rating_user_id;
+                    $data->catalog_rating_avg = $request->catalog_rating_avg;
+                    $data->catalog_rating_description = $request->catalog_rating_description;
+                    $data->save();
+
+                    if($request->hasfile('images')) {
+                        $images_remove = Rating_images::where('catalog_rating_id','=',$data->id)->delete();
+                        // dd($images_update);
+                        foreach($request->file('images') as $file){
+                            // $image_name = time().'-'.$file->getClientOriginalName();
+                            $no = rand(1111,9999);
+                            $image_name = time().$no.'.jpg';
+                            $file->move(public_path('images/rating'), $image_name);
+                            // $input['images']=json_encode($data);
+                            $new[] = $image_name;
+                                 $image =  Rating_images::create([
+                                     'catalog_rating_id'        => $data->id,
+                                    'images'           => $image_name,
+                                ]);
+                        }
+                    }
+                    if(!empty($new[0])){
+                      // store single image on product table
+                      $rat_img = Catalog_rating::find($data->id);
+                      $rat_img->catalog_rating_images = $new[0];
+                      $rat_img->save();
+                    }
+
+                    $json['success'] = 1;
+                    $json['message'] = 'Thanks for the rating!';
+                    $json['catalog_rating_list'] = $data;
+                }else{
+                    $input = $request->all();
+                    $catalog_rating = Catalog_rating::create($input);
+                    $catalog_rating->catalog_rating_status    = '1';
+                    $catalog_rating->save();
+                   
+                    if($request->hasfile('images')) {
+                        foreach($request->file('images') as $file){
+                                // $image_name = time().'-'.$file->getClientOriginalName();
+                                $no = rand(1111,9999);
+                                $image_name = time().$no.'.jpg';
+                                $file->move(public_path('images/rating'), $image_name);
+                                // $input['images']=json_encode($data);
+                                $data[] = $image_name;
+                                
+                                $image =  Rating_images::create([
+                                    'catalog_rating_id'        => $catalog_rating->id,
+                                    'images'           => $image_name,
+                                ]);
+                        }
+                    }
+
+                    if(!empty($new[0])){
+                     // store single image on product table
+                     $rat_img = Catalog_rating::with('ratingimages')->find($data->id);
+                     $rat_img->catalog_rating_images = $new[0];
+                     $rat_img->save();
+                    }
+
+                    $json['success'] = 1;
+                    $json['message'] = 'Thanks for the rating!';
+                    $json['rating_list'] = $catalog_rating;
+                }
+            }
+            else{
+            $json['success'] = 0;
+            $json['message'] = 'User Or Catalog Not Found!';
+            }
+        }
+        else{
+        $json['success'] = 0;
+        $json['message'] = 'Fill required data.';
+        }
+        echo json_encode($json);
+    }
+
+
     # multiple images add rating on product
-    public function app_product_rating_add(Request $request)
+    public function app_product_rating_add_images(Request $request)
 	{
         if (!empty($request->product_id && $request->user_id)) {
             $product = Product::with('size','color','images')->find($request->input('product_id'));
@@ -249,100 +525,6 @@ class Ratingscontroller extends Controller
         }
         echo json_encode($json);
     }
-
-    # multiple images add rating on catalog
-    public function app_catalog_rating_add(Request $request)
-	{
-        if (!empty($request->rating_catalog_id && $request->rating_user_id)) {
-            $catalog = Catalog::find($request->input('rating_catalog_id'));
-            $user = User::find($request->input('rating_user_id'));
-            // dd($user);
-            // dd(!empty($catalog && $user));
-            if(!empty($catalog && $user)){
-                $data = Catalog_rating::with('ratingimages')->where('rating_catalog_id', '=', trim($request->rating_catalog_id))
-                ->where('rating_user_id', '=', trim($request->rating_user_id))
-                ->first();
-              
-                if (!empty($data)) {
-                    $data->catalog_rating_status  = "1";
-                    $data->rating_catalog_id = $request->rating_catalog_id;
-                    $data->rating_user_id = $request->rating_user_id;
-                    $data->catalog_rating_avg = $request->catalog_rating_avg;
-                    $data->catalog_rating_description = $request->catalog_rating_description;
-                    $data->save();
-
-                    if($request->hasfile('images')) {
-                        $images_remove = Rating_images::where('catalog_rating_id','=',$data->id)->delete();
-                        // dd($images_update);
-                        foreach($request->file('images') as $file){
-                            // $image_name = time().'-'.$file->getClientOriginalName();
-                            $no = rand(1111,9999);
-                            $image_name = time().$no.'.jpg';
-                            $file->move(public_path('images/rating'), $image_name);
-                            // $input['images']=json_encode($data);
-                            $new[] = $image_name;
-                                 $image =  Rating_images::create([
-                                     'catalog_rating_id'        => $data->id,
-                                    'images'           => $image_name,
-                                ]);
-                        }
-                    }
-                    if(!empty($new[0])){
-                      // store single image on product table
-                      $rat_img = Catalog_rating::find($data->id);
-                      $rat_img->catalog_rating_images = $new[0];
-                      $rat_img->save();
-                    }
-
-                    $json['success'] = 1;
-                    $json['message'] = 'Thanks for the rating!';
-                    $json['catalog_rating_list'] = $data;
-                }else{
-                    $input = $request->all();
-                    $catalog_rating = Catalog_rating::create($input);
-                    $catalog_rating->catalog_rating_status    = '1';
-                    $catalog_rating->save();
-                   
-                    if($request->hasfile('images')) {
-                        foreach($request->file('images') as $file){
-                                // $image_name = time().'-'.$file->getClientOriginalName();
-                                $no = rand(1111,9999);
-                                $image_name = time().$no.'.jpg';
-                                $file->move(public_path('images/rating'), $image_name);
-                                // $input['images']=json_encode($data);
-                                $data[] = $image_name;
-                                
-                                $image =  Rating_images::create([
-                                    'catalog_rating_id'        => $catalog_rating->id,
-                                    'images'           => $image_name,
-                                ]);
-                        }
-                    }
-
-                    if(!empty($new[0])){
-                     // store single image on product table
-                     $rat_img = Catalog_rating::with('ratingimages')->find($data->id);
-                     $rat_img->catalog_rating_images = $new[0];
-                     $rat_img->save();
-                    }
-
-                    $json['success'] = 1;
-                    $json['message'] = 'Thanks for the rating!';
-                    $json['rating_list'] = $catalog_rating;
-                }
-            }
-            else{
-            $json['success'] = 0;
-            $json['message'] = 'User Or Catalog Not Found!';
-            }
-        }
-        else{
-        $json['success'] = 0;
-        $json['message'] = 'Fill required data.';
-        }
-        echo json_encode($json);
-    }
-
 
     public function app_product_rating_list_byproduct(Request $request)
     {

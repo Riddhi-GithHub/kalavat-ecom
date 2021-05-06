@@ -85,7 +85,7 @@
                                 <th>Quantity</th>
                                 <th>Offer</th>
                                 <th>Total Price</th>
-                                <th>Image</th>
+                                <th>Image/Video</th>
                                 {{-- <th>Rating</th> --}}
                                 {{-- <th>Created Date</th> --}}
                                 <th>Action</th>

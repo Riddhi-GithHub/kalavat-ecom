@@ -28,18 +28,25 @@ class OrdersController extends Controller
         $order = Order::where('user_id',$request->user_id)->where('order_status','0')->first();
         // dd($order);
         // $myString = $order->cart_id;
-        // $myArray = explode(',', $myString);
-        // dd($myArray);
-        // $getdata = Order::create($request->all());
+        $my_cart_array = explode(',', $id);
+        // dd($my_cart_array);
 
-        $cart = Cart::where('cart_id',$request->cart_id)->get();
+        $cart = Cart::whereIn('cart_id',$my_cart_array)->get();
         $user = User::where('id',$request->user_id)->first();
-        // dd($user);
+        // dd($cart);
+        if($cart && $user){
             if(!empty($order)){
                 $order->cart_id = $request->cart_id;
                 $order->total_price = $request->total_price;
                 $order->save();
-                // $order->total_price = $request->total_price;
+
+                foreach($cart as $cart_value)
+                {
+                    $cart_value->status ="0";
+                    $cart_value->save();
+                }
+                
+                $order['cart_list'] = $cart;
                 $json['status'] = 1;
                 $json['message'] = 'Order in Processing.';
                 $json['order_list'] = $order;
@@ -51,6 +58,11 @@ class OrdersController extends Controller
                 $json['message'] = 'Product or User not found.';
                 $json['order_list'] = $add_data;
             }
+        }
+        else{
+            $json['status'] = 0;
+            $json['message'] = 'Data not found.';
+        }
 
  	    echo json_encode($json);
 	}
